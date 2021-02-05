@@ -3,7 +3,7 @@ package com.kuba.flashscore.network.models
 
 import com.google.gson.annotations.SerializedName
 
-data class PlayerDto(
+data class PlayerInfoDto(
     @SerializedName("player_age")
     val playerAge: String,
     @SerializedName("player_country")
@@ -23,5 +23,9 @@ data class PlayerDto(
     @SerializedName("player_type")
     val playerType: String,
     @SerializedName("player_yellow_cards")
-    val playerYellowCards: String
+    val playerYellowCards: String,
+    @SerializedName("team_key")
+    val teamKey: String,
+    @SerializedName("team_name")
+    val teamName: String
 )
