@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kuba.flashscore.data.local.entities.Country
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
@@ -15,6 +16,7 @@ class FlashScoreViewModel @ViewModelInject constructor(
     private val repository: FlashScoreRepository
 ) : ViewModel() {
 
+    val countryItems = repository.observeCountryItem()
     private val _countries = MutableLiveData<Event<Resource<CountryResponse>>>()
     val countries: LiveData<Event<Resource<CountryResponse>>> = _countries
 
@@ -30,11 +32,15 @@ class FlashScoreViewModel @ViewModelInject constructor(
     private val _standings = MutableLiveData<Event<Resource<StandingResponse>>>()
     val standings: LiveData<Event<Resource<StandingResponse>>> = _standings
 
+    fun insertCountryItemsIntoDb(country: Country) = viewModelScope.launch {
+        repository.insertCountryItem(country)
+    }
     fun getCountries() {
         _countries.value = Event(Resource.loading(null))
         viewModelScope.launch {
             val response = repository.getCountries()
             _countries.value = Event(response)
+           // insertCountryItemsIntoDb(response.data)
         }
     }
 

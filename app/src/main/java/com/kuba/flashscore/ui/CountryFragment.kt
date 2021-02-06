@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
+import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,8 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
     private val binding get() = _binding!!
 
     private val viewModel: FlashScoreViewModel by viewModels()
+    private lateinit var countryAdapter: CountryAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,14 +44,17 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
         super.onViewCreated(view, savedInstanceState)
 
         getCountries()
-        getAllLeaguesFromSpecificCountry()
-        getTeamsFromSpecificLeague()
-        getPlayerBySpecificName()
-        getStandingsFromSpecificLeague()
 
         subscribeToObservers()
 
     }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     private fun subscribeToObservers() {
         viewModel.countries.observe(viewLifecycleOwner, Observer {
@@ -55,6 +62,7 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
                 when (result.status) {
                     Status.SUCCESS -> {
                         val countries = result.data
+                        countryAdapter.country = result.data?.toList()!!
                         countries?.forEach {
                             Timber.d("Country: ${it}")
                         }
@@ -136,58 +144,23 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
             }
         })
     }
+
     private fun getCountries() {
         var job: Job? = null
-        binding.buttonCountry.setOnClickListener {
-            job?.cancel()
-            job = lifecycleScope.launch {
-                delay(2000)
-                viewModel.getCountries()
-            }
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.getCountries()
+            delay(1000)
+            setupRecyclerView()
         }
+
     }
 
-    private fun getAllLeaguesFromSpecificCountry() {
-        var job: Job? = null
-        binding.buttonLeague.setOnClickListener {
-            job?.cancel()
-            job = lifecycleScope.launch {
-                delay(2000)
-                viewModel.getLeaguesFromSpecificCountry("41")
-            }
-        }
-    }
-
-    private fun getTeamsFromSpecificLeague() {
-        var job: Job? = null
-        binding.buttonTeams.setOnClickListener {
-            job?.cancel()
-            job = lifecycleScope.launch {
-                delay(2000)
-                viewModel.getTeamsFormSpecificLeague("148")
-            }
-        }
-    }
-
-    private fun getPlayerBySpecificName() {
-        var job: Job? = null
-        binding.buttonPlayer.setOnClickListener {
-            job?.cancel()
-            job = lifecycleScope.launch {
-                delay(2000)
-                viewModel.getPlayerBySpecificName("Ronaldo Cristiano")
-            }
-        }
-    }
-
-    private fun getStandingsFromSpecificLeague() {
-        var job: Job? = null
-        binding.buttonStandings.setOnClickListener {
-            job?.cancel()
-            job = lifecycleScope.launch {
-                delay(2000)
-                viewModel.getStandingsFromSpecificLeague("148")
-            }
+    private fun setupRecyclerView() {
+        binding.recyclerViewCountries.apply {
+            countryAdapter = CountryAdapter(requireContext(), viewModel)
+            adapter = countryAdapter
+            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 }
