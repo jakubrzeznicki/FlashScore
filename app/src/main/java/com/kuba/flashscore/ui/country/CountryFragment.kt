@@ -1,4 +1,4 @@
-package com.kuba.flashscore.ui
+package com.kuba.flashscore.ui.country
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,9 +13,9 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.FlashScoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -62,9 +62,11 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
                 when (result.status) {
                     Status.SUCCESS -> {
                         val countries = result.data
-                        countryAdapter.country = result.data?.toList()!!
+                        if (countries != null) {
+                            countryAdapter.country = countries
+                        }
                         countries?.forEach {
-                            Timber.d("Country: ${it}")
+                            Timber.d("Country: ${countries}")
                         }
                     }
                     Status.ERROR -> {
@@ -150,7 +152,6 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel.getCountries()
-            delay(1000)
             setupRecyclerView()
         }
 

@@ -8,6 +8,8 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.data.local.FlashScoreDatabase
 import com.kuba.flashscore.data.local.daos.CountryDao
 import com.kuba.flashscore.network.ApiFootballService
+import com.kuba.flashscore.network.mappers.CountryDtoMapper
+import com.kuba.flashscore.network.mappers.LeagueDtoMapper
 import com.kuba.flashscore.other.Constants.BASE_URL
 import com.kuba.flashscore.other.Constants.DATABASE_NAME
 import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
@@ -32,18 +34,32 @@ object AppModule {
         @ApplicationContext context: Context
     ) = Room.databaseBuilder(context, FlashScoreDatabase::class.java, DATABASE_NAME).build()
 
+
+
+    @Singleton
+    @Provides
+    fun provideCountryMapper() : CountryDtoMapper = CountryDtoMapper()
+
+    @Singleton
+    @Provides
+    fun provideLeagueMapper() : LeagueDtoMapper = LeagueDtoMapper()
+
+
     @Singleton
     @Provides
     fun provideDefaultShoppingRepository(
         dao: CountryDao,
-        api: ApiFootballService
-    ) = DefaultFlashScoreRepository(dao, api) as FlashScoreRepository
+        api: ApiFootballService,
+        countryMapper: CountryDtoMapper,
+        leagueMapper: LeagueDtoMapper
+    ) = DefaultFlashScoreRepository(dao, api, countryMapper, leagueMapper) as FlashScoreRepository
 
     @Singleton
     @Provides
     fun provideCountryDao(
         database: FlashScoreDatabase
     ) = database.countryDao()
+
 
 
     @Singleton
