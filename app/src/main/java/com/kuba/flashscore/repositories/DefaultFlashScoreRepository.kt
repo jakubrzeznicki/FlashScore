@@ -2,11 +2,9 @@ package com.kuba.flashscore.repositories
 
 import androidx.lifecycle.LiveData
 import com.kuba.flashscore.data.local.daos.CountryDao
-import com.kuba.flashscore.data.local.entities.Country
-import com.kuba.flashscore.data.local.entities.League
+import com.kuba.flashscore.data.local.entities.*
 import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.network.mappers.CountryDtoMapper
-import com.kuba.flashscore.network.mappers.LeagueDtoMapper
+import com.kuba.flashscore.network.mappers.*
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
@@ -19,7 +17,10 @@ class DefaultFlashScoreRepository @Inject constructor(
     private val countryDao: CountryDao,
     private val apiFootballService: ApiFootballService,
     private val countryMapper: CountryDtoMapper,
-    private val leagueMapper: LeagueDtoMapper
+    private val leagueMapper: LeagueDtoMapper,
+    private val teamMapper: TeamDtoMapper,
+    private val standingMapper: StandingDtoMapper
+
 ) : FlashScoreRepository {
 
 
@@ -33,7 +34,8 @@ class DefaultFlashScoreRepository @Inject constructor(
             val response = apiFootballService.getCountries()
             if (response.isSuccessful) {
                 response.body().let {
-                    return@let Resource.success(it?.toList()?.let { countryDto -> countryMapper.toLocalList(countryDto) })
+                    return@let Resource.success(
+                        it?.toList()?.let { countryDto -> countryMapper.toLocalList(countryDto) })
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -49,7 +51,8 @@ class DefaultFlashScoreRepository @Inject constructor(
             val response = apiFootballService.getLeagues(countryId)
             if (response.isSuccessful) {
                 response.body().let {
-                    return@let Resource.success(it?.toList()?.let { leagueDto -> leagueMapper.toLocalList(leagueDto) })
+                    return@let Resource.success(
+                        it?.toList()?.let { leagueDto -> leagueMapper.toLocalList(leagueDto) })
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -60,12 +63,49 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse> {
+    override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<List<Team>> {
         return try {
             val response = apiFootballService.getTeams(leagueId)
             if (response.isSuccessful) {
                 response.body().let {
-                    return@let Resource.success(it)
+                    return@let Resource.success(
+                        it?.toList()?.let { teamDto -> teamMapper.toLocalList(teamDto) })
+                } ?: Resource.error(ERROR_MESSAGE, null)
+            } else {
+                Resource.error(ERROR_MESSAGE, null)
+            }
+        } catch (e: Exception) {
+            Timber.e("EXCEPTION: $e")
+            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
+        }
+    }
+
+    override suspend fun getTeamByTeamId(teamId: String): Resource<Team> {
+        return try {
+            val response = apiFootballService.getTeam(teamId)
+            if (response.isSuccessful) {
+                response.body().let {
+                    return@let Resource.success(
+                        it?.get(0).let { teamDto -> teamMapper.mapToLocalModel(teamDto!!) })
+                } ?: Resource.error(ERROR_MESSAGE, null)
+            } else {
+                Resource.error(ERROR_MESSAGE, null)
+            }
+        } catch (e: Exception) {
+            Timber.e("EXCEPTION: $e")
+            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
+        }
+    }
+
+
+    override suspend fun getStandingsFromSpecificLeague(leagueId: String): Resource<List<Standing>> {
+        return try {
+            val response = apiFootballService.getStandings(leagueId)
+            if (response.isSuccessful) {
+                response.body().let {
+                    return@let Resource.success(
+                        it?.toList()
+                            ?.let { standingDto -> standingMapper.toLocalList(standingDto) })
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -92,19 +132,5 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
-    override suspend fun getStandingsFromSpecificLeague(leagueId: String): Resource<StandingResponse> {
-        return try {
-            val response = apiFootballService.getStandings(leagueId)
-            if (response.isSuccessful) {
-                response.body().let {
-                    return@let Resource.success(it)
-                } ?: Resource.error(ERROR_MESSAGE, null)
-            } else {
-                Resource.error(ERROR_MESSAGE, null)
-            }
-        } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
-            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
-        }
-    }
+
 }

@@ -26,6 +26,11 @@ interface ApiFootballService {
         @Query("APIkey") APIkey: String = BuildConfig.API_KEY
     ): Response<TeamResponse>
 
+    @GET("/?action=get_teams")
+    suspend fun getTeam(
+        @Query("team_id") team_id: String,
+        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+    ): Response<TeamResponse>
 
     @GET("/?action=get_players")
     suspend fun getPlayer(

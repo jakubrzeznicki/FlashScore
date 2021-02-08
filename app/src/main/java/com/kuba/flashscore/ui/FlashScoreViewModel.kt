@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kuba.flashscore.data.local.entities.Country
 import com.kuba.flashscore.data.local.entities.League
+import com.kuba.flashscore.data.local.entities.Standing
+import com.kuba.flashscore.data.local.entities.Team
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
@@ -23,14 +25,17 @@ class FlashScoreViewModel @ViewModelInject constructor(
     private val _leagues = MutableLiveData<Event<Resource<List<League>>>>()
     val leagues: LiveData<Event<Resource<List<League>>>> = _leagues
 
-    private val _teams = MutableLiveData<Event<Resource<TeamResponse>>>()
-    val teams: LiveData<Event<Resource<TeamResponse>>> = _teams
+    private val _teams = MutableLiveData<Event<Resource<List<Team>>>>()
+    val teams: LiveData<Event<Resource<List<Team>>>> = _teams
+
+    private val _team = MutableLiveData<Event<Resource<Team>>>()
+    val team: LiveData<Event<Resource<Team>>> = _team
+
+    private val _standings = MutableLiveData<Event<Resource<List<Standing>>>>()
+    val standings: LiveData<Event<Resource<List<Standing>>>> = _standings
 
     private val _players = MutableLiveData<Event<Resource<PlayerResponse>>>()
     val players: LiveData<Event<Resource<PlayerResponse>>> = _players
-
-    private val _standings = MutableLiveData<Event<Resource<StandingResponse>>>()
-    val standings: LiveData<Event<Resource<StandingResponse>>> = _standings
 
     fun getCountries() {
         _countries.value = Event(Resource.loading(null))
@@ -56,13 +61,14 @@ class FlashScoreViewModel @ViewModelInject constructor(
         }
     }
 
-    fun getPlayerBySpecificName(name: String) {
-        _players.value = Event(Resource.loading(null))
+    fun getTeamByTeamId(teamId: String) {
+        _teams.value = Event(Resource.loading(null))
         viewModelScope.launch {
-            val response = repository.getPlayerBySpecificName(name)
-            _players.value = Event(response)
+            val response = repository.getTeamByTeamId(teamId)
+            _team.value = Event(response)
         }
     }
+
 
     fun getStandingsFromSpecificLeague(leagueId: String) {
         _standings.value = Event(Resource.loading(null))
@@ -71,4 +77,14 @@ class FlashScoreViewModel @ViewModelInject constructor(
             _standings.value = Event(response)
         }
     }
+
+    fun getPlayerBySpecificName(name: String) {
+        _players.value = Event(Resource.loading(null))
+        viewModelScope.launch {
+            val response = repository.getPlayerBySpecificName(name)
+            _players.value = Event(response)
+        }
+    }
+
+
 }

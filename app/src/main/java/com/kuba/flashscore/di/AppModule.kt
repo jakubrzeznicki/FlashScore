@@ -8,8 +8,7 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.data.local.FlashScoreDatabase
 import com.kuba.flashscore.data.local.daos.CountryDao
 import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.network.mappers.CountryDtoMapper
-import com.kuba.flashscore.network.mappers.LeagueDtoMapper
+import com.kuba.flashscore.network.mappers.*
 import com.kuba.flashscore.other.Constants.BASE_URL
 import com.kuba.flashscore.other.Constants.DATABASE_NAME
 import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
@@ -35,15 +34,30 @@ object AppModule {
     ) = Room.databaseBuilder(context, FlashScoreDatabase::class.java, DATABASE_NAME).build()
 
 
+    @Singleton
+    @Provides
+    fun provideCountryMapper(): CountryDtoMapper = CountryDtoMapper()
 
     @Singleton
     @Provides
-    fun provideCountryMapper() : CountryDtoMapper = CountryDtoMapper()
+    fun provideLeagueMapper(): LeagueDtoMapper = LeagueDtoMapper()
+
 
     @Singleton
     @Provides
-    fun provideLeagueMapper() : LeagueDtoMapper = LeagueDtoMapper()
+    fun provideTeamMapper(): TeamDtoMapper = TeamDtoMapper()
 
+    @Singleton
+    @Provides
+    fun providePlayerMapper(): PlayerDtoMapper = PlayerDtoMapper()
+
+    @Singleton
+    @Provides
+    fun provideCoacheMapper(): CoacheDtoMapper = CoacheDtoMapper()
+
+    @Singleton
+    @Provides
+    fun provideStandingMapper(): StandingDtoMapper = StandingDtoMapper()
 
     @Singleton
     @Provides
@@ -51,15 +65,23 @@ object AppModule {
         dao: CountryDao,
         api: ApiFootballService,
         countryMapper: CountryDtoMapper,
-        leagueMapper: LeagueDtoMapper
-    ) = DefaultFlashScoreRepository(dao, api, countryMapper, leagueMapper) as FlashScoreRepository
+        leagueMapper: LeagueDtoMapper,
+        teamMapper: TeamDtoMapper,
+        standingMapper: StandingDtoMapper
+    ) = DefaultFlashScoreRepository(
+        dao,
+        api,
+        countryMapper,
+        leagueMapper,
+        teamMapper,
+        standingMapper
+    ) as FlashScoreRepository
 
     @Singleton
     @Provides
     fun provideCountryDao(
         database: FlashScoreDatabase
     ) = database.countryDao()
-
 
 
     @Singleton
