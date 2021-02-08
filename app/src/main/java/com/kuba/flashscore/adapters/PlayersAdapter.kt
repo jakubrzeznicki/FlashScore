@@ -48,7 +48,6 @@ class PlayersAdapter(private val context: Context, private val viewModel: FlashS
     override fun onBindViewHolder(holder: PlayersViewHolder, position: Int) {
         holder.binding.apply {
             val player = players[position]
-            Glide.with(holder.itemView).load(player.playerCountry).into(imageViewPlayerFlag)
             textViewPlayerName.text = player.playerName
             textViewPlayerNumber.text = player.playerNumber
 

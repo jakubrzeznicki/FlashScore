@@ -3,16 +3,133 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutTeams"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        android:outlineAmbientShadowColor="@color/primaryLightColor"
+        android:outlineSpotShadowColor="@color/primaryLightColor"
+        android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewCountryFlag"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:paddingStart="4dp"
+            android:src="@drawable/flag"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewCountryName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="ENGLAND"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewCountryFlag"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/viewDividerTeamsOne"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutCountry" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutLeague"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerTeamsOne">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewLeagueLogo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingStart="4dp"
+            android:src="@drawable/flag"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewLeagueName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Premier League 2020/2021"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewLeagueLogo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/viewDividerTeamsTwo"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutLeague" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/tabLayoutTeams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:background="@color/primaryColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerTeamsTwo">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutTeams2"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            app:tabBackground="@drawable/tab_color_selector"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/primaryDarkColor"
+            app:tabIndicatorGravity="stretch"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/secondaryTextColor"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabTextColor="@color/primaryTextColor" />
+    </com.google.android.material.card.MaterialCardView>
+
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerTeams"

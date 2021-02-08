@@ -40,7 +40,7 @@ class StandingsViewPagerFragment(private val leagueId: String) : Fragment(R.layo
         binding.viewPagerStandings.adapter = standingsViewPagerAdapter
 
         TabLayoutMediator(
-            binding.tabLayoutStandings, binding.viewPagerStandings
+            binding.tabLayoutStandings2, binding.viewPagerStandings
         ) { tab, position ->
             when (position) {
                 0 -> {

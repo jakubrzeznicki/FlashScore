@@ -38,7 +38,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
         binding.viewPagerTeams.adapter = teamViewPagerAdapter
 
         TabLayoutMediator(
-            binding.tabLayoutTeams, binding.viewPagerTeams
+            binding.tabLayoutTeams2, binding.viewPagerTeams
         ) { tab, position ->
             when (position) {
                 0 -> {
@@ -46,6 +46,12 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
                 }
                 1 -> {
                     tab.text = "Tabela"
+                }
+                2 -> {
+                    tab.text = "Wyniki"
+                }
+                3 -> {
+                    tab.text = "Spotkania"
                 }
             }
         }.attach()
