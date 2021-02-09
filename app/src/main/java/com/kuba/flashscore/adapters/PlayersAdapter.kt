@@ -4,38 +4,32 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.kuba.flashscore.data.local.entities.Country
-import com.kuba.flashscore.data.local.entities.Player
-
-import com.kuba.flashscore.databinding.CountryItemBinding
 import com.kuba.flashscore.databinding.PlayerItemBinding
+import com.kuba.flashscore.network.models.PlayerDto
 import com.kuba.flashscore.ui.FlashScoreViewModel
-import com.kuba.flashscore.ui.country.CountryFragmentDirections
 
-class PlayersAdapter(private val context: Context, private val viewModel: FlashScoreViewModel) :
+class PlayersAdapter(private val context: Context) :
     RecyclerView.Adapter<PlayersAdapter.PlayersViewHolder>() {
 
     inner class PlayersViewHolder(val binding: PlayerItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Player>() {
-        override fun areItemsTheSame(oldItem: Player, newItem: Player): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<PlayerDto>() {
+        override fun areItemsTheSame(oldItem: PlayerDto, newItem: PlayerDto): Boolean {
             return oldItem.playerKey == newItem.playerKey
         }
 
-        override fun areContentsTheSame(oldItem: Player, newItem: Player): Boolean {
+        override fun areContentsTheSame(oldItem: PlayerDto, newItem: PlayerDto): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var players: List<Player>
+    var players: List<PlayerDto>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 

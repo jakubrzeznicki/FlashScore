@@ -1,8 +1,11 @@
 package com.kuba.flashscore.network.models
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class PlayerDto(
     @SerializedName("player_age")
     val playerAge: String,
@@ -24,4 +27,4 @@ data class PlayerDto(
     val playerType: String,
     @SerializedName("player_yellow_cards")
     val playerYellowCards: String
-)
+) : Parcelable

@@ -15,19 +15,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
-import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.adapters.LeagueAdapter
-import com.kuba.flashscore.data.local.entities.Country
-import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
+import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 
 @AndroidEntryPoint
 class LeagueFragment : Fragment(R.layout.fragment_league) {
@@ -84,9 +80,6 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
                         if (leagues != null) {
                             leagueAdapter.league = leagues
                         }
-                        leagues?.forEach {
-                            Timber.d("Leagues: ${leagues}")
-                        }
                     }
                     Status.ERROR -> {
                     }
@@ -110,7 +103,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
 
     private fun setupRecyclerView() {
         binding.recyclerViewLeagues.apply {
-            leagueAdapter = LeagueAdapter(requireContext(), viewModel)
+            leagueAdapter = LeagueAdapter()
             adapter = leagueAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
@@ -122,7 +115,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         }
     }
 
-    private fun setInformationAboutCountry(country: Country) {
+    private fun setInformationAboutCountry(country: CountryDto) {
         binding.apply {
             textViewCountryName.text = country.countryName
             Glide.with(requireContext()).load(country.countryLogo).into(imageViewCountryFlag)

@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_league" >
         <argument
             android:name="countryItem"
-            app:argType="com.kuba.flashscore.data.local.entities.Country" />
+            app:argType="com.kuba.flashscore.network.models.CountryDto" />
         <action
             android:id="@+id/action_leagueFragment_to_countryFragment"
             app:destination="@id/countryFragment" />
@@ -46,7 +46,7 @@
             app:destination="@id/teamsViewPagerFragment" />
         <argument
             android:name="leagueItem"
-            app:argType="com.kuba.flashscore.data.local.entities.League" />
+            app:argType="com.kuba.flashscore.network.models.LeagueDto" />
         <argument
             android:name="teamName"
             app:argType="string" />
@@ -63,7 +63,7 @@
             app:destination="@id/leagueFragment" />
         <argument
             android:name="leagueItem"
-            app:argType="com.kuba.flashscore.data.local.entities.League" />
+            app:argType="com.kuba.flashscore.network.models.LeagueDto" />
         <action
             android:id="@+id/action_teamsViewPagerFragment_to_clubViewPagerFragment"
             app:destination="@id/clubViewPagerFragment" />

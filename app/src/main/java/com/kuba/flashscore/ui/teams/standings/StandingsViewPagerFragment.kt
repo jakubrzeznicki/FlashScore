@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
-import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.FragmentStandingsViewPagerBinding
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.ui.teams.standings.away.StandingsAwayFragment
 import com.kuba.flashscore.ui.teams.standings.home.StandingsHomeFragment
 import com.kuba.flashscore.ui.teams.standings.overall.StandingsOverallFragment
 
-class StandingsViewPagerFragment(private val league: League) : Fragment(R.layout.fragment_standings_view_pager) {
+class StandingsViewPagerFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_standings_view_pager) {
 
     private var _binding: FragmentStandingsViewPagerBinding? = null
     private val binding get() = _binding!!

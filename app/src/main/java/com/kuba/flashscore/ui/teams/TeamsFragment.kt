@@ -12,22 +12,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
-import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.adapters.TeamsAdapter
-import com.kuba.flashscore.data.local.entities.League
-import com.kuba.flashscore.databinding.FragmentLeagueBinding
 import com.kuba.flashscore.databinding.FragmentTeamsBinding
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
-import com.kuba.flashscore.ui.league.LeagueFragmentArgs
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
-class TeamsFragment(private val league: League) : Fragment(R.layout.fragment_teams) {
+class TeamsFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_teams) {
 
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
@@ -70,9 +66,6 @@ class TeamsFragment(private val league: League) : Fragment(R.layout.fragment_tea
                         if (teams != null) {
                             teamsAdapter.teams = teams
                         }
-                        teams?.forEach {
-                            Timber.d("Leagues: ${teams}")
-                        }
                     }
                     Status.ERROR -> {
                     }
@@ -96,7 +89,7 @@ class TeamsFragment(private val league: League) : Fragment(R.layout.fragment_tea
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            teamsAdapter = TeamsAdapter(requireContext(), league)
+            teamsAdapter = TeamsAdapter(league)
             adapter = teamsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

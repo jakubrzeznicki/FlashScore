@@ -8,31 +8,30 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.LeagueItemBinding
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.ui.FlashScoreViewModel
-import com.kuba.flashscore.ui.country.CountryFragmentDirections
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 
-class LeagueAdapter(private val context: Context, private val viewModel: FlashScoreViewModel) :
+class LeagueAdapter() :
     RecyclerView.Adapter<LeagueAdapter.LeagueViewHolder>() {
 
     inner class LeagueViewHolder(val binding: LeagueItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<League>() {
-        override fun areItemsTheSame(oldItem: League, newItem: League): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<LeagueDto>() {
+        override fun areItemsTheSame(oldItem: LeagueDto, newItem: LeagueDto): Boolean {
             return oldItem.leagueId == newItem.leagueId
         }
 
-        override fun areContentsTheSame(oldItem: League, newItem: League): Boolean {
+        override fun areContentsTheSame(oldItem: LeagueDto, newItem: LeagueDto): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var league: List<League>
+    var league: List<LeagueDto>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 

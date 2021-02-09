@@ -4,33 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.kuba.flashscore.data.local.entities.Country
-import com.kuba.flashscore.data.local.entities.League
-import com.kuba.flashscore.data.local.entities.Standing
-import com.kuba.flashscore.data.local.entities.Team
-
-import com.kuba.flashscore.databinding.CountryItemBinding
 import com.kuba.flashscore.databinding.StandingsItemBinding
-import com.kuba.flashscore.databinding.TeamItemBinding
-import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
-import com.kuba.flashscore.ui.country.CountryFragmentDirections
+import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.network.models.StandingDto
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class StandingsAdapter(
-    private val context: Context,
-    private val league: League,
+    private val league: LeagueDto,
     private val whichStandings: String
 ) :
     RecyclerView.Adapter<StandingsAdapter.StandingsViewHolder>() {
@@ -39,19 +24,19 @@ class StandingsAdapter(
     inner class StandingsViewHolder(val binding: StandingsItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Standing>() {
-        override fun areItemsTheSame(oldItem: Standing, newItem: Standing): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<StandingDto>() {
+        override fun areItemsTheSame(oldItem: StandingDto, newItem: StandingDto): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Standing, newItem: Standing): Boolean {
+        override fun areContentsTheSame(oldItem: StandingDto, newItem: StandingDto): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var standings: List<Standing>
+    var standings: List<StandingDto>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 

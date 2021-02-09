@@ -12,19 +12,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
-import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.FragmentStandingsAwayBinding
-import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
-class StandingsAwayFragment(private val league: League) :
+class StandingsAwayFragment(private val league: LeagueDto) :
     Fragment(R.layout.fragment_standings_away) {
 
     private var _binding: FragmentStandingsAwayBinding? = null
@@ -65,9 +63,6 @@ class StandingsAwayFragment(private val league: League) :
                         if (standings != null) {
                             standingsAdapter.standings = standings
                         }
-                        standings?.forEach {
-                            Timber.d("Standings: ${standings}")
-                        }
                     }
                     Status.ERROR -> {
                     }
@@ -91,7 +86,7 @@ class StandingsAwayFragment(private val league: League) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewAwayStandings.apply {
-            standingsAdapter = StandingsAdapter(requireContext(), league, "away")
+            standingsAdapter = StandingsAdapter(league, "away")
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

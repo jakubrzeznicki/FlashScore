@@ -1,10 +1,7 @@
 package com.kuba.flashscore.repositories
 
 import androidx.lifecycle.LiveData
-import com.kuba.flashscore.data.local.daos.CountryDao
-import com.kuba.flashscore.data.local.entities.*
 import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.network.mappers.*
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
@@ -14,28 +11,23 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class DefaultFlashScoreRepository @Inject constructor(
-    private val countryDao: CountryDao,
-    private val apiFootballService: ApiFootballService,
-    private val countryMapper: CountryDtoMapper,
-    private val leagueMapper: LeagueDtoMapper,
-    private val teamMapper: TeamDtoMapper,
-    private val standingMapper: StandingDtoMapper
-
+    private val apiFootballService: ApiFootballService
 ) : FlashScoreRepository {
 
 
-    override suspend fun getCountry(id: String): Resource<Country> {
+    override suspend fun getCountry(id: String): Resource<CountryResponse> {
         TODO("Not yet implemented")
     }
 
 
-    override suspend fun getCountries(): Resource<List<Country>> {
+    override suspend fun getCountries(): Resource<CountryResponse> {
         return try {
             val response = apiFootballService.getCountries()
             if (response.isSuccessful) {
                 response.body().let {
                     return@let Resource.success(
-                        it?.toList()?.let { countryDto -> countryMapper.toLocalList(countryDto) })
+                        it
+                    )
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -46,13 +38,14 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
-    override suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<List<League>> {
+    override suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<LeagueResponse> {
         return try {
             val response = apiFootballService.getLeagues(countryId)
             if (response.isSuccessful) {
                 response.body().let {
                     return@let Resource.success(
-                        it?.toList()?.let { leagueDto -> leagueMapper.toLocalList(leagueDto) })
+                        it
+                    )
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -63,13 +56,14 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<List<Team>> {
+    override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse> {
         return try {
             val response = apiFootballService.getTeams(leagueId)
             if (response.isSuccessful) {
                 response.body().let {
                     return@let Resource.success(
-                        it?.toList()?.let { teamDto -> teamMapper.toLocalList(teamDto) })
+                        it
+                    )
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -80,13 +74,14 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamByTeamId(teamId: String): Resource<Team> {
+    override suspend fun getTeamByTeamId(teamId: String): Resource<TeamResponse> {
         return try {
             val response = apiFootballService.getTeam(teamId)
             if (response.isSuccessful) {
                 response.body().let {
                     return@let Resource.success(
-                        it?.get(0).let { teamDto -> teamMapper.mapToLocalModel(teamDto!!) })
+                        it
+                    )
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -98,14 +93,14 @@ class DefaultFlashScoreRepository @Inject constructor(
     }
 
 
-    override suspend fun getStandingsFromSpecificLeague(leagueId: String): Resource<List<Standing>> {
+    override suspend fun getStandingsFromSpecificLeague(leagueId: String): Resource<StandingResponse> {
         return try {
             val response = apiFootballService.getStandings(leagueId)
             if (response.isSuccessful) {
                 response.body().let {
                     return@let Resource.success(
-                        it?.toList()
-                            ?.let { standingDto -> standingMapper.toLocalList(standingDto) })
+                        it
+                    )
                 } ?: Resource.error(ERROR_MESSAGE, null)
             } else {
                 Resource.error(ERROR_MESSAGE, null)

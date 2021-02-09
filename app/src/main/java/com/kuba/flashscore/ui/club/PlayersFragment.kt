@@ -11,9 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
-import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.adapters.PlayersAdapter
-import com.kuba.flashscore.data.local.entities.Team
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
@@ -21,7 +19,6 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class PlayersFragment(private val teamId: String) : Fragment(R.layout.fragment_players) {
@@ -64,7 +61,7 @@ class PlayersFragment(private val teamId: String) : Fragment(R.layout.fragment_p
                     Status.SUCCESS -> {
                         val team = result.data
                         if (team != null) {
-                            playerAdapter.players = team.players
+                            playerAdapter.players = team[0].players
                         }
                     }
                     Status.ERROR -> {
@@ -89,7 +86,7 @@ class PlayersFragment(private val teamId: String) : Fragment(R.layout.fragment_p
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            playerAdapter = PlayersAdapter(requireContext(), viewModel)
+            playerAdapter = PlayersAdapter(requireContext())
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

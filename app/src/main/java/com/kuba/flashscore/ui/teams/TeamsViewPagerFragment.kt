@@ -11,9 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
-import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.FragmentTeamsViewPagerBinding
-import com.kuba.flashscore.ui.league.LeagueFragmentDirections
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.ui.teams.standings.StandingsViewPagerFragment
 
 class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
@@ -76,7 +75,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
     }
 
 
-    private fun setInformationAboutCountryAndLeague(league: League) {
+    private fun setInformationAboutCountryAndLeague(league: LeagueDto) {
         binding.apply {
             textViewCountryName.text = league.countryName
             Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)

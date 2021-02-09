@@ -11,9 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
-import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
-import timber.log.Timber
+import com.kuba.flashscore.network.models.LeagueDto
 
 class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
 
@@ -69,7 +68,7 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
     }
 
     private fun setInformationAboutCountryAndLeague(
-        league: League,
+        league: LeagueDto,
         teamName: String,
         teamBadge: String
     ) {

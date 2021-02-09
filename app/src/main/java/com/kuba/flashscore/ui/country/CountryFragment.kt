@@ -70,79 +70,7 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
                     Status.SUCCESS -> {
                         val countries = result.data
                         if (countries != null) {
-                            countryAdapter.country = countries
-                        }
-                        countries?.forEach {
-                            Timber.d("Country: ${countries}")
-                        }
-                    }
-                    Status.ERROR -> {
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-        })
-
-
-        viewModel.leagues.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        val league = result.data
-                        league?.forEach {
-                            Timber.d("League: ${it}")
-                        }
-                    }
-                    Status.ERROR -> {
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-        })
-
-        viewModel.teams.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        val teams = result.data
-                        teams?.forEach {
-                            Timber.d("Teams: ${it}")
-                        }
-                    }
-                    Status.ERROR -> {
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-        })
-
-        viewModel.players.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        val player = result.data
-                        player?.forEach {
-                            Timber.d("Player: ${it}")
-                        }
-                    }
-                    Status.ERROR -> {
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-        })
-
-        viewModel.standings.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        val standings = result.data
-                        standings?.forEach {
-                            Timber.d("Standings: ${it}")
+                            countryAdapter.country = countries.toList()
                         }
                     }
                     Status.ERROR -> {
@@ -166,7 +94,7 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
 
     private fun setupRecyclerView() {
         binding.recyclerViewCountries.apply {
-            countryAdapter = CountryAdapter(requireContext(), viewModel)
+            countryAdapter = CountryAdapter()
             adapter = countryAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

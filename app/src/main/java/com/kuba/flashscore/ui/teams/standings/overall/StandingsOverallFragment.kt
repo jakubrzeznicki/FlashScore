@@ -11,23 +11,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
-import com.kuba.flashscore.adapters.LeagueAdapter
-import com.kuba.flashscore.adapters.PlayersAdapter
 import com.kuba.flashscore.adapters.StandingsAdapter
-import com.kuba.flashscore.data.local.entities.League
-import com.kuba.flashscore.data.local.entities.Team
-import com.kuba.flashscore.databinding.FragmentPlayersBinding
 import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
-class StandingsOverallFragment(private val league: League) :
+class StandingsOverallFragment(private val league: LeagueDto) :
     Fragment(R.layout.fragment_standings_overall) {
 
     private var _binding: FragmentStandingsOverallBinding? = null
@@ -68,9 +63,6 @@ class StandingsOverallFragment(private val league: League) :
                         if (standings != null) {
                             standingsAdapter.standings = standings
                         }
-                        standings?.forEach {
-                            Timber.d("Standings: ${standings}")
-                        }
                     }
                     Status.ERROR -> {
                     }
@@ -94,7 +86,7 @@ class StandingsOverallFragment(private val league: League) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewOverallStandings.apply {
-            standingsAdapter = StandingsAdapter(requireContext(), league, "overall")
+            standingsAdapter = StandingsAdapter(league, "overall")
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
