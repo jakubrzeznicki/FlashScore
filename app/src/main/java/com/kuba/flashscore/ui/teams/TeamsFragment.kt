@@ -1,10 +1,12 @@
 package com.kuba.flashscore.ui.teams
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -12,18 +14,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.adapters.TeamsAdapter
+import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
 import com.kuba.flashscore.databinding.FragmentTeamsBinding
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.kuba.flashscore.ui.league.LeagueFragmentArgs
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class TeamsFragment(private val leagueId: String) : Fragment(R.layout.fragment_teams) {
+class TeamsFragment(private val league: League) : Fragment(R.layout.fragment_teams) {
 
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
@@ -45,7 +49,7 @@ class TeamsFragment(private val leagueId: String) : Fragment(R.layout.fragment_t
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getTeams(leagueId)
+        getTeams(league.leagueId)
         subscribeToObservers()
 
     }
@@ -92,9 +96,15 @@ class TeamsFragment(private val leagueId: String) : Fragment(R.layout.fragment_t
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            teamsAdapter = TeamsAdapter(requireContext(), viewModel)
+            teamsAdapter = TeamsAdapter(requireContext(), league)
             adapter = teamsAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(
+                HorizontalDividerItemDecoration.Builder(requireContext())
+                    .color(ContextCompat.getColor(requireContext(), R.color.secondaryTextColor))
+                    .sizeResId(R.dimen.divider)
+                    .build()
+            )
         }
     }
 }

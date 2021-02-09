@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -16,6 +17,7 @@ import com.kuba.flashscore.data.local.entities.Team
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -90,6 +92,12 @@ class PlayersFragment(private val teamId: String) : Fragment(R.layout.fragment_p
             playerAdapter = PlayersAdapter(requireContext(), viewModel)
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(
+                HorizontalDividerItemDecoration.Builder(requireContext())
+                    .color(ContextCompat.getColor(requireContext(), R.color.secondaryTextColor))
+                    .sizeResId(R.dimen.divider)
+                    .build()
+            )
         }
     }
 }

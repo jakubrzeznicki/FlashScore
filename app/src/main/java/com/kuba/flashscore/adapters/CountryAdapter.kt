@@ -51,7 +51,7 @@ class CountryAdapter(private val context: Context, private val viewModel: FlashS
             holder.itemView.setOnClickListener {
                 val action =
                     CountryFragmentDirections.actionCountryFragmentToLeagueFragment(
-                        country.countryId
+                        country
                     )
                 it.findNavController().navigate(action)
             }

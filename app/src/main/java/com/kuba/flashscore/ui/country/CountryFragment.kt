@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +16,7 @@ import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -36,7 +39,11 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
         _binding = FragmentCountryBinding.inflate(inflater, container, false)
         val view = binding.root
 
-
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowHomeEnabled(false)
+            title = "Countries"
+        }
         return view
     }
 
@@ -162,6 +169,12 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
             countryAdapter = CountryAdapter(requireContext(), viewModel)
             adapter = countryAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(
+                HorizontalDividerItemDecoration.Builder(requireContext())
+                    .color(ContextCompat.getColor(requireContext(), R.color.secondaryTextColor))
+                    .sizeResId(R.dimen.divider)
+                    .build()
+            )
         }
     }
 }

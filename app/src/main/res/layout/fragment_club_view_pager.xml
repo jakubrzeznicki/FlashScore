@@ -10,8 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryColor"
-        android:outlineAmbientShadowColor="@color/primaryLightColor"
-        android:outlineSpotShadowColor="@color/primaryLightColor"
         android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -20,8 +18,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageViewCountryFlag"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:paddingStart="4dp"
             android:src="@drawable/flag"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +33,7 @@
             android:layout_marginStart="4dp"
             android:text="ENGLAND"
             android:textColor="@color/primaryTextColor"
-            android:textSize="10sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -48,7 +46,7 @@
     <View
         android:id="@+id/viewDividerClubOne"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.1dp"
         android:background="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -69,7 +67,7 @@
             android:id="@+id/imageViewClubLogo"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:paddingStart="4dp"
+            android:padding="4dp"
             android:src="@drawable/flag"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +94,7 @@
     <View
         android:id="@+id/viewDividerClubTwo"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.1dp"
         android:background="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -129,6 +127,16 @@
             app:tabTextColor="@color/primaryTextColor" />
     </com.google.android.material.card.MaterialCardView>
 
+    <View
+        android:id="@+id/viewDividerClubThree"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardViewClub" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerClub"
         android:layout_width="match_parent"
@@ -137,5 +145,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardViewClub" />
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerClubThree" />
 </androidx.constraintlayout.widget.ConstraintLayout>

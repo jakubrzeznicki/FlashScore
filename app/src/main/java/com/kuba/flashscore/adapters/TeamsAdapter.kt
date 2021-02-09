@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.data.local.entities.Country
+import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.data.local.entities.Team
 
 import com.kuba.flashscore.databinding.CountryItemBinding
@@ -17,7 +18,7 @@ import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
-class TeamsAdapter(private val context: Context, private val viewModel: FlashScoreViewModel) :
+class TeamsAdapter(private val context: Context, private val league: League) :
     RecyclerView.Adapter<TeamsAdapter.TeamViewHolder>() {
 
     inner class TeamViewHolder(val binding: TeamItemBinding) :
@@ -53,7 +54,9 @@ class TeamsAdapter(private val context: Context, private val viewModel: FlashSco
 
             holder.itemView.setOnClickListener {
                 val action =
-                    TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(null, team.teamKey)
+                    TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
+                        team.teamKey, league, team.teamName, team.teamBadge
+                    )
                 it.findNavController().navigate(action)
             }
         }

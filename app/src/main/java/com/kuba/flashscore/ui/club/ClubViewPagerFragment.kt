@@ -2,11 +2,16 @@ package com.kuba.flashscore.ui.club
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
+import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
 import timber.log.Timber
 
@@ -24,9 +29,23 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         val view = binding.root
 
         val teamId = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).teamId
+        val teamName = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).teamName
+        val teamBadge = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).teamBadge
+        val league = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).leagueItem
+
+        setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = teamName
+        }
+
         val clubFragmentList = arrayListOf<Fragment>(
-            PlayersFragment(teamId!!)
+            PlayersFragment(teamId)
         )
+
+        setInformationAboutCountryAndLeague(league, teamName, teamBadge)
+
 
         val clubViewPagerAdapter = ClubViewPagerAdapter(
             clubFragmentList,
@@ -47,6 +66,29 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         }.attach()
 
         return view
+    }
+
+    private fun setInformationAboutCountryAndLeague(
+        league: League,
+        teamName: String,
+        teamBadge: String
+    ) {
+        binding.apply {
+            textViewCountryName.text = league.countryName
+            Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
+            textViewClubName.text = teamName
+            Glide.with(requireContext()).load(teamBadge).into(imageViewClubLogo)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().popBackStack()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

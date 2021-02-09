@@ -52,7 +52,7 @@ class LeagueAdapter(private val context: Context, private val viewModel: FlashSc
             holder.itemView.setOnClickListener {
                 val action =
                     LeagueFragmentDirections.actionLeagueFragmentToTeamsViewPagerFragment(
-                        league.leagueId
+                        league
                     )
                 it.findNavController().navigate(action)
             }

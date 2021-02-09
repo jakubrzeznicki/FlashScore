@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.data.local.entities.Country
+import com.kuba.flashscore.data.local.entities.League
 import com.kuba.flashscore.data.local.entities.Standing
 import com.kuba.flashscore.data.local.entities.Team
 
@@ -29,7 +30,7 @@ import timber.log.Timber
 
 class StandingsAdapter(
     private val context: Context,
-    private val viewModel: FlashScoreViewModel,
+    private val league: League,
     private val whichStandings: String
 ) :
     RecyclerView.Adapter<StandingsAdapter.StandingsViewHolder>() {
@@ -62,59 +63,42 @@ class StandingsAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: StandingsViewHolder, position: Int) {
-
-        when (whichStandings) {
-            "overall" -> setupOverall(holder, position)
-            "away" -> setupAway(holder, position)
-            else -> setupHome(holder, position)
-        }
-
-        val standing = standings[position]
         holder.binding.apply {
+            val standing = standings[position]
+            Glide.with(holder.itemView).load(standing.teamBadge).into(imageViewTeamLogo)
+            textViewTeamName.text = standing.teamName
+            textViewTeamBalance.text = when (whichStandings) {
+                "overall" -> "${standing.overallLeagueGF} - ${standing.overallLeagueGA}"
+                "home" -> "${standing.homeLeagueGF} - ${standing.homeLeagueGA}"
+                else -> "${standing.awayLeagueGF} - ${standing.awayLeagueGA}"
+            }
+            textViewTeamPlayedMatch.text =
+                when (whichStandings) {
+                    "overall" -> standing.overallLeaguePayed
+                    "home" -> standing.homeLeaguePayed
+                    else -> standing.awayLeaguePayed
+                }
+            textViewTeamPoints.text = when (whichStandings) {
+                "overall" -> standing.overallLeaguePTS
+                "home" -> standing.homeLeaguePTS
+                else -> standing.awayLeaguePTS
+            }
+            textViewTeamPosition.text = when (whichStandings) {
+                "overall" -> standing.overallLeaguePosition
+                "home" -> standing.homeLeaguePosition
+                else -> standing.awayLeaguePosition
+            }
+
             holder.itemView.setOnClickListener {
                 val action =
                     TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
-                        null,
-                        standing.teamId
+                        standing.teamId,
+                        league,
+                        standing.teamName,
+                        standing.teamBadge
                     )
                 it.findNavController().navigate(action)
             }
-        }
-    }
-
-    private fun setupOverall(holder: StandingsViewHolder, position: Int) {
-        holder.binding.apply {
-            val standing = standings[position]
-            Glide.with(holder.itemView).load(standing.teamBadge).into(imageViewTeamLogo)
-            textViewTeamName.text = standing.teamName
-            textViewTeamBalance.text = "${standing.overallLeagueGF} - ${standing.overallLeagueGA}"
-            textViewTeamPlayedMatch.text = standing.overallLeaguePayed
-            textViewTeamPoints.text = standing.overallLeaguePTS
-            textViewTeamPosition.text = standing.overallLeaguePosition
-        }
-    }
-
-    private fun setupAway(holder: StandingsViewHolder, position: Int) {
-        holder.binding.apply {
-            val standing = standings[position]
-            Glide.with(holder.itemView).load(standing.teamBadge).into(imageViewTeamLogo)
-            textViewTeamName.text = standing.teamName
-            textViewTeamBalance.text = "${standing.awayLeagueGF} - ${standing.awayLeagueGA}"
-            textViewTeamPlayedMatch.text = standing.awayLeaguePayed
-            textViewTeamPoints.text = standing.awayLeaguePTS
-            textViewTeamPosition.text = standing.awayLeaguePosition
-        }
-    }
-
-    private fun setupHome(holder: StandingsViewHolder, position: Int) {
-        holder.binding.apply {
-            val standing = standings[position]
-            Glide.with(holder.itemView).load(standing.teamBadge).into(imageViewTeamLogo)
-            textViewTeamName.text = standing.teamName
-            textViewTeamBalance.text = "${standing.homeLeagueGF} - ${standing.homeLeagueGA}"
-            textViewTeamPlayedMatch.text = standing.homeLeaguePayed
-            textViewTeamPoints.text = standing.homeLeaguePTS
-            textViewTeamPosition.text = standing.homeLeaguePosition
         }
     }
 
