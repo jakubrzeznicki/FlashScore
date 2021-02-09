@@ -13,7 +13,7 @@ import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 
-class LeagueAdapter() :
+class LeagueAdapter :
     RecyclerView.Adapter<LeagueAdapter.LeagueViewHolder>() {
 
     inner class LeagueViewHolder(val binding: LeagueItemBinding) :

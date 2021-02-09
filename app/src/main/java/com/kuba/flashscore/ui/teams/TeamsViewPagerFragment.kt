@@ -11,8 +11,13 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
+import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsViewPagerBinding
 import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.other.Constants.MATCHES_TAB
+import com.kuba.flashscore.other.Constants.RESULT_TAB
+import com.kuba.flashscore.other.Constants.TABLE_TAB
+import com.kuba.flashscore.other.Constants.TEAMS_TAB
 import com.kuba.flashscore.ui.teams.standings.StandingsViewPagerFragment
 
 class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
@@ -39,37 +44,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
 
         setInformationAboutCountryAndLeague(league)
 
-        val teamFragmentList = arrayListOf<Fragment>(
-            TeamsFragment(league),
-            StandingsViewPagerFragment(league)
-        )
-
-        val teamViewPagerAdapter = TeamsViewPagerAdapter(
-            teamFragmentList,
-            requireActivity().supportFragmentManager,
-            lifecycle
-        )
-
-        binding.viewPagerTeams.adapter = teamViewPagerAdapter
-
-        TabLayoutMediator(
-            binding.tabLayoutTeams2, binding.viewPagerTeams
-        ) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "Drużyny"
-                }
-                1 -> {
-                    tab.text = "Tabela"
-                }
-                2 -> {
-                    tab.text = "Wyniki"
-                }
-                3 -> {
-                    tab.text = "Spotkania"
-                }
-            }
-        }.attach()
+        setPlayerTeamsViewPageAdapterAndTabLayout(league)
 
         return view
     }
@@ -84,7 +59,39 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
 
         }
     }
+    private fun setPlayerTeamsViewPageAdapterAndTabLayout(league: LeagueDto) {
+        val teamFragmentList = arrayListOf<Fragment>(
+            TeamsFragment(league),
+            StandingsViewPagerFragment(league)
+        )
 
+        val teamViewPagerAdapter = ViewPagerAdapter(
+            teamFragmentList,
+            requireActivity().supportFragmentManager,
+            lifecycle
+        )
+
+        binding.viewPagerTeams.adapter = teamViewPagerAdapter
+
+        TabLayoutMediator(
+            binding.tabLayoutTeams2, binding.viewPagerTeams
+        ) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.text = TEAMS_TAB
+                }
+                1 -> {
+                    tab.text = TABLE_TAB
+                }
+                2 -> {
+                    tab.text = RESULT_TAB
+                }
+                3 -> {
+                    tab.text = MATCHES_TAB
+                }
+            }
+        }.attach()
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

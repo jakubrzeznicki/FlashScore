@@ -12,7 +12,6 @@
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginStart="2dp"
-        android:text="1."
         android:textAlignment="center"
         android:textColor="@color/secondaryTextColor"
         android:textSize="13sp"
@@ -38,7 +37,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Manchester United"
         android:textColor="@color/secondaryTextColor"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +61,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:width="40dp"
-            android:text="19"
             android:gravity="center"
             android:textColor="@color/secondaryTextColor"
             android:textSize="13sp" />
@@ -74,7 +71,6 @@
             android:layout_height="wrap_content"
             android:width="40dp"
             android:gravity="center"
-            android:text="44-34"
             android:textColor="@color/secondaryTextColor"
             android:textSize="13sp" />
 
@@ -85,7 +81,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:width="40dp"
-            android:text="49"
             android:textColor="@color/secondaryTextColor"
             android:textSize="13sp" />
     </com.google.android.flexbox.FlexboxLayout>

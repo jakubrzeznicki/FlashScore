@@ -1,11 +1,12 @@
-package com.kuba.flashscore.ui.player
+package com.kuba.flashscore.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class PlayerViewPagerAdapter(
+
+class ViewPagerAdapter(
     fragments: ArrayList<Fragment>,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle

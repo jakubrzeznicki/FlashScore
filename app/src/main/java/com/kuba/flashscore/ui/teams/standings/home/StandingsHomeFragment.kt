@@ -14,6 +14,7 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
 import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.other.Constants.HOME
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -86,7 +87,7 @@ class StandingsHomeFragment(private val league: LeagueDto) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewHomeStandings.apply {
-            standingsAdapter = StandingsAdapter(requireContext(), league, "home")
+            standingsAdapter = StandingsAdapter(requireContext(), league, HOME)
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

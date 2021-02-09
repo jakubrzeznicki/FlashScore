@@ -11,8 +11,10 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
+import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
 import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.other.Constants.TEAM_TAB
 
 class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
 
@@ -39,19 +41,27 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
             title = teamName
         }
 
+        setInformationAboutCountryAndLeague(league, teamName, teamBadge)
+
+        setClubViewPageAdapterAndTabLayout(teamId, teamName, teamBadge)
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setClubViewPageAdapterAndTabLayout(teamId: String, teamName: String, teamBadge: String) {
         val clubFragmentList = arrayListOf<Fragment>(
             PlayersFragment(teamId, teamName, teamBadge)
         )
-
-        setInformationAboutCountryAndLeague(league, teamName, teamBadge)
-
-
-        val clubViewPagerAdapter = ClubViewPagerAdapter(
+        val clubViewPagerAdapter = ViewPagerAdapter(
             clubFragmentList,
             requireActivity().supportFragmentManager,
             lifecycle
         )
-
         binding.viewPagerClub.adapter = clubViewPagerAdapter
 
         TabLayoutMediator(
@@ -59,12 +69,10 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         ) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.text = "Sklad"
+                    tab.text = TEAM_TAB
                 }
             }
         }.attach()
-
-        return view
     }
 
     private fun setInformationAboutCountryAndLeague(

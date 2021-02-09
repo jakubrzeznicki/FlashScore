@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.PlayersAdapter
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
-import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -35,9 +34,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +43,6 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
         getTeam(teamId = teamId)
         subscribeToObservers()
         setupRecyclerView()
-
     }
 
 
@@ -87,7 +83,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            playerAdapter = PlayersAdapter(requireContext(), teamName, teamLogo)
+            playerAdapter = PlayersAdapter(teamName, teamLogo)
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

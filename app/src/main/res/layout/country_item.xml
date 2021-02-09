@@ -20,7 +20,6 @@
         android:id="@+id/textViewCountryName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="England"
         android:textColor="@color/secondaryTextColor"
         android:textSize="16sp"
         android:layout_marginStart="16dp"

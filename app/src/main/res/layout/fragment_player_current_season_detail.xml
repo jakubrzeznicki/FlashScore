@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Match Played"
+                android:text="@string/played_matches"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/imageVIewPlayerPlayedMatches" />
@@ -55,9 +55,8 @@
                 android:id="@+id/textViewPlayedMatches"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="37"
                 android:textAlignment="center"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewPlayedMatchesLabel" />
@@ -101,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Scored Goals"
+                android:text="@string/scored_goals"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/imageViewPlayerScoredGoals" />
@@ -110,9 +109,8 @@
                 android:id="@+id/textViewScoredGoals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="3"
                 android:textAlignment="center"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewScoredGoalLabel" />
@@ -155,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Yellow Cards"
+                android:text="@string/yellow_cards"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/imageVIewPlayerYellowCards" />
@@ -164,9 +162,8 @@
                 android:id="@+id/textViewYellowCards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="13"
                 android:textAlignment="center"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewYellowCardsLabel" />
@@ -210,7 +207,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Red Cards"
+                android:text="@string/red_cards"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/imageViewPlayerRedCards" />
@@ -219,9 +216,8 @@
                 android:id="@+id/textViewRedCards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="13"
                 android:textAlignment="center"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewRedCardsLabel" />

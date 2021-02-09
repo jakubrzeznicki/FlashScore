@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
+import com.kuba.flashscore.other.Constants.COUNTRIES
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class CountryFragment : Fragment(R.layout.fragment_country) {
@@ -42,7 +42,7 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
             setDisplayShowHomeEnabled(false)
-            title = "Countries"
+            title = COUNTRIES
         }
         return view
     }
@@ -51,7 +51,6 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
         super.onViewCreated(view, savedInstanceState)
 
         getCountries()
-
         subscribeToObservers()
 
     }

@@ -12,7 +12,7 @@ import com.kuba.flashscore.databinding.CountryItemBinding
 import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
 
-class CountryAdapter() :
+class CountryAdapter :
     RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
 
     inner class CountryViewHolder(val binding: CountryItemBinding) :

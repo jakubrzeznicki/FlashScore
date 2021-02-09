@@ -13,9 +13,13 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
+import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentPlayerViewPagerBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.PlayerDto
+import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
+import com.kuba.flashscore.other.Constants.PLAYER_AGE
+import com.kuba.flashscore.other.Constants.PLAYER_NUMBER
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 
@@ -43,14 +47,26 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
             title = player.playerName
         }
 
+        setInformationAboutPlayer(teamName, teamLogo, player)
+
+        setPlayerViewPageAdapterAndTabLayout(player)
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
+    private fun setPlayerViewPageAdapterAndTabLayout(player: PlayerDto) {
+
         val playerFragmentList = arrayListOf<Fragment>(
             PlayerCurrentSeasonDetailFragment(player)
         )
 
-        setInformationAboutPlayer(teamName, teamLogo, player)
-
-
-        val playerViewPagerAdapter = PlayerViewPagerAdapter(
+        val playerViewPagerAdapter = ViewPagerAdapter(
             playerFragmentList,
             requireActivity().supportFragmentManager,
             lifecycle
@@ -63,12 +79,10 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
         ) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.text = "Obecny sezon"
+                    tab.text = CURRENT_SEASON_TAB
                 }
             }
         }.attach()
-
-        return view
     }
 
     @SuppressLint("SetTextI18n")
@@ -86,8 +100,8 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
             textViewPlayerName.text = player.playerName
             textViewPlayerClubAndPosition.text =
                 "${teamName.toUpperCase(Locale.ROOT)}  (${player.playerType.take(player.playerType.length - 1)})"
-            textViewPlayerAge.text = "Age: ${player.playerAge}"
-            textViewPlayerNumber.text = "Number: ${player.playerNumber}"
+            textViewPlayerAge.text = "$PLAYER_AGE ${player.playerAge}"
+            textViewPlayerNumber.text = "$PLAYER_NUMBER ${player.playerNumber}"
             Glide.with(requireContext()).load(teamLogo).into(imageViewClubLogo)
 
         }

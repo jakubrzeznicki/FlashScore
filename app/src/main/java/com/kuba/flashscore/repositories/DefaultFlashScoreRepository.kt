@@ -33,7 +33,6 @@ class DefaultFlashScoreRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
     }
@@ -51,7 +50,6 @@ class DefaultFlashScoreRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
     }
@@ -69,7 +67,6 @@ class DefaultFlashScoreRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
     }
@@ -87,7 +84,6 @@ class DefaultFlashScoreRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
     }
@@ -106,7 +102,6 @@ class DefaultFlashScoreRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
     }
@@ -122,7 +117,6 @@ class DefaultFlashScoreRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Timber.e("EXCEPTION: $e")
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
     }

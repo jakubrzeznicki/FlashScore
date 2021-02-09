@@ -2,46 +2,56 @@ package com.kuba.flashscore.network
 
 import com.kuba.flashscore.BuildConfig
 import com.kuba.flashscore.network.responses.*
+import com.kuba.flashscore.other.Constants.API_KEY
+import com.kuba.flashscore.other.Constants.COUNTRY_ID
+import com.kuba.flashscore.other.Constants.LEAGUE_ID
+import com.kuba.flashscore.other.Constants.PATH_GET_COUNTRIES
+import com.kuba.flashscore.other.Constants.PATH_GET_LEAGUES
+import com.kuba.flashscore.other.Constants.PATH_GET_PLAYERS
+import com.kuba.flashscore.other.Constants.PATH_GET_STANDINGS
+import com.kuba.flashscore.other.Constants.PATH_GET_TEAMS
+import com.kuba.flashscore.other.Constants.PLAYER_NAME
+import com.kuba.flashscore.other.Constants.TEAM_ID
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiFootballService {
 
-    @GET("/?action=get_countries")
+    @GET(PATH_GET_COUNTRIES)
     suspend fun getCountries(
-        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<CountryResponse>
 
 
-    @GET("/?action=get_leagues")
+    @GET(PATH_GET_LEAGUES)
     suspend fun getLeagues(
-        @Query("country_id") country_id: String,
-        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+        @Query(COUNTRY_ID) country_id: String,
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<LeagueResponse>
 
-    @GET("/?action=get_teams")
+    @GET(PATH_GET_TEAMS)
     suspend fun getTeams(
-        @Query("league_id") league_id: String,
-        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+        @Query(LEAGUE_ID) league_id: String,
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<TeamResponse>
 
-    @GET("/?action=get_teams")
+    @GET(PATH_GET_TEAMS)
     suspend fun getTeam(
-        @Query("team_id") team_id: String,
-        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+        @Query(TEAM_ID) team_id: String,
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<TeamResponse>
 
-    @GET("/?action=get_players")
+    @GET(PATH_GET_PLAYERS)
     suspend fun getPlayer(
-        @Query("player_name") player_name: String,
-        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+        @Query(PLAYER_NAME) player_name: String,
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<PlayerResponse>
 
-    @GET("/?action=get_standings")
+    @GET(PATH_GET_STANDINGS)
     suspend fun getStandings(
-        @Query("league_id") league_id: String,
-        @Query("APIkey") APIkey: String = BuildConfig.API_KEY
+        @Query(LEAGUE_ID) league_id: String,
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<StandingResponse>
 
 

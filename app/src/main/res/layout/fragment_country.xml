@@ -20,7 +20,7 @@
         android:drawablePadding="16dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        android:text="Search by Country.."
+        android:text="@string/search_by_country"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

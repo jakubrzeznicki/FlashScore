@@ -16,7 +16,6 @@ import com.kuba.flashscore.ui.club.ClubViewPagerFragmentDirections
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
 
 class PlayersAdapter(
-    private val context: Context,
     private val teamName: String,
     private val teamLogo: String
 ) :

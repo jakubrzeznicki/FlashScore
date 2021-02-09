@@ -15,6 +15,14 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.StandingsItemBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.StandingDto
+import com.kuba.flashscore.other.Constants.HOME_LEAGUE
+import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS
+import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_LEAGUE_1_PROMOTION
+import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_LIGUE_1
+import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_PREMIER_LEAGUE
+import com.kuba.flashscore.other.Constants.LEAGUE_RELEGATION
+import com.kuba.flashscore.other.Constants.LEAGUE_RELEGATION_LIGUE_2
+import com.kuba.flashscore.other.Constants.OVERALL_LEAGUE
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
 class StandingsAdapter(
@@ -57,28 +65,28 @@ class StandingsAdapter(
             Glide.with(holder.itemView).load(standing.teamBadge).into(imageViewTeamLogo)
             textViewTeamName.text = standing.teamName
             textViewTeamBalance.text = when (whichStandings) {
-                "overall" -> "${standing.overallLeagueGF} - ${standing.overallLeagueGA}"
-                "home" -> "${standing.homeLeagueGF} - ${standing.homeLeagueGA}"
+                OVERALL_LEAGUE -> "${standing.overallLeagueGF} - ${standing.overallLeagueGA}"
+                HOME_LEAGUE -> "${standing.homeLeagueGF} - ${standing.homeLeagueGA}"
                 else -> "${standing.awayLeagueGF} - ${standing.awayLeagueGA}"
             }
             textViewTeamPlayedMatch.text =
                 when (whichStandings) {
-                    "overall" -> standing.overallLeaguePayed
-                    "home" -> standing.homeLeaguePayed
+                    OVERALL_LEAGUE -> standing.overallLeaguePayed
+                    HOME_LEAGUE -> standing.homeLeaguePayed
                     else -> standing.awayLeaguePayed
                 }
             textViewTeamPoints.text = when (whichStandings) {
-                "overall" -> standing.overallLeaguePTS
-                "home" -> standing.homeLeaguePTS
+                OVERALL_LEAGUE -> standing.overallLeaguePTS
+                HOME_LEAGUE -> standing.homeLeaguePTS
                 else -> standing.awayLeaguePTS
             }
             textViewTeamPosition.text = when (whichStandings) {
-                "overall" -> standing.overallLeaguePosition
-                "home" -> standing.homeLeaguePosition
+                OVERALL_LEAGUE -> standing.overallLeaguePosition
+                HOME_LEAGUE -> standing.homeLeaguePosition
                 else -> standing.awayLeaguePosition
             }
 
-            if (whichStandings == "overall" && standing.overallPromotion.isNotEmpty()) {
+            if (whichStandings == OVERALL_LEAGUE && standing.overallPromotion.isNotEmpty()) {
                 setColorDependingOnThePosition(textViewTeamPosition, standing, position)
             }
 
@@ -96,16 +104,19 @@ class StandingsAdapter(
     }
 
 
-    private fun setColorDependingOnThePosition(positionTextView: TextView, standing: StandingDto, position: Int) {
-        if ((standing.overallPromotion == "Promotion - Premier League" || standing.overallPromotion == "Promotion - Ligue 1") && (position == 0 || position == 1)) {
+    private fun setColorDependingOnThePosition(
+        positionTextView: TextView,
+        standing: StandingDto,
+        position: Int
+    ) {
+        if ((standing.overallPromotion == LEAGUE_PROMOTION_PREMIER_LEAGUE || standing.overallPromotion == LEAGUE_PROMOTION_LIGUE_1) && (position == 0 || position == 1)) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
                     R.color.directPromotionColor
                 )
             )
-        }
-        else if (standing.overallPromotion == "Promotion - Championship (Play Offs)") {
+        } else if (standing.overallPromotion == LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
@@ -113,24 +124,21 @@ class StandingsAdapter(
                 )
             )
 
-        }
-        else if (standing.overallPromotion == "Promotion - Ligue 1 (Promotion)") {
+        } else if (standing.overallPromotion == LEAGUE_PROMOTION_LEAGUE_1_PROMOTION) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
                     R.color.promotionColor
                 )
             )
-        }
-        else if (standing.overallPromotion == "Ligue 2 (Relegation)") {
+        } else if (standing.overallPromotion == LEAGUE_RELEGATION_LIGUE_2) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
                     R.color.playOffKeepingColor
                 )
             )
-        }
-        else if (standing.overallPromotion == "Relegation") {
+        } else if (standing.overallPromotion == LEAGUE_RELEGATION) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,

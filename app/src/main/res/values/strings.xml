@@ -2,4 +2,14 @@
     <string name="app_name">FlashScore</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_by_country">Search by Country..</string>
+    <string name="played_matches">Played Matches</string>
+    <string name="scored_goals">Scored Goals</string>
+    <string name="yellow_cards">Yellow Cards</string>
+    <string name="red_cards">Red Cards</string>
+    <string name="position_label">#</string>
+    <string name="team_name_label">TEAM</string>
+    <string name="matches">M</string>
+    <string name="balance">B</string>
+    <string name="points">P</string>
 </resources>

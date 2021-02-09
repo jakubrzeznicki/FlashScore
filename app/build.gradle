@@ -114,6 +114,8 @@ dependencies {
     //Flexbox
     implementation "com.google.android:flexbox:2.0.0"
 
+    implementation "com.michaelfotiadis:android-country-flags:1.0.3"
+
     // Retrofit
     def retrofit_version = '2.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

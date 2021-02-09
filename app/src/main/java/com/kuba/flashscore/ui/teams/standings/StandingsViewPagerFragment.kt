@@ -7,13 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
+import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsViewPagerBinding
 import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.other.Constants.AWAY_TAB
+import com.kuba.flashscore.other.Constants.GENERALLY_TAB
+import com.kuba.flashscore.other.Constants.HOME_TAB
 import com.kuba.flashscore.ui.teams.standings.away.StandingsAwayFragment
 import com.kuba.flashscore.ui.teams.standings.home.StandingsHomeFragment
 import com.kuba.flashscore.ui.teams.standings.overall.StandingsOverallFragment
 
-class StandingsViewPagerFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_standings_view_pager) {
+class StandingsViewPagerFragment(private val league: LeagueDto) :
+    Fragment(R.layout.fragment_standings_view_pager) {
 
     private var _binding: FragmentStandingsViewPagerBinding? = null
     private val binding get() = _binding!!
@@ -25,6 +30,17 @@ class StandingsViewPagerFragment(private val league: LeagueDto) : Fragment(R.lay
     ): View? {
         _binding = FragmentStandingsViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
+        setStandingsViewPageAdapterAndTabLayout()
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setStandingsViewPageAdapterAndTabLayout() {
 
         val standingsFragmentList = arrayListOf<Fragment>(
             StandingsOverallFragment(league),
@@ -32,7 +48,7 @@ class StandingsViewPagerFragment(private val league: LeagueDto) : Fragment(R.lay
             StandingsAwayFragment(league)
         )
 
-        val standingsViewPagerAdapter = StandingsViewPagerAdapter(
+        val standingsViewPagerAdapter = ViewPagerAdapter(
             standingsFragmentList,
             requireActivity().supportFragmentManager,
             lifecycle
@@ -45,24 +61,16 @@ class StandingsViewPagerFragment(private val league: LeagueDto) : Fragment(R.lay
         ) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.text = "Ogólna"
+                    tab.text = GENERALLY_TAB
                 }
                 1 -> {
-                    tab.text = "Dom"
+                    tab.text = HOME_TAB
                 }
                 2 -> {
-                    tab.text = "Wyjazd"
+                    tab.text = AWAY_TAB
                 }
             }
         }.attach()
-
-        return view
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 
 }

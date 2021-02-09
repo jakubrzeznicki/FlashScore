@@ -22,7 +22,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Manchester United"
         android:textColor="@color/secondaryTextColor"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
