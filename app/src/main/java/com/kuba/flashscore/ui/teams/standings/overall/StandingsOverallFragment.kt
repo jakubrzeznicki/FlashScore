@@ -86,7 +86,7 @@ class StandingsOverallFragment(private val league: LeagueDto) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewOverallStandings.apply {
-            standingsAdapter = StandingsAdapter(league, "overall")
+            standingsAdapter = StandingsAdapter(requireContext(), league, "overall")
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

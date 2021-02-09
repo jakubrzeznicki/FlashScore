@@ -9,13 +9,13 @@
 
     <TextView
         android:id="@+id/textViewTeamPosition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1."
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_marginStart="2dp"
+        android:text="1."
+        android:textAlignment="center"
         android:textColor="@color/secondaryTextColor"
         android:textSize="13sp"
-        android:background="@color/design_default_color_primary_variant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageViewTeamLogo"
         app:layout_constraintHorizontal_bias="0.5"
@@ -42,52 +42,51 @@
         android:textColor="@color/secondaryTextColor"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textViewTeamPlayedMatch"
+        app:layout_constraintEnd_toStartOf="@+id/flexBoxTableDetails"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/imageViewTeamLogo"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <TextView
-        android:id="@+id/textViewTeamPlayedMatch"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexBoxTableDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="19"
-        android:textColor="@color/secondaryTextColor"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintEnd_toStartOf="@+id/textViewTeamBalance"
-        app:layout_constraintStart_toEndOf="@+id/textViewTeamName"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewTeamBalance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="44-34"
-        android:textColor="@color/secondaryTextColor"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textViewTeamPoints"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textViewTeamPlayedMatch"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/textViewTeamPoints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="49"
-        android:textColor="@color/secondaryTextColor"
-        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textViewTeamBalance"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/textViewTeamName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:justifyContent="space_around"> <!-- or "space_between", "space_evenly" -->
+
+        <TextView
+            android:id="@+id/textViewTeamPlayedMatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="40dp"
+            android:text="19"
+            android:gravity="center"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/textViewTeamBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="40dp"
+            android:gravity="center"
+            android:text="44-34"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="13sp" />
+
+
+        <TextView
+            android:id="@+id/textViewTeamPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:width="40dp"
+            android:text="49"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="13sp" />
+    </com.google.android.flexbox.FlexboxLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

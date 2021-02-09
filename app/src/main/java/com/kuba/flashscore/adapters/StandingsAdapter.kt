@@ -4,17 +4,21 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.StandingsItemBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.StandingDto
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
 class StandingsAdapter(
+    private val context: Context,
     private val league: LeagueDto,
     private val whichStandings: String
 ) :
@@ -74,6 +78,10 @@ class StandingsAdapter(
                 else -> standing.awayLeaguePosition
             }
 
+            if (whichStandings == "overall" && standing.overallPromotion.isNotEmpty()) {
+                setColorDependingOnThePosition(textViewTeamPosition, standing, position)
+            }
+
             holder.itemView.setOnClickListener {
                 val action =
                     TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
@@ -85,6 +93,52 @@ class StandingsAdapter(
                 it.findNavController().navigate(action)
             }
         }
+    }
+
+
+    private fun setColorDependingOnThePosition(positionTextView: TextView, standing: StandingDto, position: Int) {
+        if ((standing.overallPromotion == "Promotion - Premier League" || standing.overallPromotion == "Promotion - Ligue 1") && (position == 0 || position == 1)) {
+            positionTextView.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.directPromotionColor
+                )
+            )
+        }
+        else if (standing.overallPromotion == "Promotion - Championship (Play Offs)") {
+            positionTextView.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.playOffsColor
+                )
+            )
+
+        }
+        else if (standing.overallPromotion == "Promotion - Ligue 1 (Promotion)") {
+            positionTextView.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.promotionColor
+                )
+            )
+        }
+        else if (standing.overallPromotion == "Ligue 2 (Relegation)") {
+            positionTextView.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.playOffKeepingColor
+                )
+            )
+        }
+        else if (standing.overallPromotion == "Relegation") {
+            positionTextView.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.relegationColor
+                )
+            )
+        }
+
     }
 
     override fun getItemCount(): Int = standings.size

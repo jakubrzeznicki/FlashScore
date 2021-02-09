@@ -59,7 +59,7 @@ class StandingsAwayFragment(private val league: LeagueDto) :
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
-                        val standings = result.data
+                        val standings = result.data?.sortedBy { standing -> standing.awayLeaguePosition.toInt() }
                         if (standings != null) {
                             standingsAdapter.standings = standings
                         }
@@ -86,7 +86,7 @@ class StandingsAwayFragment(private val league: LeagueDto) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewAwayStandings.apply {
-            standingsAdapter = StandingsAdapter(league, "away")
+            standingsAdapter = StandingsAdapter(requireContext(), league, "away")
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
