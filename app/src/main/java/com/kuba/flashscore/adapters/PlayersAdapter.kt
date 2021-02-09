@@ -4,14 +4,22 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuba.flashscore.databinding.PlayerItemBinding
+import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.PlayerDto
 import com.kuba.flashscore.ui.FlashScoreViewModel
+import com.kuba.flashscore.ui.club.ClubViewPagerFragmentDirections
+import com.kuba.flashscore.ui.country.CountryFragmentDirections
 
-class PlayersAdapter(private val context: Context) :
+class PlayersAdapter(
+    private val context: Context,
+    private val teamName: String,
+    private val teamLogo: String
+) :
     RecyclerView.Adapter<PlayersAdapter.PlayersViewHolder>() {
 
     inner class PlayersViewHolder(val binding: PlayerItemBinding) :
@@ -46,7 +54,13 @@ class PlayersAdapter(private val context: Context) :
             textViewPlayerNumber.text = player.playerNumber
 
             holder.itemView.setOnClickListener {
-                Toast.makeText(context, "Clicked ${player.playerName}", Toast.LENGTH_LONG).show()
+                val action =
+                    ClubViewPagerFragmentDirections.actionClubViewPagerFragmentToPlayerViewPagerFragment(
+                        teamName,
+                        player,
+                        teamLogo
+                    )
+                it.findNavController().navigate(action)
             }
         }
     }

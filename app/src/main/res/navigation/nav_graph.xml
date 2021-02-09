@@ -53,6 +53,9 @@
         <argument
             android:name="teamBadge"
             app:argType="string" />
+        <action
+            android:id="@+id/action_clubViewPagerFragment_to_playerViewPagerFragment"
+            app:destination="@id/playerViewPagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/teamsViewPagerFragment"
@@ -87,4 +90,22 @@
         android:name="com.kuba.flashscore.ui.teams.standings.home.StandingsHomeFragment"
         android:label="fragment_standings_home"
         tools:layout="@layout/fragment_standings_home" />
+    <fragment
+        android:id="@+id/playerViewPagerFragment"
+        android:name="com.kuba.flashscore.ui.player.PlayerViewPagerFragment"
+        android:label="fragment_player_view_pager"
+        tools:layout="@layout/fragment_player_view_pager" >
+        <action
+            android:id="@+id/action_playerViewPagerFragment_to_clubViewPagerFragment"
+            app:destination="@id/clubViewPagerFragment" />
+        <argument
+            android:name="teamName"
+            app:argType="string" />
+        <argument
+            android:name="playerItem"
+            app:argType="com.kuba.flashscore.network.models.PlayerDto" />
+        <argument
+            android:name="teamLogo"
+            app:argType="string" />
+    </fragment>
 </navigation>

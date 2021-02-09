@@ -40,7 +40,7 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         }
 
         val clubFragmentList = arrayListOf<Fragment>(
-            PlayersFragment(teamId)
+            PlayersFragment(teamId, teamName, teamBadge)
         )
 
         setInformationAboutCountryAndLeague(league, teamName, teamBadge)

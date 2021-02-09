@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/primaryColor"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    tools:context=".ui.player.PlayerCurrentSeasonDetailFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPlayerPlayedMatches"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="8dp"
+        android:foregroundGravity="center"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardViewPlayerYellowCard"
+        app:layout_constraintEnd_toStartOf="@+id/cardViewPlayerScoredGoal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageVIewPlayerPlayedMatches"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_played_matches"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewPlayedMatchesLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Match Played"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/imageVIewPlayerPlayedMatches" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewPlayedMatches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="37"
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewPlayedMatchesLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPlayerScoredGoal"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardViewPlayerRedCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardViewPlayerPlayedMatches"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageViewPlayerScoredGoals"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_goal"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewScoredGoalLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Scored Goals"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewPlayerScoredGoals" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewScoredGoals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewScoredGoalLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPlayerYellowCard"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:foregroundGravity="center"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/cardViewPlayerRedCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPlayerPlayedMatches">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageVIewPlayerYellowCards"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_yellow_card"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewYellowCardsLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Yellow Cards"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/imageVIewPlayerYellowCards" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewYellowCards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="13"
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewYellowCardsLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPlayerRedCard"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardViewPlayerYellowCard"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPlayerScoredGoal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageViewPlayerRedCards"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_red_card"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewRedCardsLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Red Cards"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewPlayerRedCards" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewRedCards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="13"
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewRedCardsLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

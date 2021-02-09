@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/primaryColor"
+    tools:context=".ui.player.PlayerViewPagerFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutPlayerDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        android:padding="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewCountryFlag"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:src="@drawable/flag"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewCountryName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="ENGLAND"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewCountryFlag"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/viewDividerPlayerDetailsOne"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutPlayerDetail" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerPlayerDetailsOne">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewPlayerPhoto"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_person"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewPlayerName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="Robert Lewandowski"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewClubLogo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewPlayerPhoto"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewPlayerClubAndPosition"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="BAYERN MUNCHEN (napastnik)"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewClubLogo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewPlayerPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPlayerName" />
+
+        <TextView
+            android:id="@+id/textViewPlayerAge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Wiek: 32"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewClubLogo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewPlayerPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPlayerClubAndPosition" />
+
+        <TextView
+            android:id="@+id/textViewPlayerNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Numer: 9"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewClubLogo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewPlayerPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPlayerAge" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewClubLogo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_person"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/viewDividerPlayerDetailsTwo"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutPlayer" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardViewPlayerDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerPlayerDetailsTwo">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutPlayerDetails"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            app:tabBackground="@drawable/tab_color_selector"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/primaryDarkColor"
+            app:tabIndicatorGravity="center"
+            app:tabMaxWidth="0dp"
+            app:tabMode="auto"
+            app:tabSelectedTextColor="@color/secondaryTextColor"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabTextColor="@color/primaryTextColor" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:id="@+id/viewDividerPlayerDetailsThree"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardViewPlayerDetails" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerPlayerDetails"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerPlayerDetailsThree" />
+</androidx.constraintlayout.widget.ConstraintLayout>
