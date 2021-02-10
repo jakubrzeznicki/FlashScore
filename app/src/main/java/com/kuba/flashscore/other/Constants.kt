@@ -10,7 +10,7 @@ object Constants {
 
     const val COUNTRIES = "Countries"
     const val TEAM_TAB = "team"
-    const val CURRENT_SEASON_TAB = "Current season"
+    const val CURRENT_SEASON_TAB = "current season"
     const val PLAYER_AGE = "Age:"
     const val PLAYER_NUMBER = "Number:"
     const val AWAY = "away"
@@ -23,6 +23,13 @@ object Constants {
     const val TABLE_TAB = "table"
     const val RESULT_TAB = "result"
     const val MATCHES_TAB = "matches"
+
+    const val EVENT_DERAILS_TAB = "Details"
+    const val EVENT_STATISTICS_TAB = "Statistics"
+    const val EVENT_TEAM_TAB = "Team"
+    const val EVENT_HEAD_2_HEAD_TAB = "H2H"
+    const val EVENT_TABLE_TAB = "Table"
+
 
     //StandingsAdapter
     const val OVERALL_LEAGUE = "overall"

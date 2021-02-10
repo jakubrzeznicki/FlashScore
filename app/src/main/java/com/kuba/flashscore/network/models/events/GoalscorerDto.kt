@@ -1,8 +1,11 @@
 package com.kuba.flashscore.network.models.events
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class GoalscorerDto(
     @SerializedName("away_assist")
     val awayAssist: String,
@@ -23,4 +26,4 @@ data class GoalscorerDto(
     val info: String,
     val score: String,
     val time: String
-)
+) : Parcelable

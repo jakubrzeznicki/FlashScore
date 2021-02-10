@@ -122,5 +122,20 @@
         <action
             android:id="@+id/action_eventsListFragment_to_teamsViewPagerFragment"
             app:destination="@id/teamsViewPagerFragment" />
+        <action
+            android:id="@+id/action_eventsListFragment_to_eventDetailsViewPagerFragment"
+            app:destination="@id/eventDetailsViewPagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/eventDetailsViewPagerFragment"
+        android:name="com.kuba.flashscore.ui.events.details.EventDetailsViewPagerFragment"
+        android:label="fragment_event_details_view_pager"
+        tools:layout="@layout/fragment_event_details_view_pager" >
+        <action
+            android:id="@+id/action_eventDetailsViewPagerFragment_to_eventsListFragment"
+            app:destination="@id/eventsListFragment" />
+        <argument
+            android:name="eventItem"
+            app:argType="com.kuba.flashscore.network.models.events.EventDto" />
     </fragment>
 </navigation>

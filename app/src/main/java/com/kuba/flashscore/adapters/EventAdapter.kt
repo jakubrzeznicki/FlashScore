@@ -18,6 +18,7 @@ import com.kuba.flashscore.databinding.LeagueItemBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.events.EventDto
 import com.kuba.flashscore.ui.FlashScoreViewModel
+import com.kuba.flashscore.ui.events.EventsListFragmentDirections
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 
 class EventAdapter :
@@ -97,13 +98,13 @@ class EventAdapter :
 
             }
 
-//            holder.itemView.setOnClickListener {
-//                val action =
-//                    LeagueFragmentDirections.actionLeagueFragmentToTeamsViewPagerFragment(
-//                        league
-//                    )
-//                it.findNavController().navigate(action)
-//            }
+            holder.itemView.setOnClickListener {
+                val action =
+                    EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
+                        event
+                    )
+                it.findNavController().navigate(action)
+            }
         }
     }
 

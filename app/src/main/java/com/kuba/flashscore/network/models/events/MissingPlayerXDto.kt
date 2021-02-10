@@ -1,8 +1,11 @@
 package com.kuba.flashscore.network.models.events
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class MissingPlayerXDto(
     @SerializedName("lineup_number")
     val lineupNumber: String,
@@ -12,4 +15,4 @@ data class MissingPlayerXDto(
     val lineupPosition: String,
     @SerializedName("player_key")
     val playerKey: String
-)
+): Parcelable

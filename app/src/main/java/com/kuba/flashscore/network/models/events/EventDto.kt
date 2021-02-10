@@ -1,8 +1,11 @@
 package com.kuba.flashscore.network.models.events
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class EventDto(
     val cardDtos: List<CardDto>,
     @SerializedName("country_id")
@@ -73,4 +76,4 @@ data class EventDto(
     val teamAwayBadge: String,
     @SerializedName("team_home_badge")
     val teamHomeBadge: String
-)
+) : Parcelable
