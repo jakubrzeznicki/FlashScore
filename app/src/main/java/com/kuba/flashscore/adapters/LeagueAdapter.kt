@@ -50,7 +50,7 @@ class LeagueAdapter :
 
             holder.itemView.setOnClickListener {
                 val action =
-                    LeagueFragmentDirections.actionLeagueFragmentToTeamsViewPagerFragment(
+                    LeagueFragmentDirections.actionLeagueFragmentToEventsListFragment(
                         league
                     )
                 it.findNavController().navigate(action)

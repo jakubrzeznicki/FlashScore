@@ -5,11 +5,14 @@ import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.API_KEY
 import com.kuba.flashscore.other.Constants.COUNTRY_ID
 import com.kuba.flashscore.other.Constants.LEAGUE_ID
+import com.kuba.flashscore.other.Constants.PATH_FROM
 import com.kuba.flashscore.other.Constants.PATH_GET_COUNTRIES
+import com.kuba.flashscore.other.Constants.PATH_GET_EVENTS
 import com.kuba.flashscore.other.Constants.PATH_GET_LEAGUES
 import com.kuba.flashscore.other.Constants.PATH_GET_PLAYERS
 import com.kuba.flashscore.other.Constants.PATH_GET_STANDINGS
 import com.kuba.flashscore.other.Constants.PATH_GET_TEAMS
+import com.kuba.flashscore.other.Constants.PATH_TO
 import com.kuba.flashscore.other.Constants.PLAYER_NAME
 import com.kuba.flashscore.other.Constants.TEAM_ID
 import retrofit2.Response
@@ -53,6 +56,14 @@ interface ApiFootballService {
         @Query(LEAGUE_ID) league_id: String,
         @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
     ): Response<StandingResponse>
+
+    @GET(PATH_GET_EVENTS)
+    suspend fun getEvents(
+        @Query(PATH_FROM) from: String,
+        @Query(PATH_TO) to: String,
+        @Query(LEAGUE_ID) league_id: String,
+        @Query(API_KEY) APIkey: String = BuildConfig.API_KEY
+    ): Response<EventResponse>
 
 
 }

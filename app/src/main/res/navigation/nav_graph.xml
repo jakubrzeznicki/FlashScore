@@ -26,8 +26,8 @@
             android:id="@+id/action_leagueFragment_to_countryFragment"
             app:destination="@id/countryFragment" />
         <action
-            android:id="@+id/action_leagueFragment_to_teamsViewPagerFragment"
-            app:destination="@id/teamsViewPagerFragment" />
+            android:id="@+id/action_leagueFragment_to_eventsListFragment"
+            app:destination="@id/eventsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/teamsFragment"
@@ -61,15 +61,15 @@
         android:id="@+id/teamsViewPagerFragment"
         android:name="com.kuba.flashscore.ui.teams.TeamsViewPagerFragment"
         android:label="TeamsViewPagerFragment" >
-        <action
-            android:id="@+id/action_teamsViewPagerFragment_to_leagueFragment"
-            app:destination="@id/leagueFragment" />
         <argument
             android:name="leagueItem"
             app:argType="com.kuba.flashscore.network.models.LeagueDto" />
         <action
             android:id="@+id/action_teamsViewPagerFragment_to_clubViewPagerFragment"
             app:destination="@id/clubViewPagerFragment" />
+        <action
+            android:id="@+id/action_teamsViewPagerFragment_to_eventsListFragment"
+            app:destination="@id/eventsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/standingsViewPagerFragment"
@@ -107,5 +107,20 @@
         <argument
             android:name="teamLogo"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/eventsListFragment"
+        android:name="com.kuba.flashscore.ui.events.EventsListFragment"
+        android:label="fragment_events_list"
+        tools:layout="@layout/fragment_events_list" >
+        <action
+            android:id="@+id/action_eventsListFragment_to_leagueFragment"
+            app:destination="@id/leagueFragment" />
+        <argument
+            android:name="leagueItem"
+            app:argType="com.kuba.flashscore.network.models.LeagueDto" />
+        <action
+            android:id="@+id/action_eventsListFragment_to_teamsViewPagerFragment"
+            app:destination="@id/teamsViewPagerFragment" />
     </fragment>
 </navigation>

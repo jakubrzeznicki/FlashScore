@@ -5,9 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kuba.flashscore.network.models.LeagueDto
-import com.kuba.flashscore.network.models.StandingDto
-import com.kuba.flashscore.network.models.TeamDto
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
@@ -35,6 +32,9 @@ class FlashScoreViewModel @ViewModelInject constructor(
 
     private val _players = MutableLiveData<Event<Resource<PlayerResponse>>>()
     val players: LiveData<Event<Resource<PlayerResponse>>> = _players
+
+    private val _events = MutableLiveData<Event<Resource<EventResponse>>>()
+    val events: LiveData<Event<Resource<EventResponse>>> = _events
 
     fun getCountries() {
         _countries.value = Event(Resource.loading(null))
@@ -82,6 +82,14 @@ class FlashScoreViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val response = repository.getPlayerBySpecificName(name)
             _players.value = Event(response)
+        }
+    }
+
+    fun getEventsFromSpecificLeague(leagueId: String, from: String, to: String) {
+        _events.value = Event(Resource.loading(null))
+        viewModelScope.launch {
+            val response = repository.getEventsFromSpecificLeagues(leagueId, from, to)
+            _events.value = Event(response)
         }
     }
 

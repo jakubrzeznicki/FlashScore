@@ -29,4 +29,9 @@
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/secondaryColor</item>
     </style>
+
+    <style name="DialogTheme" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="colorAccent">@color/error</item>
+    </style>
+
 </resources>

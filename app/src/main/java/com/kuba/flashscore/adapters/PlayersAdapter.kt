@@ -30,7 +30,7 @@ class PlayersAdapter(
         }
 
         override fun areContentsTheSame(oldItem: PlayerDto, newItem: PlayerDto): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
+            return oldItem == newItem
         }
     }
 
@@ -51,7 +51,6 @@ class PlayersAdapter(
             val player = players[position]
             textViewPlayerName.text = player.playerName
             textViewPlayerNumber.text = player.playerNumber
-
             holder.itemView.setOnClickListener {
                 val action =
                     ClubViewPagerFragmentDirections.actionClubViewPagerFragmentToPlayerViewPagerFragment(

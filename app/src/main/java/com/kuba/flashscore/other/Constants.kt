@@ -46,4 +46,14 @@ object Constants {
     const val PATH_GET_TEAMS = "/?action=get_teams"
     const val PATH_GET_STANDINGS = "/?action=get_standings"
     const val PATH_GET_PLAYERS = "/?action=get_players"
+    const val PATH_GET_EVENTS = "/?action=get_events"
+    const val PATH_FROM = "from"
+    const val PATH_TO = "to"
+
+
+    const val DATE_FORMAT_DAY_MONTH_YEAR = "dd.MM.yyyy"
+    const val DATE_FORMAT_YEAR_MONTH_DAY = "yyyy.MM.dd"
+    const val DATE_FORMAT_DAY_OF_WEEK= "EEEE"
+
+
 }

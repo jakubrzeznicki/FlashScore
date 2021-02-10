@@ -1,12 +1,10 @@
 package com.kuba.flashscore.repositories
 
-import androidx.lifecycle.LiveData
 import com.kuba.flashscore.network.ApiFootballService
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Resource
-import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -18,7 +16,6 @@ class DefaultFlashScoreRepository @Inject constructor(
     override suspend fun getCountry(id: String): Resource<CountryResponse> {
         TODO("Not yet implemented")
     }
-
 
     override suspend fun getCountries(): Resource<CountryResponse> {
         return try {
@@ -121,5 +118,23 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
+    override suspend fun getEventsFromSpecificLeagues(
+        leagueId: String,
+        from: String,
+        to: String
+    ): Resource<EventResponse> {
+        return try {
+            val response = apiFootballService.getEvents(from, to,leagueId)
+            if (response.isSuccessful) {
+                response.body().let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(ERROR_MESSAGE, null)
+            } else {
+                Resource.error(ERROR_MESSAGE, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
+        }
+    }
 
 }
