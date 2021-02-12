@@ -6,16 +6,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventDetailAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
 import com.kuba.flashscore.local.models.INCIDENTTYPE
 import com.kuba.flashscore.local.models.Incident
+import com.kuba.flashscore.local.models.IncidentHeader
+import com.kuba.flashscore.local.models.IncidentItem
 import com.kuba.flashscore.network.models.events.EventDto
-import com.kuba.flashscore.ui.FlashScoreViewModel
-import timber.log.Timber
+import com.kuba.flashscore.other.Constants.CARD_YELLOW
+import com.kuba.flashscore.other.Constants.INCIDENT_HEADER_2_HALF
+import com.kuba.flashscore.other.Constants.INCIDENT_HEADER_OVERTIME
+import com.kuba.flashscore.other.Constants.MATCH_STATUS_FINISHED
+import com.kuba.flashscore.other.Constants.RESULT_NULL_TO_NULL
+import com.kuba.flashscore.other.Constants.SUBSTITUTION_DIVIDER
 
 
 class EventDetailsFragment(private val event: EventDto) :
@@ -34,7 +39,6 @@ class EventDetailsFragment(private val event: EventDto) :
         val view = binding.root
 
         setInformationAboutRefereeAndStadium()
-        sortAllIncidentList()
 
         return view
     }
@@ -42,7 +46,7 @@ class EventDetailsFragment(private val event: EventDto) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (event.matchStatus == "Finished") {
+        if (event.matchStatus == MATCH_STATUS_FINISHED) {
             binding.constraintLayoutEventDetailsInformationAboutMatch.visibility = View.VISIBLE
             setInformationAboutFirstHalf()
             setupRecyclerView()
@@ -75,58 +79,90 @@ class EventDetailsFragment(private val event: EventDto) :
     private fun setupRecyclerView() {
         binding.recyclerViewEventDetailFirstHour.apply {
             eventDetailAdapter = EventDetailAdapter(requireContext())
-            eventDetailAdapter.incidents = sortAllIncidentList()
+            eventDetailAdapter.incidents = addHeadersToIncidentItemList()
             adapter = eventDetailAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
-    private fun sortAllIncidentList(): List<Incident> {
+
+    private fun addHeadersToIncidentItemList(): List<Incident> {
+        val incidentItemList = sortAllIncidentItemListByTimeListByTime()
+        val secondHalfHeader =
+            incidentItemList.indexOfFirst { it.time.length == 2 && it.time.toInt() >= 46 }
+        val overtimeHeader =
+            incidentItemList.indexOfFirst { it.time.length == 2 && it.time.toInt() >= 91 }
+
         val incidentList = mutableListOf<Incident>()
+        for (index in incidentItemList.indices) {
+            if (index == secondHalfHeader) {
+                incidentList.add(
+                    IncidentHeader(
+                        INCIDENT_HEADER_2_HALF,
+                        incidentItemList[index].score ?: RESULT_NULL_TO_NULL
+                    )
+                )
+            }
+            if (index == overtimeHeader) {
+                incidentList.add(
+                    IncidentHeader(
+                        INCIDENT_HEADER_OVERTIME,
+                        incidentItemList[index].score ?: RESULT_NULL_TO_NULL
+                    )
+                )
+            }
+            incidentList.add(incidentItemList[index])
+        }
+        return incidentList
+    }
+
+    private fun sortAllIncidentItemListByTimeListByTime(): List<IncidentItem> {
+        val incidentList = mutableListOf<IncidentItem>()
         incidentList.apply {
             addAll(getCardsFromEventDtoToIncidentList())
             addAll(getGoalscorersFromEventDtoToIncidentList())
-            addAll(getSubstitutionsFromEventDtoToIncidentList())
+            addAll(getSubstitutionsFromEventDtoToIncidentItemList())
             sortBy { it.time }
         }
         return incidentList
     }
 
-    private fun getGoalscorersFromEventDtoToIncidentList(): List<Incident> {
-        val resultList = mutableListOf<Incident>()
-        resultList.addAll(event.goalscorer.map { goal ->
-            Incident(
+    private fun getGoalscorersFromEventDtoToIncidentList(): List<IncidentItem> {
+        val goalscorersList = mutableListOf<IncidentItem>()
+        goalscorersList.addAll(event.goalscorer.map { goal ->
+            IncidentItem(
                 if (goal.homeScorerId.isNotEmpty()) goal.homeScorer else goal.awayScorer,
                 if (goal.homeScorerId.isNotEmpty()) goal.homeAssist else goal.awayAssist,
                 goal.time,
                 INCIDENTTYPE.GOAL,
-                goal.homeScorerId.isNotEmpty()
+                goal.homeScorerId.isNotEmpty(),
+                goal.score
             )
         })
-        return resultList
+        return goalscorersList
     }
 
 
-    private fun getCardsFromEventDtoToIncidentList(): List<Incident> {
-        val resultList = mutableListOf<Incident>()
-        resultList.addAll(event.cards.map { card ->
-            Incident(
+    private fun getCardsFromEventDtoToIncidentList(): List<IncidentItem> {
+        val cardsList = mutableListOf<IncidentItem>()
+        cardsList.addAll(event.cards.map { card ->
+            IncidentItem(
                 if (card.homeFault.isNotEmpty()) card.homeFault else card.awayFault,
                 "",
                 card.time,
-                if (card.card == "yellow card") INCIDENTTYPE.YELLOW_CARD else INCIDENTTYPE.RED_CARD,
+                if (card.card == CARD_YELLOW) INCIDENTTYPE.YELLOW_CARD else INCIDENTTYPE.RED_CARD,
                 card.homeFault.isNotEmpty()
             )
         })
-        return resultList
+        return cardsList
     }
 
-    private fun getSubstitutionsFromEventDtoToIncidentList(): List<Incident> {
-        val resultList = mutableListOf<Incident>()
-        resultList.apply {
+    private fun getSubstitutionsFromEventDtoToIncidentItemList(): List<IncidentItem> {
+        val substitutionsList = mutableListOf<IncidentItem>()
+        substitutionsList.apply {
             addAll(event.substitutions.home.map { sub ->
-                val subPlayer = sub.substitution.split("|")
-                Incident(
+                val subPlayer = sub.substitution.split(SUBSTITUTION_DIVIDER)
+                IncidentItem(
                     subPlayer[1].trim(),
                     subPlayer[0].trim(),
                     sub.time,
@@ -135,8 +171,8 @@ class EventDetailsFragment(private val event: EventDto) :
                 )
             })
             addAll(event.substitutions.away.map { sub ->
-                val subPlayer = sub.substitution.split("|")
-                Incident(
+                val subPlayer = sub.substitution.split(SUBSTITUTION_DIVIDER)
+                IncidentItem(
                     subPlayer[1].trim(),
                     subPlayer[0].trim(),
                     sub.time,
@@ -145,6 +181,6 @@ class EventDetailsFragment(private val event: EventDto) :
                 )
             })
         }
-        return resultList
+        return substitutionsList
     }
 }

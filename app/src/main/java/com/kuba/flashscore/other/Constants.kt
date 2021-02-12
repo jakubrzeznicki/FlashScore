@@ -25,7 +25,7 @@ object Constants {
     const val MATCHES_TAB = "matches"
 
     const val EVENT_DERAILS_TAB = "Details"
-    const val EVENT_STATISTICS_TAB = "Statistics"
+    const val EVENT_STATISTICS_TAB = "Statistic"
     const val EVENT_TEAM_TAB = "Team"
     const val EVENT_HEAD_2_HEAD_TAB = "H2H"
     const val EVENT_TABLE_TAB = "Table"
@@ -44,7 +44,7 @@ object Constants {
 
     //ApiFootballService
     const val API_KEY = "APIkey"
-    const val COUNTRY_ID ="country_id"
+    const val COUNTRY_ID = "country_id"
     const val LEAGUE_ID = "league_id"
     const val TEAM_ID = "team_id"
     const val PLAYER_NAME = "player_name"
@@ -60,7 +60,17 @@ object Constants {
 
     const val DATE_FORMAT_DAY_MONTH_YEAR = "dd.MM.yyyy"
     const val DATE_FORMAT_YEAR_MONTH_DAY = "yyyy.MM.dd"
-    const val DATE_FORMAT_DAY_OF_WEEK= "EEEE"
+    const val DATE_FORMAT_DAY_OF_WEEK = "EEEE"
+
+    //Event Details
+    const val ITEM_TYPE_NORMAL = 0
+    const val ITEM_TYPE_HEADER = 1
+    const val MATCH_STATUS_FINISHED = "Finished"
+    const val INCIDENT_HEADER_2_HALF = "2. HALF"
+    const val INCIDENT_HEADER_OVERTIME = "OVERTIME"
+    const val SUBSTITUTION_DIVIDER = "|"
+    const val CARD_YELLOW = "yellow card"
+    const val RESULT_NULL_TO_NULL = "0 - 0"
 
 
 }

@@ -141,6 +141,16 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <View
+                android:id="@+id/viewDividerEventDetailsTwo"
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/primaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayoutEventDetailMessageBeforeMatchAndInformationAboutMatch" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayoutInformationAboutMatch"
                 android:layout_width="match_parent"
@@ -150,7 +160,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayoutEventDetailMessageBeforeMatchAndInformationAboutMatch">
+                app:layout_constraintTop_toBottomOf="@+id/viewDividerEventDetailsTwo">
 
 
                 <TextView
@@ -170,7 +180,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
-                android:id="@+id/viewDividerEventDetailsTwo"
+                android:id="@+id/viewDividerEventDetailsThree"
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"
                 android:background="@color/primaryTextColor"
@@ -187,7 +197,7 @@
                 android:background="@color/primaryDarkColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewDividerEventDetailsTwo">
+                app:layout_constraintTop_toBottomOf="@+id/viewDividerEventDetailsThree">
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -232,15 +242,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:id="@+id/viewDividerEventDetailsThree"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:background="@color/primaryTextColor"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayoutReferee" />
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
