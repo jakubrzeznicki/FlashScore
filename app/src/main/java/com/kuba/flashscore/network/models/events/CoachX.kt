@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class SubstituteXDto(
+data class CoachX(
     @SerializedName("lineup_number")
     val lineupNumber: String,
     @SerializedName("lineup_player")
@@ -15,4 +15,4 @@ data class SubstituteXDto(
     val lineupPosition: String,
     @SerializedName("player_key")
     val playerKey: String
-): Parcelable
+) : Parcelable

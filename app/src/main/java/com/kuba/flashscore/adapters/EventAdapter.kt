@@ -20,6 +20,7 @@ import com.kuba.flashscore.network.models.events.EventDto
 import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
+import timber.log.Timber
 
 class EventAdapter :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {

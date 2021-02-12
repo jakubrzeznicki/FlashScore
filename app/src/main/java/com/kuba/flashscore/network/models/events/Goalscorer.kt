@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class GoalscorerDto(
+data class Goalscorer(
     @SerializedName("away_assist")
     val awayAssist: String,
     @SerializedName("away_assist_id")

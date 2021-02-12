@@ -7,21 +7,21 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class EventDto(
-    val cardDtos: List<CardDto>,
+    val cards: List<Card>,
     @SerializedName("country_id")
     val countryId: String,
     @SerializedName("country_logo")
     val countryLogo: String,
     @SerializedName("country_name")
     val countryName: String,
-    val goalscorerDto: List<GoalscorerDto>,
+    val goalscorer: List<Goalscorer>,
     @SerializedName("league_id")
     val leagueId: String,
     @SerializedName("league_logo")
     val leagueLogo: String,
     @SerializedName("league_name")
     val leagueName: String,
-    val lineupDto: LineupDto,
+    val lineup: Lineup,
     @SerializedName("match_awayteam_extra_score")
     val matchAwayteamExtraScore: String,
     @SerializedName("match_awayteam_ft_score")
@@ -70,8 +70,8 @@ data class EventDto(
     val matchStatus: String,
     @SerializedName("match_time")
     val matchTime: String,
-    val statisticDtos: List<StatisticDto>,
-    val substitutionsDto: SubstitutionsDto,
+    val statistics: List<Statistic>,
+    val substitutions: Substitutions,
     @SerializedName("team_away_badge")
     val teamAwayBadge: String,
     @SerializedName("team_home_badge")

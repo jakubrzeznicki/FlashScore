@@ -6,11 +6,13 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class AwayDto(
-    val coachDtos: List<CoachDto>,
+data class Home(
+    @SerializedName("coach")
+    val coaches: List<CoachX>,
     @SerializedName("missing_players")
-    val missingPlayerDtos: List<MissingPlayerDto>,
+    val missingPlayers: List<MissingPlayerX>,
     @SerializedName("starting_lineups")
-    val startingLineupDtos: List<StartingLineupDto>,
-    val substituteDtos: List<SubstituteDto>
+    val startingLineups: List<StartingLineupX>,
+    @SerializedName("substitute")
+    val substitutes: List<SubstituteX>
 ) : Parcelable

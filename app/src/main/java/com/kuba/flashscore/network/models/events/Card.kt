@@ -6,7 +6,12 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class HomeXDto(
-    val substitution: String,
+data class Card(
+    @SerializedName("away_fault")
+    val awayFault: String,
+    val card: String,
+    @SerializedName("home_fault")
+    val homeFault: String,
+    val info: String,
     val time: String
 ) : Parcelable

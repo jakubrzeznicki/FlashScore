@@ -1,11 +1,12 @@
 package com.kuba.flashscore.network.models.events
 
+
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-
 @Parcelize
-data class SubstitutionsDto(
-    val awayDto: List<AwayXDto>,
-    val home: List<HomeXDto>
+data class HomeX(
+    val substitution: String,
+    val time: String
 ) : Parcelable

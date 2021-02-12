@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class SubstituteDto(
+data class Coach(
     @SerializedName("lineup_number")
     val lineupNumber: String,
     @SerializedName("lineup_player")
