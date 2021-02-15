@@ -105,8 +105,8 @@ class EventDetailAdapter(private val context: Context) :
             holder.binding as EventDetailHeaderBinding
             holder.binding.apply {
                 val incident = incidents[position] as IncidentHeader
-                textViewInformationAboutFirstHalf.text = incident.name
-                textViewInformationAboutFirstHalfResult.text = incident.result
+                textViewInformationAboutHalf.text = incident.name
+                textViewInformationAboutHalfResult.text = incident.result
             }
         }
 
