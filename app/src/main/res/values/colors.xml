@@ -10,10 +10,8 @@
     <color name="relegationColor">#BD0000</color>
 
     <color name="primaryColor">#2d2d2d</color>
-    <color name="primaryLightColor">#62727b</color>
     <color name="primaryDarkColor">#232323</color>
     <color name="secondaryColor">#1b7700</color>
-    <color name="secondaryLightColor">#718792</color>
     <color name="secondaryDarkColor">#085f00</color>
     <color name="primaryTextColor">#a2a2a2</color>
     <color name="secondaryTextColor">#d8d8d8</color>

@@ -5,7 +5,6 @@ import com.kuba.flashscore.other.Resource
 
 interface FlashScoreRepository {
 
-    suspend fun getCountry(id: String): Resource<CountryResponse>
     suspend fun getCountries(): Resource<CountryResponse>
     suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<LeagueResponse>
     suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse>

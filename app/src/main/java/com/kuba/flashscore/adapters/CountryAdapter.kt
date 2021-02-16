@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.kuba.flashscore.databinding.CountryItemBinding
 import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
+import javax.inject.Inject
 
-class CountryAdapter :
+class CountryAdapter @Inject constructor(private val glide: RequestManager) :
     RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
 
     inner class CountryViewHolder(val binding: CountryItemBinding) :

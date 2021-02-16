@@ -12,11 +12,6 @@ class DefaultFlashScoreRepository @Inject constructor(
     private val apiFootballService: ApiFootballService
 ) : FlashScoreRepository {
 
-
-    override suspend fun getCountry(id: String): Resource<CountryResponse> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getCountries(): Resource<CountryResponse> {
         return try {
             val response = apiFootballService.getCountries()

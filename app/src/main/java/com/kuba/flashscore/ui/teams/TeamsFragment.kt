@@ -1,6 +1,5 @@
 package com.kuba.flashscore.ui.teams
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import com.kuba.flashscore.adapters.TeamsAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -28,7 +26,7 @@ class TeamsFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlashScoreViewModel by viewModels()
+    private val viewModel: TeamsViewModel by viewModels()
     private lateinit var teamsAdapter: TeamsAdapter
 
 

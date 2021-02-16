@@ -16,7 +16,7 @@ import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Constants.HOME
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
+import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -29,7 +29,7 @@ class StandingsHomeFragment(private val league: LeagueDto) :
     private var _binding: FragmentStandingsHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlashScoreViewModel by viewModels()
+    private val viewModel: StandingsViewModel by viewModels()
     private lateinit var standingsAdapter: StandingsAdapter
 
     override fun onCreateView(

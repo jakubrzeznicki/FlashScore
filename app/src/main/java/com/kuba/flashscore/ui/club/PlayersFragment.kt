@@ -14,7 +14,6 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.PlayersAdapter
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -26,7 +25,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
     private var _binding: FragmentPlayersBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlashScoreViewModel by viewModels()
+    private val viewModel: ClubViewModel by viewModels()
     private lateinit var playerAdapter: PlayersAdapter
 
     override fun onCreateView(
@@ -52,7 +51,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
     }
 
     private fun subscribeToObservers() {
-        viewModel.team.observe(viewLifecycleOwner, Observer {
+        viewModel.club.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
@@ -75,7 +74,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getTeamByTeamId(teamId)
+            viewModel.getClubById(teamId)
             setupRecyclerView()
         }
 

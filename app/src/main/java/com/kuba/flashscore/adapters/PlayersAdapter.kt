@@ -1,19 +1,14 @@
 package com.kuba.flashscore.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuba.flashscore.databinding.PlayerItemBinding
-import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.PlayerDto
-import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.kuba.flashscore.ui.club.ClubViewPagerFragmentDirections
-import com.kuba.flashscore.ui.country.CountryFragmentDirections
 
 class PlayersAdapter(
     private val teamName: String,

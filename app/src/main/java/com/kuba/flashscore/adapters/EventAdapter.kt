@@ -1,12 +1,9 @@
 package com.kuba.flashscore.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -17,10 +14,7 @@ import com.kuba.flashscore.databinding.EventItemBinding
 import com.kuba.flashscore.databinding.LeagueItemBinding
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.events.EventDto
-import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
-import com.kuba.flashscore.ui.league.LeagueFragmentDirections
-import timber.log.Timber
 
 class EventAdapter :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {

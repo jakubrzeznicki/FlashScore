@@ -16,20 +16,22 @@ import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Constants.COUNTRIES
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
+import com.kuba.flashscore.ui.country.CountryViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class CountryFragment : Fragment(R.layout.fragment_country) {
+class CountryFragment @Inject constructor(
+    val countryAdapter: CountryAdapter
+) : Fragment(R.layout.fragment_country) {
 
     private var _binding: FragmentCountryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlashScoreViewModel by viewModels()
-    private lateinit var countryAdapter: CountryAdapter
+    private val viewModel: CountryViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -52,9 +54,7 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
 
         getCountries()
         subscribeToObservers()
-
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -93,7 +93,6 @@ class CountryFragment : Fragment(R.layout.fragment_country) {
 
     private fun setupRecyclerView() {
         binding.recyclerViewCountries.apply {
-            countryAdapter = CountryAdapter()
             adapter = countryAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

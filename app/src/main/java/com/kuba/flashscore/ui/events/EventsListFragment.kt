@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,22 +15,18 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
 import com.kuba.flashscore.network.models.LeagueDto
-import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,7 +37,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private var _binding: FragmentEventsListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlashScoreViewModel by viewModels()
+    private val viewModel: EventsViewModel by viewModels()
     private lateinit var eventsAdapter: EventAdapter
 
     private lateinit var league: LeagueDto

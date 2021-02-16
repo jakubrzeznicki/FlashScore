@@ -19,7 +19,6 @@ import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
 import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.FlashScoreViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -31,7 +30,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     private var _binding: FragmentLeagueBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlashScoreViewModel by viewModels()
+    private val viewModel: LeagueViewModel by viewModels()
     private lateinit var leagueAdapter: LeagueAdapter
 
 
