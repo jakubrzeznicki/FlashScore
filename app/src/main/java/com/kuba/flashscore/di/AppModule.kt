@@ -1,11 +1,16 @@
 package com.kuba.flashscore.di
 
 import android.content.Context
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.kuba.flashscore.R
+import com.kuba.flashscore.local.CountryDao
+import com.kuba.flashscore.local.database.FlashScoreDatabase
 import com.kuba.flashscore.network.ApiFootballService
+import com.kuba.flashscore.network.mappers.CountryDtoMapper
 import com.kuba.flashscore.other.Constants.BASE_URL
+import com.kuba.flashscore.other.Constants.DATABASE_NAME
 import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
 import com.kuba.flashscore.repositories.FlashScoreRepository
 import dagger.Module
@@ -25,8 +30,26 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideDefaultShoppingRepository(api: ApiFootballService) =
-        DefaultFlashScoreRepository(api) as FlashScoreRepository
+    fun provideFlashScoreDatabase(
+        @ApplicationContext context: Context
+
+    ) = Room.databaseBuilder(context, FlashScoreDatabase::class.java, DATABASE_NAME)
+        .fallbackToDestructiveMigration()
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideCountryDao(
+        database: FlashScoreDatabase
+    ) = database.countryDao()
+
+    @Singleton
+    @Provides
+    fun provideDefaultShoppingRepository(
+        countryDao: CountryDao,
+        api: ApiFootballService
+    ) =
+        DefaultFlashScoreRepository(countryDao, api) as FlashScoreRepository
 
     @Singleton
     @Provides
@@ -37,6 +60,13 @@ object AppModule {
             .baseUrl(BASE_URL)
             .build()
             .create(ApiFootballService::class.java)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideCountryDtoMapper(): CountryDtoMapper {
+        return CountryDtoMapper()
     }
 
     @Singleton

@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_league" >
         <argument
             android:name="countryItem"
-            app:argType="com.kuba.flashscore.network.models.CountryDto" />
+            app:argType="com.kuba.flashscore.local.models.entities.CountryEntity" />
         <action
             android:id="@+id/action_leagueFragment_to_countryFragment"
             app:destination="@id/countryFragment" />

@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
@@ -20,7 +21,10 @@ import com.kuba.flashscore.ui.country.CountryViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,6 +57,7 @@ class CountryFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         getCountries()
+
         subscribeToObservers()
     }
 
@@ -69,14 +74,25 @@ class CountryFragment @Inject constructor(
                     Status.SUCCESS -> {
                         val countries = result.data
                         if (countries != null) {
-                            countryAdapter.country = countries.toList()
+                            countryAdapter.country = countries
                         }
                     }
                     Status.ERROR -> {
+                        Snackbar.make(
+                            requireView(),
+                            result.message ?: "Default No Internet",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.LOADING -> {
                     }
                 }
+            }
+        })
+
+        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+            if (isNetwork) {
+                getCountries()
             }
         })
     }

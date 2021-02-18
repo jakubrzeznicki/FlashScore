@@ -1,5 +1,8 @@
 package com.kuba.flashscore.repositories
 
+import androidx.lifecycle.LiveData
+import com.kuba.flashscore.local.CountryDao
+import com.kuba.flashscore.local.models.entities.CountryEntity
 import com.kuba.flashscore.network.ApiFootballService
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
@@ -9,10 +12,11 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class DefaultFlashScoreRepository @Inject constructor(
+    private val countryDao: CountryDao,
     private val apiFootballService: ApiFootballService
 ) : FlashScoreRepository {
 
-    override suspend fun getCountries(): Resource<CountryResponse> {
+    override suspend fun getCountriesFromNetwork(): Resource<CountryResponse> {
         return try {
             val response = apiFootballService.getCountries()
             if (response.isSuccessful) {
@@ -27,6 +31,14 @@ class DefaultFlashScoreRepository @Inject constructor(
         } catch (e: Exception) {
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
+    }
+
+    override suspend fun insertCountries(countries: List<CountryEntity>) {
+        countryDao.insertCountries(countries)
+    }
+
+    override fun observeAllCountries(): LiveData<List<CountryEntity>> {
+       return countryDao.observeAllCountries()
     }
 
     override suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<LeagueResponse> {

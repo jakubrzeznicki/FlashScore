@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
+import com.kuba.flashscore.local.models.entities.CountryEntity
 import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -114,7 +115,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         }
     }
 
-    private fun setInformationAboutCountry(country: CountryDto) {
+    private fun setInformationAboutCountry(country: CountryEntity) {
         binding.apply {
             textViewCountryName.text = country.countryName
             Glide.with(requireContext()).load(country.countryLogo).into(imageViewCountryFlag)

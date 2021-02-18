@@ -1,4 +1,4 @@
-package com.kuba.flashscore.ui
+package com.kuba.flashscore.ui.util
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -6,7 +6,7 @@ import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.ui.country.CountryFragment
 import javax.inject.Inject
 
-class FlashScoreFragmentFacotry @Inject constructor(
+class FlashScoreFragmentFactory @Inject constructor(
     private val countryAdapter: CountryAdapter
 ): FragmentFactory() {
 

@@ -1,4 +1,4 @@
-package com.kuba.flashscore.local.models
+package com.kuba.flashscore.local.models.incident
 
 data class IncidentItem(
     val firstName: String,

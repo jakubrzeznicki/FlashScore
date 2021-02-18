@@ -1,55 +1,31 @@
 package com.kuba.flashscore.ui.country
 
-import android.content.ComponentName
-import android.content.Intent
-import android.os.Bundle
-import androidx.annotation.StyleRes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.testing.TestNavHostController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.core.internal.deps.dagger.internal.Preconditions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import com.jakewharton.espresso.OkHttp3IdlingResource
-import com.kuba.flashscore.HiltTestActivity
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.di.AppModule
 import com.kuba.flashscore.launchFragmentInHiltContainer
 import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.repositories.FakeFlashScoreRepositoryAndroidTest
-import com.kuba.flashscore.ui.FlashScoreFragmentFacotry
-import com.kuba.flashscore.util.FileReader.readStringFromFile
+import com.kuba.flashscore.ui.util.FlashScoreFragmentFactory
 import com.kuba.flashscore.util.MockServerDispatcher
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -73,7 +49,7 @@ class CountryFragmentTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var fragmentFactory: FlashScoreFragmentFacotry
+    lateinit var fragmentFactory: FlashScoreFragmentFactory
 
 
     private lateinit var mockWebServer: MockWebServer

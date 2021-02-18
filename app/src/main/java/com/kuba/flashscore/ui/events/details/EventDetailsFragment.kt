@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventDetailAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
-import com.kuba.flashscore.local.models.INCIDENTTYPE
-import com.kuba.flashscore.local.models.Incident
-import com.kuba.flashscore.local.models.IncidentHeader
-import com.kuba.flashscore.local.models.IncidentItem
+import com.kuba.flashscore.local.models.incident.INCIDENTTYPE
+import com.kuba.flashscore.local.models.incident.Incident
+import com.kuba.flashscore.local.models.incident.IncidentHeader
+import com.kuba.flashscore.local.models.incident.IncidentItem
 import com.kuba.flashscore.network.models.events.EventDto
 import com.kuba.flashscore.other.Constants.CARD_YELLOW
 import com.kuba.flashscore.other.Constants.INCIDENT_HEADER_2_HALF
