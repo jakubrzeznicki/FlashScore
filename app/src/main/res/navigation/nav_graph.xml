@@ -37,7 +37,8 @@
     <fragment
         android:id="@+id/clubViewPagerFragment"
         android:name="com.kuba.flashscore.ui.club.ClubViewPagerFragment"
-        android:label="ClubViewPagerFragment" >
+        android:label="ClubViewPagerFragment"
+        tools:layout="@layout/fragment_club_view_pager">
         <argument
             android:name="teamId"
             app:argType="string" />
@@ -46,7 +47,7 @@
             app:destination="@id/teamsViewPagerFragment" />
         <argument
             android:name="leagueItem"
-            app:argType="com.kuba.flashscore.network.models.LeagueDto" />
+            app:argType="com.kuba.flashscore.local.models.entities.LeagueEntity" />
         <argument
             android:name="teamName"
             app:argType="string" />
@@ -60,16 +61,17 @@
     <fragment
         android:id="@+id/teamsViewPagerFragment"
         android:name="com.kuba.flashscore.ui.teams.TeamsViewPagerFragment"
-        android:label="TeamsViewPagerFragment" >
-        <argument
-            android:name="leagueItem"
-            app:argType="com.kuba.flashscore.network.models.LeagueDto" />
+        android:label="TeamsViewPagerFragment"
+        tools:layout="@layout/fragment_teams_view_pager">
         <action
             android:id="@+id/action_teamsViewPagerFragment_to_clubViewPagerFragment"
             app:destination="@id/clubViewPagerFragment" />
         <action
             android:id="@+id/action_teamsViewPagerFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment" />
+        <argument
+            android:name="countryAndLeague"
+            app:argType="com.kuba.flashscore.local.models.entities.CountryAndLeagues" />
     </fragment>
     <fragment
         android:id="@+id/standingsViewPagerFragment"
@@ -116,15 +118,15 @@
         <action
             android:id="@+id/action_eventsListFragment_to_leagueFragment"
             app:destination="@id/leagueFragment" />
-        <argument
-            android:name="leagueItem"
-            app:argType="com.kuba.flashscore.network.models.LeagueDto" />
         <action
             android:id="@+id/action_eventsListFragment_to_teamsViewPagerFragment"
             app:destination="@id/teamsViewPagerFragment" />
         <action
             android:id="@+id/action_eventsListFragment_to_eventDetailsViewPagerFragment"
             app:destination="@id/eventDetailsViewPagerFragment" />
+        <argument
+            android:name="countryAndLeagueItem"
+            app:argType="com.kuba.flashscore.local.models.entities.CountryAndLeagues" />
     </fragment>
     <fragment
         android:id="@+id/eventDetailsViewPagerFragment"

@@ -9,6 +9,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsViewPagerBinding
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Constants.AWAY_TAB
 import com.kuba.flashscore.other.Constants.GENERALLY_TAB
@@ -17,7 +19,7 @@ import com.kuba.flashscore.ui.teams.standings.away.StandingsAwayFragment
 import com.kuba.flashscore.ui.teams.standings.home.StandingsHomeFragment
 import com.kuba.flashscore.ui.teams.standings.overall.StandingsOverallFragment
 
-class StandingsViewPagerFragment(private val league: LeagueDto) :
+class StandingsViewPagerFragment(private val countryAndLeagues: CountryAndLeagues) :
     Fragment(R.layout.fragment_standings_view_pager) {
 
     private var _binding: FragmentStandingsViewPagerBinding? = null
@@ -43,9 +45,9 @@ class StandingsViewPagerFragment(private val league: LeagueDto) :
     private fun setStandingsViewPageAdapterAndTabLayout() {
 
         val standingsFragmentList = arrayListOf<Fragment>(
-            StandingsOverallFragment(league),
-            StandingsHomeFragment(league),
-            StandingsAwayFragment(league)
+            StandingsOverallFragment(countryAndLeagues.leagues[0]),
+            StandingsHomeFragment(countryAndLeagues.leagues[0]),
+            StandingsAwayFragment(countryAndLeagues.leagues[0])
         )
 
         val standingsViewPagerAdapter = ViewPagerAdapter(

@@ -24,6 +24,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class LeagueFragment : Fragment(R.layout.fragment_league) {
@@ -33,7 +34,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
 
     private val viewModel: LeagueViewModel by viewModels()
     private lateinit var leagueAdapter: LeagueAdapter
-
+    private lateinit var country: CountryEntity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +43,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         _binding = FragmentLeagueBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val country = LeagueFragmentArgs.fromBundle(requireArguments()).countryItem
+        country = LeagueFragmentArgs.fromBundle(requireArguments()).countryItem
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
@@ -52,7 +53,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         }
         setInformationAboutCountry(country)
 
-        getLeagues(country.countryId)
+        getLeagues(country)
         return view
     }
 
@@ -60,7 +61,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subscribeToObservers()
+        subscribeToObservers(country)
 
     }
 
@@ -71,14 +72,17 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     }
 
 
-    private fun subscribeToObservers() {
+    private fun subscribeToObservers(country: CountryEntity) {
         viewModel.leagues.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         val leagues = result.data
+                        Timber.d("JUREK fetch leagues in fragment form db leag aaaa")
                         if (leagues != null) {
-                            leagueAdapter.league = leagues
+                            leagueAdapter.league = leagues.leagues
+                            //Timber.d("JUREK fetch leagues in fragment form db leag ${leagues.leagues[0].leagueName}")
+                            //Timber.d("JUREK fetch leagues in fragment form db coun ${leagues.country.countryName}")
                         }
                     }
                     Status.ERROR -> {
@@ -88,22 +92,27 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
                 }
             }
         })
+        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+            if (isNetwork) {
+                getLeagues(country)
+            }
+        })
 
     }
 
-    private fun getLeagues(countryId: String) {
+    private fun getLeagues(country: CountryEntity) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getLeaguesFromSpecificCountry(countryId)
-            setupRecyclerView()
+            viewModel.getLeaguesFromSpecificCountry(country.countryId)
+            setupRecyclerView(country)
         }
 
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(country: CountryEntity) {
         binding.recyclerViewLeagues.apply {
-            leagueAdapter = LeagueAdapter()
+            leagueAdapter = LeagueAdapter(country)
             adapter = leagueAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

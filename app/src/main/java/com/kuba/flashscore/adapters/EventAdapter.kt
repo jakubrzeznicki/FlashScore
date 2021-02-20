@@ -11,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.EventItemBinding
-import com.kuba.flashscore.databinding.LeagueItemBinding
-import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.events.EventDto
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
 
-class EventAdapter :
+class  EventAdapter :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     inner class EventViewHolder(val binding: EventItemBinding) :

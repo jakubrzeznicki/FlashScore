@@ -18,16 +18,18 @@ import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryEntity
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
+import com.kuba.flashscore.other.DateUtils
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -40,16 +42,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private val viewModel: EventsViewModel by viewModels()
     private lateinit var eventsAdapter: EventAdapter
 
-    private lateinit var league: LeagueDto
-
-    @SuppressLint("SimpleDateFormat")
-    private val simpleDateFormatDayMonthYear = SimpleDateFormat(DATE_FORMAT_DAY_MONTH_YEAR)
-
-    @SuppressLint("SimpleDateFormat")
-    private val simpleDateFormatDayOfWeek = SimpleDateFormat(DATE_FORMAT_DAY_OF_WEEK)
-
-    @SuppressLint("SimpleDateFormat")
-    private val simpleDateFormatYearMonthDay = SimpleDateFormat(DATE_FORMAT_YEAR_MONTH_DAY)
+    private lateinit var countryAndLeague: CountryAndLeagues
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,36 +50,44 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     ): View? {
         _binding = FragmentEventsListBinding.inflate(inflater, container, false)
         val view = binding.root
+        //private val args: GalleryFragmentArgs by navArgs()
 
-        league = EventsListFragmentArgs.fromBundle(requireArguments()).leagueItem
+        val countryAndLeague =
+            EventsListFragmentArgs.fromBundle(requireArguments()).countryAndLeagueItem
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            title = league.leagueName.toUpperCase(Locale.ROOT)
-            subtitle = "${simpleDateFormatDayMonthYear.format(Date(System.currentTimeMillis()))}, ${
-                simpleDateFormatDayOfWeek.format(Date(System.currentTimeMillis()))
-                    .toUpperCase(Locale.ROOT)
+            title = countryAndLeague.leagues[0].leagueName.toUpperCase(Locale.ROOT)
+            subtitle = "${DateUtils.formatDateCurrentDate(DATE_FORMAT_DAY_MONTH_YEAR)}, ${
+                DateUtils.formatDateCurrentDate(
+                    DATE_FORMAT_DAY_OF_WEEK
+                ).toUpperCase()
             }"
         }
-        goToTableOnClick(league)
-        setInformationAboutCountry(league)
+        goToTableOnClick(countryAndLeague)
+        setInformationAboutCountry(countryAndLeague)
 
         val dateString =
             (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
-        val date = simpleDateFormatDayMonthYear.parse(dateString as String)
-        val formattedDate = simpleDateFormatYearMonthDay.format(date)
-        getEvents(league.leagueId, formattedDate)
+        getEvents(
+            countryAndLeague.leagues[0].leagueId,
+            DateUtils.parseAndFormatDate(
+                dateString as String,
+                DATE_FORMAT_DAY_MONTH_YEAR,
+                DATE_FORMAT_YEAR_MONTH_DAY
+            )
+        )
         return view
     }
 
-    private fun goToTableOnClick(league: LeagueDto) {
+    private fun goToTableOnClick(countryAndLeagues: CountryAndLeagues) {
         binding.apply {
             imageButtonGoToLeagueTable.setOnClickListener {
                 val action =
                     EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-                        league
+                        countryAndLeagues
                     )
                 it.findNavController().navigate(action)
             }
@@ -94,7 +95,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
             constraintLayoutEventListTable.setOnClickListener {
                 val action =
                     EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-                        league
+                        countryAndLeagues
                     )
                 it.findNavController().navigate(action)
             }
@@ -106,7 +107,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         super.onViewCreated(view, savedInstanceState)
 
         subscribeToObservers()
-
     }
 
 
@@ -160,10 +160,11 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         }
     }
 
-    private fun setInformationAboutCountry(league: LeagueDto) {
+    private fun setInformationAboutCountry(countryAndLeagues: CountryAndLeagues) {
         binding.apply {
-            textViewCountryName.text = league.countryName
-            Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
+            textViewCountryName.text = countryAndLeagues.country.countryName
+            Glide.with(requireContext()).load(countryAndLeagues.country.countryLogo)
+                .into(imageViewCountryFlag)
         }
     }
 
@@ -179,7 +180,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 return true
             }
             R.id.actionMenuPickDate -> {
-                setDatePickerDialog(requireContext(), league)
+                setDatePickerDialog(requireContext(), countryAndLeague)
                 subscribeToObservers()
                 return true
             }
@@ -188,23 +189,27 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun setDatePickerDialog(context: Context, league: LeagueDto) {
+    fun setDatePickerDialog(context: Context, countryAndLeagues: CountryAndLeagues) {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
             context,
             R.style.DialogTheme,
             DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                val date = simpleDateFormatDayMonthYear.parse("$dayOfMonth.${month + 1}.$year")
+                val date = DateUtils.parseDate(
+                    "$dayOfMonth.${month + 1}.$year",
+                    DATE_FORMAT_DAY_MONTH_YEAR
+                )
                 (activity as AppCompatActivity).supportActionBar?.apply {
-                    title = league.leagueName.toUpperCase(Locale.ROOT)
+                    title = countryAndLeagues.leagues[0].leagueName.toUpperCase(Locale.ROOT)
                     subtitle =
-                        "${simpleDateFormatDayMonthYear.format(date)}, ${
-                            simpleDateFormatDayOfWeek.format(
-                                date
-                            ).toUpperCase(Locale.ROOT)
+                        "${DateUtils.formatDate(date, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
+                            DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
                         }"
                 }
-                getEvents(leagueId = league.leagueId, simpleDateFormatYearMonthDay.format(date))
+                getEvents(
+                    leagueId = countryAndLeagues.leagues[0].leagueId,
+                    DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
+                )
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),

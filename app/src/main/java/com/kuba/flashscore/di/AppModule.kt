@@ -6,9 +6,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.kuba.flashscore.R
 import com.kuba.flashscore.local.CountryDao
+import com.kuba.flashscore.local.LeagueDao
 import com.kuba.flashscore.local.database.FlashScoreDatabase
 import com.kuba.flashscore.network.ApiFootballService
 import com.kuba.flashscore.network.mappers.CountryDtoMapper
+import com.kuba.flashscore.network.mappers.LeagueDtoMapper
 import com.kuba.flashscore.other.Constants.BASE_URL
 import com.kuba.flashscore.other.Constants.DATABASE_NAME
 import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
@@ -45,11 +47,19 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideLeagueDao(
+        database: FlashScoreDatabase
+    ) = database.leagueDao()
+
+
+    @Singleton
+    @Provides
     fun provideDefaultShoppingRepository(
         countryDao: CountryDao,
+        leagueDao: LeagueDao,
         api: ApiFootballService
     ) =
-        DefaultFlashScoreRepository(countryDao, api) as FlashScoreRepository
+        DefaultFlashScoreRepository(countryDao, leagueDao, api) as FlashScoreRepository
 
     @Singleton
     @Provides
@@ -68,6 +78,13 @@ object AppModule {
     fun provideCountryDtoMapper(): CountryDtoMapper {
         return CountryDtoMapper()
     }
+
+    @Singleton
+    @Provides
+    fun provideLeagueDtoMapper(): LeagueDtoMapper {
+        return LeagueDtoMapper()
+    }
+
 
     @Singleton
     @Provides

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.StandingsItemBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.network.models.StandingDto
 import com.kuba.flashscore.other.Constants.HOME_LEAGUE
 import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS
@@ -27,7 +27,7 @@ import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
 class StandingsAdapter(
     private val context: Context,
-    private val league: LeagueDto,
+    private val league: LeagueEntity,
     private val whichStandings: String
 ) :
     RecyclerView.Adapter<StandingsAdapter.StandingsViewHolder>() {

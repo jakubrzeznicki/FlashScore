@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.TeamsAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TeamsFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_teams) {
+class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) : Fragment(R.layout.fragment_teams) {
 
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
@@ -43,7 +44,7 @@ class TeamsFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getTeams(league.leagueId)
+        getTeams(countryAndLeagues.leagues[0].leagueId)
         subscribeToObservers()
 
     }
@@ -87,7 +88,7 @@ class TeamsFragment(private val league: LeagueDto) : Fragment(R.layout.fragment_
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            teamsAdapter = TeamsAdapter(league)
+            teamsAdapter = TeamsAdapter(countryAndLeagues.leagues[0])
             adapter = teamsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

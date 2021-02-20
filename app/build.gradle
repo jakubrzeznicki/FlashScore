@@ -20,6 +20,14 @@ android {
 
         buildConfigField("String", "API_KEY", API_KEY)
         testInstrumentationRunner "com.kuba.flashscore.HiltTestRunner"
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+                arg("room.incremental", "true")
+                arg("room.expandProjection", "true")
+            }
+        }
     }
 
     buildTypes {

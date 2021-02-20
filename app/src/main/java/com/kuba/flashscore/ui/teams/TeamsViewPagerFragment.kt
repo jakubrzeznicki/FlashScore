@@ -13,6 +13,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsViewPagerBinding
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryEntity
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Constants.MATCHES_TAB
 import com.kuba.flashscore.other.Constants.RESULT_TAB
@@ -33,36 +36,35 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
         _binding = FragmentTeamsViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val league = TeamsViewPagerFragmentArgs.fromBundle(requireArguments()).leagueItem
+        val countryAndLeague = TeamsViewPagerFragmentArgs.fromBundle(requireArguments()).countryAndLeague
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            title = league.leagueName
+            title = countryAndLeague.leagues[0].leagueName
         }
 
-        setInformationAboutCountryAndLeague(league)
+        setInformationAboutCountryAndLeague(countryAndLeague)
 
-        setPlayerTeamsViewPageAdapterAndTabLayout(league)
+        setPlayerTeamsViewPageAdapterAndTabLayout(countryAndLeague)
 
         return view
     }
 
 
-    private fun setInformationAboutCountryAndLeague(league: LeagueDto) {
+    private fun setInformationAboutCountryAndLeague(countryAndLeague: CountryAndLeagues) {
         binding.apply {
-            textViewCountryName.text = league.countryName
-            Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
-            textViewLeagueName.text = league.leagueName
-            Glide.with(requireContext()).load(league.leagueLogo).into(imageViewLeagueLogo)
-
+            textViewCountryName.text = countryAndLeague.country.countryName
+            Glide.with(requireContext()).load(countryAndLeague.country.countryLogo).into(imageViewCountryFlag)
+            textViewLeagueName.text = countryAndLeague.leagues[0].leagueName
+            Glide.with(requireContext()).load(countryAndLeague.leagues[0].leagueLogo).into(imageViewLeagueLogo)
         }
     }
-    private fun setPlayerTeamsViewPageAdapterAndTabLayout(league: LeagueDto) {
+    private fun setPlayerTeamsViewPageAdapterAndTabLayout(countryAndLeague: CountryAndLeagues) {
         val teamFragmentList = arrayListOf<Fragment>(
-            TeamsFragment(league),
-            StandingsViewPagerFragment(league)
+            TeamsFragment(countryAndLeague),
+            StandingsViewPagerFragment(countryAndLeague)
         )
 
         val teamViewPagerAdapter = ViewPagerAdapter(

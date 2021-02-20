@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.other.Constants.HOME
 import com.kuba.flashscore.other.Status
@@ -23,7 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StandingsHomeFragment(private val league: LeagueDto) :
+class StandingsHomeFragment(private val league: LeagueEntity) :
     Fragment(R.layout.fragment_standings_home) {
 
     private var _binding: FragmentStandingsHomeBinding? = null

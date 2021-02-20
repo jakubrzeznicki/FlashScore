@@ -52,17 +52,17 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
       Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onAvailable(android.net.Network)
      */
     override fun onAvailable(network: Network) {
-      Timber.d("JUREK INTERNET onAvailable: $network")
+      //Timber.d("JUREK INTERNET onAvailable: $network")
       val networkCapabilities = cm.getNetworkCapabilities(network)
       val hasInternetCapability = networkCapabilities?.hasCapability(NET_CAPABILITY_INTERNET)
-      Timber.d("JUREK INTERNET onAvailable: ${network}, $hasInternetCapability")
+      //Timber.d("JUREK INTERNET onAvailable: ${network}, $hasInternetCapability")
       if (hasInternetCapability == true) {
         // check if this network actually has internet
         CoroutineScope(Dispatchers.IO).launch {
           val hasInternet = DoesNetworkHaveInternet.execute()
           if(hasInternet){
             withContext(Dispatchers.Main){
-              Timber.d("JUREK INTERNET onAvailable: adding network. $network")
+              //Timber.d("JUREK INTERNET onAvailable: adding network. $network")
               validNetworks.add(network)
               checkValidNetworks()
             }

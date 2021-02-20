@@ -13,7 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.other.Constants.TEAM_TAB
 
 class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
@@ -76,13 +76,15 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
     }
 
     private fun setInformationAboutCountryAndLeague(
-        league: LeagueDto,
+        league: LeagueEntity,
         teamName: String,
         teamBadge: String
     ) {
         binding.apply {
-            textViewCountryName.text = league.countryName
-            Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
+            //textViewCountryName.text = league.countryName
+            textViewCountryName.text = league.countryId
+        //    Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
+//            Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
             textViewClubName.text = teamName
             Glide.with(requireContext()).load(teamBadge).into(imageViewClubLogo)
         }

@@ -2,7 +2,10 @@ package com.kuba.flashscore.repositories
 
 import androidx.lifecycle.LiveData
 import com.kuba.flashscore.local.CountryDao
+import com.kuba.flashscore.local.LeagueDao
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.local.models.entities.CountryEntity
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.network.ApiFootballService
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
@@ -13,6 +16,7 @@ import javax.inject.Inject
 
 class DefaultFlashScoreRepository @Inject constructor(
     private val countryDao: CountryDao,
+    private val leagueDao: LeagueDao,
     private val apiFootballService: ApiFootballService
 ) : FlashScoreRepository {
 
@@ -37,8 +41,8 @@ class DefaultFlashScoreRepository @Inject constructor(
         countryDao.insertCountries(countries)
     }
 
-    override fun observeAllCountries(): LiveData<List<CountryEntity>> {
-       return countryDao.observeAllCountries()
+    override fun getCountriesFromDb(): List<CountryEntity> {
+       return countryDao.getAllCountriesFromDb()
     }
 
     override suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<LeagueResponse> {
@@ -56,6 +60,18 @@ class DefaultFlashScoreRepository @Inject constructor(
         } catch (e: Exception) {
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
+    }
+
+    override suspend fun insertLeagues(leagues: List<LeagueEntity>) {
+        leagueDao.insertLeagues(leagues)
+    }
+
+    override fun observeAllLeagues(): LiveData<List<LeagueEntity>> {
+        return leagueDao.observeAllLeagues()
+    }
+
+    override fun observeLeagueByCountryId(countryId: String): LiveData<CountryAndLeagues> {
+        return leagueDao.observeLeaguesByCountryId(countryId)
     }
 
     override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse> {

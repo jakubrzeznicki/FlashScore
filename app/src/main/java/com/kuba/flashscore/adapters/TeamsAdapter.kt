@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.databinding.TeamItemBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.network.models.TeamDto
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
-class TeamsAdapter(private val league: LeagueDto) :
+class TeamsAdapter(private val league: LeagueEntity) :
     RecyclerView.Adapter<TeamsAdapter.TeamViewHolder>() {
 
     inner class TeamViewHolder(val binding: TeamItemBinding) :

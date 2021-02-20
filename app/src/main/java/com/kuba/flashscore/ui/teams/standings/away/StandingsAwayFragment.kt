@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsAwayBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.other.Constants.AWAY
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
@@ -23,7 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StandingsAwayFragment(private val league: LeagueDto) :
+class StandingsAwayFragment(private val league: LeagueEntity) :
     Fragment(R.layout.fragment_standings_away) {
 
     private var _binding: FragmentStandingsAwayBinding? = null

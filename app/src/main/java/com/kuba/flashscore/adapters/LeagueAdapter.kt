@@ -8,28 +8,30 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.databinding.LeagueItemBinding
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryEntity
+import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 
-class LeagueAdapter :
+class LeagueAdapter(private val country: CountryEntity) :
     RecyclerView.Adapter<LeagueAdapter.LeagueViewHolder>() {
 
     inner class LeagueViewHolder(val binding: LeagueItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<LeagueDto>() {
-        override fun areItemsTheSame(oldItem: LeagueDto, newItem: LeagueDto): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<LeagueEntity>() {
+        override fun areItemsTheSame(oldItem: LeagueEntity, newItem: LeagueEntity): Boolean {
             return oldItem.leagueId == newItem.leagueId
         }
 
-        override fun areContentsTheSame(oldItem: LeagueDto, newItem: LeagueDto): Boolean {
+        override fun areContentsTheSame(oldItem: LeagueEntity, newItem: LeagueEntity): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var league: List<LeagueDto>
+    var league: List<LeagueEntity>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
@@ -49,7 +51,7 @@ class LeagueAdapter :
             holder.itemView.setOnClickListener {
                 val action =
                     LeagueFragmentDirections.actionLeagueFragmentToEventsListFragment(
-                        league
+                        CountryAndLeagues(country, listOf(league))
                     )
                 it.findNavController().navigate(action)
             }

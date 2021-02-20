@@ -27,21 +27,24 @@ class CountryViewModel @ViewModelInject constructor(
 
     suspend fun getCountries() {
         _countries.value = Event(Resource.loading(null)).also {
-            delay(100)
+            delay(1000)
         }
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val response = repository.getCountriesFromNetwork()
                     repository.insertCountries(countryDtoMapper.toDomainList(response.data?.toList()!!))
+                    Timber.d("JUREK fetch cuntr form network")
                     _countries.value =
                         Event(Resource.success(countryDtoMapper.toDomainList(response.data.toList())))
                 } else {
-                    val response = repository.observeAllCountries()
-                    if (response.value == null) {
+                    val response = repository.getCountriesFromDb()
+                    if (response.isNullOrEmpty()) {
+                        Timber.d("JUREK fetch country form db coun erro")
                         _countries.value = Event(Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null))
                     } else {
-                        _countries.value = Event(Resource.success(response.value))
+                        Timber.d("JUREK fetch country form db coun succ ${response[0].countryName}")
+                        _countries.value = Event(Resource.success(response))
                     }
                 }
             }

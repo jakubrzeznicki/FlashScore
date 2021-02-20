@@ -74,6 +74,7 @@ class CountryFragment @Inject constructor(
                     Status.SUCCESS -> {
                         val countries = result.data
                         if (countries != null) {
+                            Timber.d("JUREK fetch country in fragment")
                             countryAdapter.country = countries
                         }
                     }
