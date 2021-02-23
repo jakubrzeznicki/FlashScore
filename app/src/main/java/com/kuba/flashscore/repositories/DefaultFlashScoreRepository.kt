@@ -41,7 +41,7 @@ class DefaultFlashScoreRepository @Inject constructor(
         countryDao.insertCountries(countries)
     }
 
-    override fun getCountriesFromDb(): List<CountryEntity> {
+    override suspend fun getCountriesFromDb(): List<CountryEntity> {
        return countryDao.getAllCountriesFromDb()
     }
 
@@ -66,12 +66,12 @@ class DefaultFlashScoreRepository @Inject constructor(
         leagueDao.insertLeagues(leagues)
     }
 
-    override fun observeAllLeagues(): LiveData<List<LeagueEntity>> {
-        return leagueDao.observeAllLeagues()
+    override suspend fun getLeaguesFromDb(): List<LeagueEntity> {
+        return leagueDao.getAllLeagues()
     }
 
-    override fun observeLeagueByCountryId(countryId: String): LiveData<CountryAndLeagues> {
-        return leagueDao.observeLeaguesByCountryId(countryId)
+    override suspend fun getLeagueFromSpecificCountryFromDb(countryId: String): CountryAndLeagues {
+        return leagueDao.getLeaguesFromSpecificCountry(countryId)
     }
 
     override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse> {

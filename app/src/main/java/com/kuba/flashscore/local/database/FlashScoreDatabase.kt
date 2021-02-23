@@ -8,7 +8,7 @@ import com.kuba.flashscore.local.models.entities.CountryEntity
 import com.kuba.flashscore.local.models.entities.LeagueEntity
 
 @Database(
-    entities = [CountryEntity::class, LeagueEntity::class, ],
+    entities = [CountryEntity::class, LeagueEntity::class],
     version = 1
 )
 abstract class FlashScoreDatabase : RoomDatabase() {

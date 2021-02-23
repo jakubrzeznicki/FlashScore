@@ -11,12 +11,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(
     tableName = "leagues_table"
-//    foreignKeys = [ForeignKey(
-//        entity = CountryEntity::class,
-//        parentColumns = ["league_id"],
-//        childColumns = ["league_country_id"]
-//    )],
-//    indices = [Index("plant_id")]
 )
 data class LeagueEntity(
     @ColumnInfo(name = "league_country_id")

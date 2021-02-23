@@ -13,9 +13,9 @@ interface LeagueDao {
     suspend fun insertLeagues(leagues: List<LeagueEntity>)
 
     @Query("SELECT * FROM leagues_table")
-    fun observeAllLeagues(): LiveData<List<LeagueEntity>>
+    fun getAllLeagues(): List<LeagueEntity>
 
     @Transaction
     @Query("SELECT * FROM countries_table WHERE country_id = :countryId ")
-    fun observeLeaguesByCountryId(countryId: String) : LiveData<CountryAndLeagues>
+    suspend fun getLeaguesFromSpecificCountry(countryId: String) : CountryAndLeagues
 }

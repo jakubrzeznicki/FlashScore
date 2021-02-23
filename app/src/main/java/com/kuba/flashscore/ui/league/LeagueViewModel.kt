@@ -40,6 +40,7 @@ class LeagueViewModel @ViewModelInject constructor(
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val response = repository.getLeaguesFromSpecificCountry(countryId)
+                    delay(100)
                     repository.insertLeagues(leagueDtoMapper.toDomainList(response.data?.toList()!!))
                     Timber.d("JUREK fetch leagues form network")
                     _leagues.value =
@@ -54,14 +55,14 @@ class LeagueViewModel @ViewModelInject constructor(
                             )
                         ))
                 } else {
-                    val response = repository.observeLeagueByCountryId(countryId)
-                    Timber.d("JUREK fetch leagues form db leag ${response.value?.leagues?.get(0)?.leagueName}")
-                    Timber.d("JUREK fetch leagues form db coun ${response.value?.country?.countryName}")
-                    if (response.value == null) {
+                    val response = repository.getLeagueFromSpecificCountryFromDb(countryId)
+                    if (response.leagues.isNullOrEmpty()) {
+                        Timber.d("JUREK fetch league form db coun erro")
                         _leagues.value =
                             Event(Resource.error(Constants.ERROR_INTERNET_CONNECTION_MESSAGE, null))
                     } else {
-                        _leagues.value = Event(Resource.success(response.value))
+                        Timber.d("JUREK fetch leagues form db league succ ${response.leagues[0].leagueName}")
+                        _leagues.value = Event(Resource.success(response))
                     }
                 }
             }

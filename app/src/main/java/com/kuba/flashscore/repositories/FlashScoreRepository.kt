@@ -11,12 +11,12 @@ interface FlashScoreRepository {
 
     suspend fun insertCountries(countries: List<CountryEntity>)
     suspend fun getCountriesFromNetwork(): Resource<CountryResponse>
-    fun getCountriesFromDb(): List<CountryEntity>
+    suspend fun getCountriesFromDb(): List<CountryEntity>
 
     suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<LeagueResponse>
     suspend fun insertLeagues(leagues: List<LeagueEntity>)
-    fun observeAllLeagues(): LiveData<List<LeagueEntity>>
-    fun observeLeagueByCountryId(countryId: String): LiveData<CountryAndLeagues>
+    suspend fun getLeaguesFromDb(): List<LeagueEntity>
+    suspend fun getLeagueFromSpecificCountryFromDb(countryId: String): CountryAndLeagues
 
     suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse>
     suspend fun getTeamByTeamId(teamId: String): Resource<TeamResponse>
