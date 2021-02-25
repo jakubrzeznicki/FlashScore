@@ -10,11 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.TeamsAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +22,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) : Fragment(R.layout.fragment_teams) {
+class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) :
+    Fragment(R.layout.fragment_teams) {
 
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
@@ -45,7 +46,7 @@ class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) : Fragment
         super.onViewCreated(view, savedInstanceState)
 
         getTeams(countryAndLeagues.leagues[0].leagueId)
-        subscribeToObservers()
+        subscribeToObservers(countryAndLeagues.leagues[0].leagueId)
 
     }
 
@@ -56,7 +57,7 @@ class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) : Fragment
     }
 
 
-    private fun subscribeToObservers() {
+    private fun subscribeToObservers(leagueId: String) {
         viewModel.teams.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
@@ -67,10 +68,20 @@ class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) : Fragment
                         }
                     }
                     Status.ERROR -> {
+                        Snackbar.make(
+                            requireView(),
+                            result.message ?: "Default No Internet",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.LOADING -> {
                     }
                 }
+            }
+        })
+        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+            if (isNetwork) {
+                getTeams(leagueId)
             }
         })
 
@@ -88,7 +99,7 @@ class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) : Fragment
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            teamsAdapter = TeamsAdapter(countryAndLeagues.leagues[0])
+            teamsAdapter = TeamsAdapter(countryAndLeagues)
             adapter = teamsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

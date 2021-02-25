@@ -17,12 +17,9 @@ import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Constants.COUNTRIES
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.ui.country.CountryViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -49,6 +46,7 @@ class CountryFragment @Inject constructor(
             setDisplayHomeAsUpEnabled(false)
             setDisplayShowHomeEnabled(false)
             title = COUNTRIES
+            subtitle = ""
         }
         return view
     }

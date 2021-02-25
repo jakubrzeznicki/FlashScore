@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuba.flashscore.databinding.PlayerItemBinding
-import com.kuba.flashscore.network.models.PlayerDto
-import com.kuba.flashscore.ui.club.ClubViewPagerFragmentDirections
+import com.kuba.flashscore.local.models.entities.PlayerEntity
+import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentDirections
+import timber.log.Timber
 
 class PlayersAdapter(
     private val teamName: String,
@@ -19,19 +20,19 @@ class PlayersAdapter(
     inner class PlayersViewHolder(val binding: PlayerItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<PlayerDto>() {
-        override fun areItemsTheSame(oldItem: PlayerDto, newItem: PlayerDto): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<PlayerEntity>() {
+        override fun areItemsTheSame(oldItem: PlayerEntity, newItem: PlayerEntity): Boolean {
             return oldItem.playerKey == newItem.playerKey
         }
 
-        override fun areContentsTheSame(oldItem: PlayerDto, newItem: PlayerDto): Boolean {
+        override fun areContentsTheSame(oldItem: PlayerEntity, newItem: PlayerEntity): Boolean {
             return oldItem == newItem
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var players: List<PlayerDto>
+    var players: List<PlayerEntity>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
@@ -42,6 +43,8 @@ class PlayersAdapter(
     }
 
     override fun onBindViewHolder(holder: PlayersViewHolder, position: Int) {
+        Timber.d("DEJZI2 ${players}")
+        Timber.d("DEJZI2 ${players.size}")
         holder.binding.apply {
             val player = players[position]
             textViewPlayerName.text = player.playerName

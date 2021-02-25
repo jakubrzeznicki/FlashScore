@@ -12,13 +12,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
 import com.kuba.flashscore.local.models.entities.CountryEntity
-import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +34,8 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     private val binding get() = _binding!!
 
     private val viewModel: LeagueViewModel by viewModels()
+    private val args: LeagueFragmentArgs by navArgs()
+
     private lateinit var leagueAdapter: LeagueAdapter
     private lateinit var country: CountryEntity
 
@@ -43,13 +46,14 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         _binding = FragmentLeagueBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        country = LeagueFragmentArgs.fromBundle(requireArguments()).countryItem
+        country = args.countryItem
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             title = country.countryName
+            subtitle = ""
         }
         setInformationAboutCountry(country)
 
@@ -73,19 +77,24 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
 
 
     private fun subscribeToObservers(country: CountryEntity) {
-        viewModel.leagues.observe(viewLifecycleOwner, Observer {
+        viewModel.leaguesFromDb.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         val leagues = result.data
+                        Timber.d("DEJZI ${leagues}")
+
                         Timber.d("JUREK fetch leagues in fragment form db leag aaaa")
                         if (leagues != null) {
                             leagueAdapter.league = leagues.leagues
-                            //Timber.d("JUREK fetch leagues in fragment form db leag ${leagues.leagues[0].leagueName}")
-                            //Timber.d("JUREK fetch leagues in fragment form db coun ${leagues.country.countryName}")
                         }
                     }
                     Status.ERROR -> {
+                        Snackbar.make(
+                            requireView(),
+                            result.message ?: "Default No Internet",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.LOADING -> {
                     }

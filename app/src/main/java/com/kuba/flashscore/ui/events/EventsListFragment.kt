@@ -13,14 +13,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryEntity
-import com.kuba.flashscore.local.models.entities.LeagueEntity
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
@@ -40,22 +40,25 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private val binding get() = _binding!!
 
     private val viewModel: EventsViewModel by viewModels()
+    private val args: EventsListFragmentArgs by navArgs()
+
     private lateinit var eventsAdapter: EventAdapter
 
     private lateinit var countryAndLeague: CountryAndLeagues
-
+    private lateinit var leagueId: String
+    private lateinit var fromToDate: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEventsListBinding.inflate(inflater, container, false)
         val view = binding.root
-        //private val args: GalleryFragmentArgs by navArgs()
 
-        val countryAndLeague =
-            EventsListFragmentArgs.fromBundle(requireArguments()).countryAndLeagueItem
+        countryAndLeague =
+            args.countryAndLeagueItem
 
         setHasOptionsMenu(true)
+
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
@@ -71,14 +74,19 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
         val dateString =
             (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
-        getEvents(
-            countryAndLeague.leagues[0].leagueId,
-            DateUtils.parseAndFormatDate(
-                dateString as String,
-                DATE_FORMAT_DAY_MONTH_YEAR,
-                DATE_FORMAT_YEAR_MONTH_DAY
-            )
+
+        leagueId = countryAndLeague.leagues[0].leagueId
+        fromToDate = DateUtils.parseAndFormatDate(
+            dateString as String,
+            DATE_FORMAT_DAY_MONTH_YEAR,
+            DATE_FORMAT_YEAR_MONTH_DAY
         )
+
+        getEvents(
+            leagueId,
+            fromToDate
+        )
+
         return view
     }
 
@@ -106,7 +114,17 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subscribeToObservers()
+        val dateString =
+            (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
+
+        leagueId = countryAndLeague.leagues[0].leagueId
+        fromToDate = DateUtils.parseAndFormatDate(
+            dateString as String,
+            DATE_FORMAT_DAY_MONTH_YEAR,
+            DATE_FORMAT_YEAR_MONTH_DAY
+        )
+
+        subscribeToObservers(leagueId, fromToDate)
     }
 
 
@@ -116,7 +134,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
 
-    private fun subscribeToObservers() {
+    private fun subscribeToObservers(leagueId: String, fromTo: String) {
         viewModel.events.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
@@ -127,12 +145,22 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                         }
                     }
                     Status.ERROR -> {
+                        Snackbar.make(
+                            requireView(),
+                            result.message ?: "Default No Internet",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.LOADING -> {
                     }
                 }
             }
         })
+//        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+//            if (isNetwork) {
+//                getEvents(leagueId, fromTo)
+//            }
+//        })
 
     }
 
@@ -181,7 +209,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
             }
             R.id.actionMenuPickDate -> {
                 setDatePickerDialog(requireContext(), countryAndLeague)
-                subscribeToObservers()
+                subscribeToObservers(leagueId, fromToDate)
                 return true
             }
         }

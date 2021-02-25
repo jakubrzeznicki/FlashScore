@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsAwayBinding
-import com.kuba.flashscore.local.models.entities.LeagueEntity
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.other.Constants.AWAY
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
@@ -23,7 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StandingsAwayFragment(private val league: LeagueEntity) :
+class StandingsAwayFragment(private val countryAndLeagues: CountryAndLeagues) :
     Fragment(R.layout.fragment_standings_away) {
 
     private var _binding: FragmentStandingsAwayBinding? = null
@@ -45,7 +45,7 @@ class StandingsAwayFragment(private val league: LeagueEntity) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getStandings(league.leagueId)
+        getStandings(countryAndLeagues.leagues[0].leagueId)
         subscribeToObservers()
     }
 
@@ -87,7 +87,7 @@ class StandingsAwayFragment(private val league: LeagueEntity) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewAwayStandings.apply {
-            standingsAdapter = StandingsAdapter(requireContext(), league, AWAY)
+            standingsAdapter = StandingsAdapter(requireContext(), countryAndLeagues, AWAY)
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

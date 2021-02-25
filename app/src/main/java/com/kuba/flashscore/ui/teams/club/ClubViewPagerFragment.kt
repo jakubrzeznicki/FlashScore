@@ -1,4 +1,4 @@
-package com.kuba.flashscore.ui.club
+package com.kuba.flashscore.ui.teams.club
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,18 +8,21 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
-import com.kuba.flashscore.local.models.entities.LeagueEntity
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.other.Constants.TEAM_TAB
 
 class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
 
     private var _binding: FragmentClubViewPagerBinding? = null
     private val binding get() = _binding!!
+
+    private val args: ClubViewPagerFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,19 +32,20 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         _binding = FragmentClubViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val teamId = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).teamId
-        val teamName = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).teamName
-        val teamBadge = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).teamBadge
-        val league = ClubViewPagerFragmentArgs.fromBundle(requireArguments()).leagueItem
+        val teamId = args.teamId
+        val teamName = args.teamName
+        val teamBadge = args.teamBadge
+        val countryAndLeague = args.countryAndLeagueItem
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             title = teamName
+            subtitle = ""
         }
 
-        setInformationAboutCountryAndLeague(league, teamName, teamBadge)
+        setInformationAboutCountryAndLeague(countryAndLeague, teamName, teamBadge)
 
         setClubViewPageAdapterAndTabLayout(teamId, teamName, teamBadge)
 
@@ -53,7 +57,11 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         _binding = null
     }
 
-    private fun setClubViewPageAdapterAndTabLayout(teamId: String, teamName: String, teamBadge: String) {
+    private fun setClubViewPageAdapterAndTabLayout(
+        teamId: String,
+        teamName: String,
+        teamBadge: String
+    ) {
         val clubFragmentList = arrayListOf<Fragment>(
             PlayersFragment(teamId, teamName, teamBadge)
         )
@@ -76,15 +84,13 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
     }
 
     private fun setInformationAboutCountryAndLeague(
-        league: LeagueEntity,
+        countryAndLeagues: CountryAndLeagues,
         teamName: String,
         teamBadge: String
     ) {
         binding.apply {
-            //textViewCountryName.text = league.countryName
-            textViewCountryName.text = league.countryId
-        //    Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
-//            Glide.with(requireContext()).load(league.countryLogo).into(imageViewCountryFlag)
+            textViewCountryName.text = countryAndLeagues.country.countryName
+            Glide.with(requireContext()).load(countryAndLeagues.country.countryLogo).into(imageViewCountryFlag)
             textViewClubName.text = teamName
             Glide.with(requireContext()).load(teamBadge).into(imageViewClubLogo)
         }

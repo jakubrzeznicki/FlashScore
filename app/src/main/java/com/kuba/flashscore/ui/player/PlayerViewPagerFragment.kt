@@ -10,16 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentPlayerViewPagerBinding
+import com.kuba.flashscore.local.models.entities.PlayerEntity
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.PlayerDto
 import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
 import com.kuba.flashscore.other.Constants.PLAYER_AGE
 import com.kuba.flashscore.other.Constants.PLAYER_NUMBER
+import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentArgs
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 
@@ -27,6 +30,8 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
 
     private var _binding: FragmentPlayerViewPagerBinding? = null
     private val binding get() = _binding!!
+
+    private val args: PlayerViewPagerFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,9 +41,9 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
         _binding = FragmentPlayerViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val teamName = PlayerViewPagerFragmentArgs.fromBundle(requireArguments()).teamName
-        val teamLogo = PlayerViewPagerFragmentArgs.fromBundle(requireArguments()).teamLogo
-        val player = PlayerViewPagerFragmentArgs.fromBundle(requireArguments()).playerItem
+        val teamName = args.teamName
+        val teamLogo = args.teamLogo
+        val player = args.playerItem
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
@@ -60,7 +65,7 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
     }
 
 
-    private fun setPlayerViewPageAdapterAndTabLayout(player: PlayerDto) {
+    private fun setPlayerViewPageAdapterAndTabLayout(player: PlayerEntity) {
 
         val playerFragmentList = arrayListOf<Fragment>(
             PlayerCurrentSeasonDetailFragment(player)
@@ -89,7 +94,7 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
     private fun setInformationAboutPlayer(
         teamName: String,
         teamLogo: String,
-        player: PlayerDto
+        player: PlayerEntity
     ) {
         binding.apply {
             textViewCountryName.text = player.playerCountry

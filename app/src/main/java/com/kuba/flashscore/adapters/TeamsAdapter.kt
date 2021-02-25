@@ -8,29 +8,29 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.databinding.TeamItemBinding
-import com.kuba.flashscore.local.models.entities.LeagueEntity
-import com.kuba.flashscore.network.models.TeamDto
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
-class TeamsAdapter(private val league: LeagueEntity) :
+class TeamsAdapter(private val countryAndLeagues: CountryAndLeagues) :
     RecyclerView.Adapter<TeamsAdapter.TeamViewHolder>() {
 
     inner class TeamViewHolder(val binding: TeamItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<TeamDto>() {
-        override fun areItemsTheSame(oldItem: TeamDto, newItem: TeamDto): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<TeamEntity>() {
+        override fun areItemsTheSame(oldItem: TeamEntity, newItem: TeamEntity): Boolean {
             return oldItem.teamKey == newItem.teamKey
         }
 
-        override fun areContentsTheSame(oldItem: TeamDto, newItem: TeamDto): Boolean {
+        override fun areContentsTheSame(oldItem: TeamEntity, newItem: TeamEntity): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var teams: List<TeamDto>
+    var teams: List<TeamEntity>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
@@ -49,7 +49,7 @@ class TeamsAdapter(private val league: LeagueEntity) :
             holder.itemView.setOnClickListener {
                 val action =
                     TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
-                        team.teamKey, league, team.teamName, team.teamBadge
+                        team.teamKey, countryAndLeagues, team.teamName, team.teamBadge
                     )
                 it.findNavController().navigate(action)
             }

@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
-import com.kuba.flashscore.local.models.entities.LeagueEntity
-import com.kuba.flashscore.network.models.LeagueDto
+import com.kuba.flashscore.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.other.Constants.OVERALL
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
@@ -24,7 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StandingsOverallFragment(private val league: LeagueEntity) :
+class StandingsOverallFragment(private val countryAndLeagues: CountryAndLeagues) :
     Fragment(R.layout.fragment_standings_overall) {
 
     private var _binding: FragmentStandingsOverallBinding? = null
@@ -46,7 +45,7 @@ class StandingsOverallFragment(private val league: LeagueEntity) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getStandings(league.leagueId)
+        getStandings(countryAndLeagues.leagues[0].leagueId)
         subscribeToObservers()
     }
 
@@ -88,7 +87,7 @@ class StandingsOverallFragment(private val league: LeagueEntity) :
 
     private fun setupRecyclerView() {
         binding.recyclerViewOverallStandings.apply {
-            standingsAdapter = StandingsAdapter(requireContext(), league, OVERALL)
+            standingsAdapter = StandingsAdapter(requireContext(), countryAndLeagues, OVERALL)
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

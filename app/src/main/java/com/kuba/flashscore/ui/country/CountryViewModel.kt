@@ -33,10 +33,11 @@ class CountryViewModel @ViewModelInject constructor(
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val response = repository.getCountriesFromNetwork()
-                    repository.insertCountries(countryDtoMapper.toDomainList(response.data?.toList()!!))
+                    delay(100)
+                    repository.insertCountries(countryDtoMapper.toLocalList(response.data?.toList()!!, null))
                     Timber.d("JUREK fetch cuntr form network")
                     _countries.value =
-                        Event(Resource.success(countryDtoMapper.toDomainList(response.data.toList())))
+                        Event(Resource.success(countryDtoMapper.toLocalList(response.data.toList(), null)))
                 } else {
                     val response = repository.getCountriesFromDb()
                     if (response.isNullOrEmpty()) {

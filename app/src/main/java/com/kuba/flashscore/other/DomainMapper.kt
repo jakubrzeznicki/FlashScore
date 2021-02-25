@@ -1,8 +1,6 @@
 package com.kuba.flashscore.other
 
-interface DomainMapper <T, DomainModel>{
+interface DomainMapper <T, LocalModel>{
 
-    fun mapToDomainModel(model: T): DomainModel
-
-    fun mapFromDomainModel(domainModel: DomainModel): T
+    fun mapToLocalModel(model: T, foreignKey: String?): LocalModel
 }

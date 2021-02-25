@@ -5,12 +5,10 @@ import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.kuba.flashscore.R
-import com.kuba.flashscore.local.CountryDao
-import com.kuba.flashscore.local.LeagueDao
+import com.kuba.flashscore.local.*
 import com.kuba.flashscore.local.database.FlashScoreDatabase
 import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.network.mappers.CountryDtoMapper
-import com.kuba.flashscore.network.mappers.LeagueDtoMapper
+import com.kuba.flashscore.network.mappers.*
 import com.kuba.flashscore.other.Constants.BASE_URL
 import com.kuba.flashscore.other.Constants.DATABASE_NAME
 import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
@@ -51,15 +49,51 @@ object AppModule {
         database: FlashScoreDatabase
     ) = database.leagueDao()
 
+    @Singleton
+    @Provides
+    fun provideCoachDao(
+        database: FlashScoreDatabase
+    ) = database.coachDao()
+
+    @Singleton
+    @Provides
+    fun providePlayerDao(
+        database: FlashScoreDatabase
+    ) = database.playerDao()
+
+    @Singleton
+    @Provides
+    fun provideTeamDao(
+        database: FlashScoreDatabase
+    ) = database.teamDao()
+
+    @Singleton
+    @Provides
+    fun provideStandingDao(
+        database: FlashScoreDatabase
+    ) = database.standingDao()
+
 
     @Singleton
     @Provides
     fun provideDefaultShoppingRepository(
         countryDao: CountryDao,
         leagueDao: LeagueDao,
+        coachDao: CoachDao,
+        playerDao: PlayerDao,
+        teamDao: TeamDao,
+        standingDao: StandingDao,
         api: ApiFootballService
     ) =
-        DefaultFlashScoreRepository(countryDao, leagueDao, api) as FlashScoreRepository
+        DefaultFlashScoreRepository(
+            countryDao,
+            leagueDao,
+            coachDao,
+            playerDao,
+            teamDao,
+            standingDao,
+            api
+        ) as FlashScoreRepository
 
     @Singleton
     @Provides
@@ -83,6 +117,30 @@ object AppModule {
     @Provides
     fun provideLeagueDtoMapper(): LeagueDtoMapper {
         return LeagueDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCoachDtoMapper(): CoachDtoMapper {
+        return CoachDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun providePlayerDtoMapper(): PlayerDtoMapper {
+        return PlayerDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideTeamDtoMapper(): TeamDtoMapper {
+        return TeamDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideStandingDtoMapper(): StandingDtoMapper {
+        return StandingDtoMapper()
     }
 
 

@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+
 data class StandingDto(
     @SerializedName("away_league_D")
     val awayLeagueD: String,
@@ -75,4 +75,4 @@ data class StandingDto(
     val teamId: String,
     @SerializedName("team_name")
     val teamName: String
-) : Parcelable
+)

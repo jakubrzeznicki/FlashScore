@@ -1,11 +1,7 @@
 package com.kuba.flashscore.repositories
 
-import androidx.lifecycle.LiveData
-import com.kuba.flashscore.local.CountryDao
-import com.kuba.flashscore.local.LeagueDao
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryEntity
-import com.kuba.flashscore.local.models.entities.LeagueEntity
+import com.kuba.flashscore.local.*
+import com.kuba.flashscore.local.models.entities.*
 import com.kuba.flashscore.network.ApiFootballService
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
@@ -17,6 +13,10 @@ import javax.inject.Inject
 class DefaultFlashScoreRepository @Inject constructor(
     private val countryDao: CountryDao,
     private val leagueDao: LeagueDao,
+    private val coachDao: CoachDao,
+    private val playerDao: PlayerDao,
+    private val teamDao: TeamDao,
+    private val standingDao: StandingDao,
     private val apiFootballService: ApiFootballService
 ) : FlashScoreRepository {
 
@@ -42,7 +42,7 @@ class DefaultFlashScoreRepository @Inject constructor(
     }
 
     override suspend fun getCountriesFromDb(): List<CountryEntity> {
-       return countryDao.getAllCountriesFromDb()
+        return countryDao.getAllCountriesFromDb()
     }
 
     override suspend fun getLeaguesFromSpecificCountry(countryId: String): Resource<LeagueResponse> {
@@ -74,6 +74,18 @@ class DefaultFlashScoreRepository @Inject constructor(
         return leagueDao.getLeaguesFromSpecificCountry(countryId)
     }
 
+    override suspend fun insertCoaches(coaches: List<CoachEntity>) {
+        coachDao.insertCoaches(coaches)
+    }
+
+    override suspend fun insertPlayers(players: List<PlayerEntity>) {
+        playerDao.insertPlayers(players)
+    }
+
+    override suspend fun insertTeams(teams: List<TeamEntity>) {
+        teamDao.insertTeams(teams)
+    }
+
     override suspend fun getTeamsFromSpecificLeague(leagueId: String): Resource<TeamResponse> {
         return try {
             val response = apiFootballService.getTeams(leagueId)
@@ -91,21 +103,16 @@ class DefaultFlashScoreRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamByTeamId(teamId: String): Resource<TeamResponse> {
-        return try {
-            val response = apiFootballService.getTeam(teamId)
-            if (response.isSuccessful) {
-                response.body().let {
-                    return@let Resource.success(
-                        it
-                    )
-                } ?: Resource.error(ERROR_MESSAGE, null)
-            } else {
-                Resource.error(ERROR_MESSAGE, null)
-            }
-        } catch (e: Exception) {
-            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
-        }
+    override suspend fun getTeamsFromLeagueFromDb(leagueId: String): List<TeamEntity> {
+       return teamDao.getTeamsFromSpecificLeague(leagueId)
+    }
+
+    override suspend fun getTeamWithPlayersAndCoachFromDb(teamId: String): TeamWithPlayersAndCoach {
+        return teamDao.getTeamByTeamId(teamId)
+    }
+
+    override suspend fun insertStandings(standings: List<StandingEntity>) {
+        standingDao.insertStandings(standings)
     }
 
 
@@ -124,6 +131,10 @@ class DefaultFlashScoreRepository @Inject constructor(
         } catch (e: Exception) {
             Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
         }
+    }
+
+    override suspend fun getStandingsFromSpecificLeagueFromDb(leagueId: String): List<StandingEntity> {
+        return standingDao.getStandingsFromSpecificLeague(leagueId)
     }
 
     override suspend fun getPlayerBySpecificName(name: String): Resource<PlayerResponse> {
@@ -147,7 +158,7 @@ class DefaultFlashScoreRepository @Inject constructor(
         to: String
     ): Resource<EventResponse> {
         return try {
-            val response = apiFootballService.getEvents(from, to,leagueId)
+            val response = apiFootballService.getEvents(from, to, leagueId)
             if (response.isSuccessful) {
                 response.body().let {
                     return@let Resource.success(it)

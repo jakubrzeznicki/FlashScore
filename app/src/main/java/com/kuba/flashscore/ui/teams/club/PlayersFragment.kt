@@ -1,4 +1,4 @@
-package com.kuba.flashscore.ui.club
+package com.kuba.flashscore.ui.teams.club
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,10 +14,12 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.PlayersAdapter
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.teams.TeamsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PlayersFragment(private val teamId: String, private val teamName: String, private val teamLogo: String) : Fragment(R.layout.fragment_players) {
@@ -25,7 +27,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
     private var _binding: FragmentPlayersBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ClubViewModel by viewModels()
+    private val viewModel: TeamsViewModel by viewModels()
     private lateinit var playerAdapter: PlayersAdapter
 
     override fun onCreateView(
@@ -33,17 +35,13 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        playerAdapter = PlayersAdapter(teamName, teamLogo)
         getTeam(teamId = teamId)
         subscribeToObservers()
-        setupRecyclerView()
-    }
 
+        return binding.root
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -51,13 +49,15 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
     }
 
     private fun subscribeToObservers() {
-        viewModel.club.observe(viewLifecycleOwner, Observer {
+        viewModel.team.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         val team = result.data
+                       // Timber.d("DEJZI ${team}")
                         if (team != null) {
-                            playerAdapter.players = team[0].players
+                            Timber.d("DEJZI ${team.players}")
+                            playerAdapter.players = team.players
                         }
                     }
                     Status.ERROR -> {
@@ -74,7 +74,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getClubById(teamId)
+            viewModel.getTeamById(teamId)
             setupRecyclerView()
         }
 
@@ -82,7 +82,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            playerAdapter = PlayersAdapter(teamName, teamLogo)
+            //playerAdapter = PlayersAdapter(teamName, teamLogo)
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
