@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 
-@Parcelize
 data class Substitutions(
     val away: List<AwayX>,
     val home: List<HomeX>
-) : Parcelable
+)

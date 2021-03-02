@@ -10,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
+import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.local.models.entities.event.EventEntity
 import com.kuba.flashscore.network.models.PlayerDto
 import com.kuba.flashscore.network.models.events.EventDto
 import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
@@ -25,12 +28,15 @@ import com.kuba.flashscore.other.Constants.EVENT_TABLE_TAB
 import com.kuba.flashscore.other.Constants.EVENT_TEAM_TAB
 import com.kuba.flashscore.other.Constants.PLAYER_AGE
 import com.kuba.flashscore.other.Constants.PLAYER_NUMBER
+import com.kuba.flashscore.ui.events.EventsListFragmentArgs
 import java.util.*
 
 class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_view_pager) {
 
     private var _binding: FragmentEventDetailsViewPagerBinding? = null
     private val binding get() = _binding!!
+
+    private val args: EventDetailsViewPagerFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +46,8 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         _binding = FragmentEventDetailsViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val event = EventDetailsViewPagerFragmentArgs.fromBundle(requireArguments()).eventItem
+        val event = args.eventItem
+        val eventId = args.eventId
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
@@ -50,7 +57,7 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
             subtitle = ""
         }
 
-        setInformationCountryLeagueAndScore(event)
+        setInformationCountryLeagueAndScore(event, eventId)
 
         setEventViewPageAdapterAndTabLayout(event)
 
@@ -63,14 +70,14 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
     }
 
 
-    private fun setEventViewPageAdapterAndTabLayout(event: EventDto) {
+    private fun setEventViewPageAdapterAndTabLayout(event: CountryWithLeagueWithEventsAndTeams) {
 
         val eventFragmentList = arrayListOf<Fragment>(
-            EventDetailsFragment(event),
-            EventStatisticsFragment(event),
-            EventTeamsFragment(event),
-            EventHead2HeadFragment(event),
-            EventDetailsFragment(event)
+            // EventDetailsFragment(event),
+            //EventStatisticsFragment(event),
+            //EventTeamsFragment(event),
+            //EventHead2HeadFragment(event),
+            //EventDetailsFragment(event)
         )
 
         val eventViewPagerAdapter = ViewPagerAdapter(
@@ -106,24 +113,30 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
 
     @SuppressLint("SetTextI18n")
     private fun setInformationCountryLeagueAndScore(
-        event: EventDto
+        event: CountryWithLeagueWithEventsAndTeams,
+        eventId: String
     ) {
         binding.apply {
-            textViewCountryName.text = event.countryName
-            Glide.with(requireContext()).load(event.countryLogo).into(imageViewCountryFlag)
-            textViewLeagueName.text = "${event.leagueName} - ${event.matchRound}"
+            val eventItem = event.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]
+            val teamHomeItem = event.leagueWithTeams[0].teams.filter { it.teamKey == eventItem?.matchHometeamId }[0]
+            val teamAwayItem = event.leagueWithTeams[0].teams.filter { it.teamKey == eventItem?.matchAwayteamId }[0]
+            textViewCountryName.text = event.countryEntity.countryName
+            Glide.with(requireContext()).load(event.countryEntity.countryLogo)
+                .into(imageViewCountryFlag)
+            textViewLeagueName.text =
+                "${event.leagueWithEvents[0].league.leagueName} - ${eventItem?.matchRound}"
 
-            Glide.with(requireContext()).load(event.teamHomeBadge).into(imageViewFirstClubLogo)
-            textViewFirstClubName.text = event.matchHometeamName
+            Glide.with(requireContext()).load(teamHomeItem.teamBadge).into(imageViewFirstClubLogo)
+            textViewFirstClubName.text = teamHomeItem.teamName
 
-            Glide.with(requireContext()).load(event.teamAwayBadge).into(imageViewSecondClubLogo)
-            textViewSecondClubName.text = event.matchAwayteamName
+            Glide.with(requireContext()).load(teamAwayItem.teamBadge).into(imageViewSecondClubLogo)
+            textViewSecondClubName.text = teamAwayItem.teamName
 
-            textViewDateAndTime.text = "${event.matchDate}  ${event.matchTime}"
+            textViewDateAndTime.text = "${eventItem?.matchDate}  ${eventItem?.matchTime}"
 
-            if (event.matchHometeamScore.isNotEmpty()) {
-                textViewFirstScore.text = event.matchHometeamScore
-                textViewSecondScore.text = event.matchAwayteamScore
+            if (eventItem?.matchHometeamScore?.isNotEmpty()!!) {
+                textViewFirstScore.text = eventItem.matchHometeamScore
+                textViewSecondScore.text = eventItem.matchAwayteamScore
             }
 
 

@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class Home(
     @SerializedName("coach")
     val coaches: List<CoachX>,
@@ -15,4 +14,4 @@ data class Home(
     val startingLineups: List<StartingLineupX>,
     @SerializedName("substitute")
     val substitutes: List<SubstituteX>
-) : Parcelable
+)

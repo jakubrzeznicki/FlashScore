@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class EventDto(
     val cards: List<Card>,
     @SerializedName("country_id")
@@ -76,4 +75,4 @@ data class EventDto(
     val teamAwayBadge: String,
     @SerializedName("team_home_badge")
     val teamHomeBadge: String
-) : Parcelable
+)

@@ -11,31 +11,42 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.EventItemBinding
-import com.kuba.flashscore.network.models.events.EventDto
+import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.local.models.entities.event.EventEntity
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
+import timber.log.Timber
 
-class  EventAdapter :
+class EventAdapter:
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     inner class EventViewHolder(val binding: EventItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<EventDto>() {
-        override fun areItemsTheSame(oldItem: EventDto, newItem: EventDto): Boolean {
-            return oldItem == newItem
-        }
+    private val diffCallback =
+        object : DiffUtil.ItemCallback<EventEntity>() {
+            override fun areItemsTheSame(
+                oldItem: EventEntity,
+                newItem: EventEntity
+            ): Boolean {
+                return oldItem == newItem
+            }
 
-        override fun areContentsTheSame(oldItem: EventDto, newItem: EventDto): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
+            override fun areContentsTheSame(
+                oldItem: EventEntity,
+                newItem: EventEntity
+            ): Boolean {
+                return oldItem.hashCode() == newItem.hashCode()
+            }
         }
-    }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var events: List<EventDto>
+    var events: List<EventEntity?>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
+     lateinit var  countryWithLeagueAndTeams: CountryWithLeagueAndTeams
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = EventItemBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -46,12 +57,20 @@ class  EventAdapter :
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         holder.binding.apply {
             val event = events[position]
-            Glide.with(holder.itemView).load(event.teamHomeBadge).into(imageViewFirstTeamLogo)
-            Glide.with(holder.itemView).load(event.teamAwayBadge).into(imageViewSecondTeamLogo)
-            textViewFirstTeamName.text = event.matchHometeamName
-            textViewSecondTeamName.text = event.matchAwayteamName
+            val homeTeam =
+                countryWithLeagueAndTeams.teams[0].teams.filter { teamEntity ->
+                    teamEntity.teamKey == event?.matchHometeamId
+                }
+            val awayTeam =
+                countryWithLeagueAndTeams.teams[0].teams.filter { teamEntity ->
+                    teamEntity.teamKey == event?.matchAwayteamId
+                }
+            Glide.with(holder.itemView).load(homeTeam[0].teamBadge).into(imageViewFirstTeamLogo)
+            Glide.with(holder.itemView).load(awayTeam[0].teamBadge).into(imageViewSecondTeamLogo)
+            textViewFirstTeamName.text = homeTeam[0].teamName
+            textViewSecondTeamName.text = awayTeam[0].teamName
 
-            if (event.matchLive == "0") {
+            if (event?.matchLive == "0") {
                 textViewEventMinutes.visibility = View.INVISIBLE
                 if (event.matchStatus.isNotEmpty() && event.matchStatus == "Finished") {
                     textViewEventHour.visibility = View.INVISIBLE
@@ -74,30 +93,31 @@ class  EventAdapter :
             } else {
                 textViewEventMinutes.apply {
                     visibility = View.VISIBLE
-                    text = event.matchStatus
+                    text = event?.matchStatus
                     setTextColor(resources.getColor(R.color.error))
                 }
                 textViewEventHour.visibility = View.INVISIBLE
                 textViewEventGoalsFirstTeam.apply {
                     visibility = View.VISIBLE
-                    text = "${event.matchHometeamScore}'"
+                    text = "${event?.matchHometeamScore}'"
                     setTextColor(resources.getColor(R.color.error))
                 }
                 textViewEventGoalSecondTeam.apply {
                     visibility = View.VISIBLE
-                    text = "${event.matchAwayteamScore}'"
+                    text = "${event?.matchAwayteamScore}'"
                     setTextColor(resources.getColor(R.color.error))
                 }
 
             }
 
-            holder.itemView.setOnClickListener {
-                val action =
-                    EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
-                        event
-                    )
-                it.findNavController().navigate(action)
-            }
+//            holder.itemView.setOnClickListener {
+//                val action =
+//                    EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
+//                        countryWithLeagueAndTeams,
+//                        event?.matchId!!
+//                    )
+//                it.findNavController().navigate(action)
+//            }
         }
     }
 

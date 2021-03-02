@@ -59,7 +59,7 @@ object Constants {
 
 
     const val DATE_FORMAT_DAY_MONTH_YEAR = "dd.MM.yyyy"
-    const val DATE_FORMAT_YEAR_MONTH_DAY = "yyyy.MM.dd"
+    const val DATE_FORMAT_YEAR_MONTH_DAY = "yyyy-MM-dd"
     const val DATE_FORMAT_DAY_OF_WEEK = "EEEE"
 
     //Event Details

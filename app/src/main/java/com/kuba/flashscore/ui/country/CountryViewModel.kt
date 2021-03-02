@@ -7,14 +7,14 @@ import com.kuba.flashscore.network.mappers.CountryDtoMapper
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.FlashScoreRepository
+import com.kuba.flashscore.repositories.country.CountryRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class CountryViewModel @ViewModelInject constructor(
-    private val repository: FlashScoreRepository,
+    private val repository: CountryRepository,
     private val connectivityManager: ConnectivityManager,
     private val countryDtoMapper: CountryDtoMapper
 ) : ViewModel() {

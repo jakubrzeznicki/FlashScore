@@ -10,13 +10,13 @@ import com.kuba.flashscore.network.mappers.StandingDtoMapper
 import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.FlashScoreRepository
+import com.kuba.flashscore.repositories.standing.StandingRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class StandingsViewModel @ViewModelInject constructor(
-    private val repository: FlashScoreRepository,
+    private val repository: StandingRepository,
     private val connectivityManager: ConnectivityManager,
     private val standingDtoMapper: StandingDtoMapper
 ) : ViewModel() {

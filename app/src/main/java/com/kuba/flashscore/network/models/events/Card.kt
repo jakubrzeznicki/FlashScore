@@ -1,11 +1,9 @@
 package com.kuba.flashscore.network.models.events
 
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+
 data class Card(
     @SerializedName("away_fault")
     val awayFault: String,
@@ -14,4 +12,4 @@ data class Card(
     val homeFault: String,
     val info: String,
     val time: String
-) : Parcelable
+)

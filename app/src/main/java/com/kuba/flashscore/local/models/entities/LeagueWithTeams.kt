@@ -10,6 +10,6 @@ data class LeagueWithTeams(
     @Embedded
     val league: LeagueEntity,
 
-    @Relation(parentColumn = "league_id", entityColumn = "team_league_id", entity = TeamEntity::class)
+    @Relation(parentColumn = "league_id", entityColumn = "league_id", entity = TeamEntity::class)
     val teams: List<TeamEntity> = emptyList()
 ) : Parcelable

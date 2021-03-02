@@ -13,7 +13,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = "team_table")
 data class TeamEntity(
-    @ColumnInfo(name = "team_league_id")
+    @ColumnInfo(name = "league_id")
     val leagueId: String?,
     @ColumnInfo(name = "team_badge")
     val teamBadge: String,

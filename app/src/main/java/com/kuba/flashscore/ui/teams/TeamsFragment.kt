@@ -64,7 +64,7 @@ class TeamsFragment(private val countryAndLeagues: CountryAndLeagues) :
                     Status.SUCCESS -> {
                         val teams = result.data
                         if (teams != null) {
-                            teamsAdapter.teams = teams
+                            teamsAdapter.teams = teams.teams[0].teams
                         }
                     }
                     Status.ERROR -> {

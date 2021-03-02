@@ -11,14 +11,14 @@ import com.kuba.flashscore.network.responses.LeagueResponse
 import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.FlashScoreRepository
+import com.kuba.flashscore.repositories.league.LeagueRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class LeagueViewModel @ViewModelInject constructor(
-    private val repository: FlashScoreRepository,
+    private val repository: LeagueRepository,
     private val connectivityManager: ConnectivityManager,
     private val leagueDtoMapper: LeagueDtoMapper
 ) : ViewModel() {
@@ -39,7 +39,7 @@ class LeagueViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
-                    val response = repository.getLeaguesFromSpecificCountry(countryId)
+                    val response = repository.getLeaguesFromSpecificCountryFromNetwork(countryId)
                     _leaguesFromNetworkStatus.postValue(Event(response))
                     delay(100)
                     repository.insertLeagues(leagueDtoMapper.toLocalList(response.data?.toList()!!, null))

@@ -12,7 +12,7 @@ data class LeagueWithTeamsAndStandings(
     @Embedded
     val league: LeagueEntity,
 
-    @Relation(parentColumn = "league_id", entityColumn = "team_league_id")
+    @Relation(parentColumn = "league_id", entityColumn = "league_id")
     val teams: List<TeamEntity> = emptyList(),
 
     @Relation(parentColumn = "league_id", entityColumn = "league_id")

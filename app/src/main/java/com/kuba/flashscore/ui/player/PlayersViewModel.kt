@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.kuba.flashscore.network.responses.PlayerResponse
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.FlashScoreRepository
+import com.kuba.flashscore.repositories.player.PlayerRepository
 import kotlinx.coroutines.launch
 
 class PlayersViewModel @ViewModelInject constructor(
-    private val repository: FlashScoreRepository
+    private val repository: PlayerRepository
 ) : ViewModel() {
 
     private val _players = MutableLiveData<Event<Resource<PlayerResponse>>>()

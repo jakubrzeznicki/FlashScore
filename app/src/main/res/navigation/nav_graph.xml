@@ -125,7 +125,7 @@
             android:id="@+id/action_eventsListFragment_to_eventDetailsViewPagerFragment"
             app:destination="@id/eventDetailsViewPagerFragment" />
         <argument
-            android:name="countryAndLeagueItem"
+            android:name="countryAndLeague"
             app:argType="com.kuba.flashscore.local.models.entities.CountryAndLeagues" />
     </fragment>
     <fragment
@@ -138,6 +138,9 @@
             app:destination="@id/eventsListFragment" />
         <argument
             android:name="eventItem"
-            app:argType="com.kuba.flashscore.network.models.events.EventDto" />
+            app:argType="com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams" />
+        <argument
+            android:name="eventId"
+            app:argType="string" />
     </fragment>
 </navigation>

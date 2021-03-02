@@ -21,6 +21,9 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.local.models.entities.event.EventEntity
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
@@ -28,8 +31,8 @@ import com.kuba.flashscore.other.DateUtils
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import timber.log.Timber
 import java.util.*
 
 
@@ -45,8 +48,11 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private lateinit var eventsAdapter: EventAdapter
 
     private lateinit var countryAndLeague: CountryAndLeagues
-    private lateinit var leagueId: String
+    private var eventsList: List<EventEntity> = mutableListOf()
+    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
     private lateinit var fromToDate: String
+    private var firstFetch = true
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,79 +60,48 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         _binding = FragmentEventsListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        countryAndLeague =
-            args.countryAndLeagueItem
+        countryAndLeague = args.countryAndLeague
+        fromToDate = DateUtils.formatDateCurrentDate(DATE_FORMAT_YEAR_MONTH_DAY)
 
-        setHasOptionsMenu(true)
-
-        (activity as AppCompatActivity).supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-            title = countryAndLeague.leagues[0].leagueName.toUpperCase(Locale.ROOT)
-            subtitle = "${DateUtils.formatDateCurrentDate(DATE_FORMAT_DAY_MONTH_YEAR)}, ${
-                DateUtils.formatDateCurrentDate(
-                    DATE_FORMAT_DAY_OF_WEEK
-                ).toUpperCase()
-            }"
-        }
-        goToTableOnClick(countryAndLeague)
+        setTitleAndSubtitle(countryAndLeague, true, null)
         setInformationAboutCountry(countryAndLeague)
 
-        val dateString =
-            (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
+            launch(Dispatchers.Main) {
+                getEvents(
+                    countryAndLeague.leagues[0].leagueId,
+                    fromToDate
+                )
+            }
+        }
+//        getCountryWithLeagueAndTeams(
+//            countryAndLeague.leagues[0].leagueId
+//        )
+        setHasOptionsMenu(true)
+        Timber.d("JUREKKKK I DEJZIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIiiiii")
 
-        leagueId = countryAndLeague.leagues[0].leagueId
-        fromToDate = DateUtils.parseAndFormatDate(
-            dateString as String,
-            DATE_FORMAT_DAY_MONTH_YEAR,
-            DATE_FORMAT_YEAR_MONTH_DAY
-        )
+        //  goToTableOnClick(countryWithLeagueAndTeams)
 
-        getEvents(
-            leagueId,
-            fromToDate
-        )
+//        val dateString =
+//            (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
+//
+//        leagueId = leagueId
+//        fromToDate = DateUtils.parseAndFormatDate(
+//            dateString as String,
+//            DATE_FORMAT_DAY_MONTH_YEAR,
+//            DATE_FORMAT_YEAR_MONTH_DAY
+//        )
 
         return view
     }
 
-    private fun goToTableOnClick(countryAndLeagues: CountryAndLeagues) {
-        binding.apply {
-            imageButtonGoToLeagueTable.setOnClickListener {
-                val action =
-                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-                        countryAndLeagues
-                    )
-                it.findNavController().navigate(action)
-            }
-
-            constraintLayoutEventListTable.setOnClickListener {
-                val action =
-                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-                        countryAndLeagues
-                    )
-                it.findNavController().navigate(action)
-            }
-        }
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val dateString =
-            (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
+        subscribeToObservers(countryAndLeague.leagues[0].leagueId, fromToDate)
 
-        leagueId = countryAndLeague.leagues[0].leagueId
-        fromToDate = DateUtils.parseAndFormatDate(
-            dateString as String,
-            DATE_FORMAT_DAY_MONTH_YEAR,
-            DATE_FORMAT_YEAR_MONTH_DAY
-        )
-
-        subscribeToObservers(leagueId, fromToDate)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -134,17 +109,89 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
 
+//    private fun goToTableOnClick(countryWithLeague: CountryAndLeagues) {
+//        binding.apply {
+//            imageButtonGoToLeagueTable.setOnClickListener {
+//                val action =
+//                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
+//                        countryWithLeague
+//                    )
+//                it.findNavController().navigate(action)
+//            }
+//
+//            constraintLayoutEventListTable.setOnClickListener {
+//                val action =
+//                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
+//                        countryWithLeague
+//                    )
+//                it.findNavController().navigate(action)
+//            }
+//        }
+//    }
+
     private fun subscribeToObservers(leagueId: String, fromTo: String) {
-        viewModel.events.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
+        viewModel.teamsFromDb.observe(viewLifecycleOwner, Observer { items ->
+            Timber.d("JUREKKKKKK $items")
+            //setupRecyclerView(items)
+            items?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
-                        val events = result.data
-                        if (events != null) {
-                            eventsAdapter.events = events
+                        if (result != null) {
+                            countryWithLeagueAndTeams = result.data!!
                         }
                     }
                     Status.ERROR -> {
+                        Timber.d("JUREKKK problem with network, error")
+                        Snackbar.make(
+                            requireView(),
+                            result.message ?: "Default No Internet",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    Status.LOADING -> {
+                    }
+                }
+            }
+            //  eventsAdapter.countryWithLeagueAndTeams = items
+            //delay(1000)
+
+
+        })
+        viewModel.eventsFromDb.observe(viewLifecycleOwner, Observer { events ->
+            Timber.d("JUREKKKKKK $events")
+            //eventsAdapter.events = events
+            events?.getContentIfNotHandled()?.let { result ->
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        eventsList = result.data ?: emptyList()
+                    }
+                    Status.ERROR -> {
+                        Timber.d("JUREKKK problem with network, error")
+                        Snackbar.make(
+                            requireView(),
+                            result.message ?: "Default No Internet",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    Status.LOADING -> {
+                    }
+                }
+            }
+
+        })
+        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+            if (isNetwork) {
+                Timber.d("JUREKKK fetch again data")
+                //  getEvents(leagueId, fromTo)
+            }
+        })
+        viewModel.eventsFromNetworkStatus.observe(viewLifecycleOwner, Observer {
+            it?.getContentIfNotHandled()?.let { result ->
+                when (result.status) {
+                    Status.SUCCESS -> {
+                    }
+                    Status.ERROR -> {
+                        Timber.d("JUREKKK problem with network, error")
                         Snackbar.make(
                             requireView(),
                             result.message ?: "Default No Internet",
@@ -156,11 +203,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 }
             }
         })
-//        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
-//            if (isNetwork) {
-//                getEvents(leagueId, fromTo)
-//            }
-//        })
+
 
     }
 
@@ -168,15 +211,29 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getEventsFromSpecificLeague(leagueId, fromTo, fromTo)
+            val events =
+                async { viewModel.getEventsFromSpecificLeague(leagueId, fromTo, fromTo) }.await()
+            val teams = async { viewModel.getTeamsFormSpecificLeague(leagueId) }.await()
+            Timber.d("JUREKKKKKKKK $leagueId, $fromTo")
+            Timber.d("JUREKKK in fragment ")
             setupRecyclerView()
-        }
 
+        }
     }
+//
+//    private fun getCountryWithLeagueAndTeams(leagueId: String) {
+//        var job: Job? = null
+//        job?.cancel()
+//        job = lifecycleScope.launch {
+//        }
+//    }
+
 
     private fun setupRecyclerView() {
+        eventsAdapter = EventAdapter()
+        eventsAdapter.countryWithLeagueAndTeams = countryWithLeagueAndTeams
+        eventsAdapter.events = eventsList
         binding.recyclerViewEvents.apply {
-            eventsAdapter = EventAdapter()
             adapter = eventsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
@@ -188,10 +245,38 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         }
     }
 
+    private fun setTitleAndSubtitle(
+        countryAndLeagues: CountryAndLeagues,
+        isCurrentDate: Boolean,
+        date: Date?
+    ) {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title =
+                countryAndLeagues.leagues[0].leagueName.toUpperCase(
+                    Locale.ROOT
+                )
+            subtitle = if (isCurrentDate) {
+                "${DateUtils.formatDateCurrentDate(DATE_FORMAT_DAY_MONTH_YEAR)}, ${
+                    DateUtils.formatDateCurrentDate(
+                        DATE_FORMAT_DAY_OF_WEEK
+                    ).toUpperCase()
+                }"
+            } else {
+                "${DateUtils.formatDate(date!!, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
+                    DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
+                }"
+            }
+        }
+    }
+
     private fun setInformationAboutCountry(countryAndLeagues: CountryAndLeagues) {
         binding.apply {
             textViewCountryName.text = countryAndLeagues.country.countryName
-            Glide.with(requireContext()).load(countryAndLeagues.country.countryLogo)
+            textViewLeagueName.text = countryAndLeagues.leagues[0].leagueName
+            Glide.with(requireContext())
+                .load(countryAndLeagues.country.countryLogo)
                 .into(imageViewCountryFlag)
         }
     }
@@ -208,8 +293,8 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 return true
             }
             R.id.actionMenuPickDate -> {
-                setDatePickerDialog(requireContext(), countryAndLeague)
-                subscribeToObservers(leagueId, fromToDate)
+                setDatePickerDialog(requireContext())
+                subscribeToObservers(countryAndLeague.leagues[0].leagueId, fromToDate)
                 return true
             }
         }
@@ -217,7 +302,9 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun setDatePickerDialog(context: Context, countryAndLeagues: CountryAndLeagues) {
+    fun setDatePickerDialog(
+        context: Context
+    ) {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
             context,
@@ -227,17 +314,15 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                     "$dayOfMonth.${month + 1}.$year",
                     DATE_FORMAT_DAY_MONTH_YEAR
                 )
-                (activity as AppCompatActivity).supportActionBar?.apply {
-                    title = countryAndLeagues.leagues[0].leagueName.toUpperCase(Locale.ROOT)
-                    subtitle =
-                        "${DateUtils.formatDate(date, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
-                            DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
-                        }"
-                }
+                setTitleAndSubtitle(countryAndLeague, false, date)
+                firstFetch = false
                 getEvents(
-                    leagueId = countryAndLeagues.leagues[0].leagueId,
+                    leagueId = countryAndLeague.leagues[0].leagueId,
                     DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
                 )
+//                getCountryWithLeagueAndTeams(
+//                    leagueId = countryAndLeague.leagues[0].leagueId
+//                )
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -245,6 +330,4 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         )
         datePickerDialog.show()
     }
-
-
 }

@@ -3,12 +3,8 @@ package com.kuba.flashscore.di
 import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kuba.flashscore.R
 import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
-import com.kuba.flashscore.repositories.FakeFlashScoreRepositoryAndroidTest
-import com.kuba.flashscore.repositories.FlashScoreRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

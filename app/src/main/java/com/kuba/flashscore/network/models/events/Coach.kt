@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class Coach(
     @SerializedName("lineup_number")
     val lineupNumber: String,
@@ -15,4 +14,4 @@ data class Coach(
     val lineupPosition: String,
     @SerializedName("player_key")
     val playerKey: String
-): Parcelable
+)

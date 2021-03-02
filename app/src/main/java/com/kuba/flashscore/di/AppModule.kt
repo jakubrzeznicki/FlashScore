@@ -7,12 +7,24 @@ import com.bumptech.glide.request.RequestOptions
 import com.kuba.flashscore.R
 import com.kuba.flashscore.local.*
 import com.kuba.flashscore.local.database.FlashScoreDatabase
+import com.kuba.flashscore.local.models.event.*
 import com.kuba.flashscore.network.ApiFootballService
 import com.kuba.flashscore.network.mappers.*
+import com.kuba.flashscore.network.mappers.event.EventDtoMapper
 import com.kuba.flashscore.other.Constants.BASE_URL
 import com.kuba.flashscore.other.Constants.DATABASE_NAME
-import com.kuba.flashscore.repositories.DefaultFlashScoreRepository
-import com.kuba.flashscore.repositories.FlashScoreRepository
+import com.kuba.flashscore.repositories.country.CountryRepository
+import com.kuba.flashscore.repositories.country.DefaultCountryRepository
+import com.kuba.flashscore.repositories.event.DefaultEventRepository
+import com.kuba.flashscore.repositories.event.EventRepository
+import com.kuba.flashscore.repositories.league.DefaultLeagueRepository
+import com.kuba.flashscore.repositories.league.LeagueRepository
+import com.kuba.flashscore.repositories.player.DefaultPlayerRepository
+import com.kuba.flashscore.repositories.player.PlayerRepository
+import com.kuba.flashscore.repositories.standing.DefaultStandingRepository
+import com.kuba.flashscore.repositories.standing.StandingRepository
+import com.kuba.flashscore.repositories.team.DefaultTeamRepository
+import com.kuba.flashscore.repositories.team.TeamRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,6 +79,7 @@ object AppModule {
         database: FlashScoreDatabase
     ) = database.teamDao()
 
+
     @Singleton
     @Provides
     fun provideStandingDao(
@@ -76,24 +89,133 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideDefaultShoppingRepository(
-        countryDao: CountryDao,
+    fun provideCardDao(
+        database: FlashScoreDatabase
+    ) = database.cardDao()
+
+
+    @Singleton
+    @Provides
+    fun provideGoalscorerDao(
+        database: FlashScoreDatabase
+    ) = database.goalscorerDao()
+
+
+    @Singleton
+    @Provides
+    fun provideLineupDao(
+        database: FlashScoreDatabase
+    ) = database.lineupDao()
+
+
+    @Singleton
+    @Provides
+    fun provideStatisticDao(
+        database: FlashScoreDatabase
+    ) = database.statisticDao()
+
+
+    @Singleton
+    @Provides
+    fun provideSubstitutionDao(
+        database: FlashScoreDatabase
+    ) = database.substitutionDao()
+
+
+    @Singleton
+    @Provides
+    fun provideEventDao(
+        database: FlashScoreDatabase
+    ) = database.eventDao()
+
+
+    @Singleton
+    @Provides
+    fun provideLeagueRepository(
         leagueDao: LeagueDao,
+        api: ApiFootballService
+    ) =
+        DefaultLeagueRepository(
+            leagueDao,
+            api
+        ) as LeagueRepository
+
+    @Singleton
+    @Provides
+    fun provideTeamRepository(
         coachDao: CoachDao,
         playerDao: PlayerDao,
         teamDao: TeamDao,
-        standingDao: StandingDao,
+        teamDtoMapper: TeamDtoMapper,
+        coachDtoMapper: CoachDtoMapper,
+        playerDtoMapper: PlayerDtoMapper,
         api: ApiFootballService
     ) =
-        DefaultFlashScoreRepository(
-            countryDao,
-            leagueDao,
+        DefaultTeamRepository(
             coachDao,
             playerDao,
             teamDao,
+            teamDtoMapper,
+            coachDtoMapper,
+            playerDtoMapper,
+            api
+        ) as TeamRepository
+
+    @Singleton
+    @Provides
+    fun provideStandingRepository(
+        standingDao: StandingDao,
+        api: ApiFootballService
+    ) =
+        DefaultStandingRepository(
             standingDao,
             api
-        ) as FlashScoreRepository
+        ) as StandingRepository
+
+    @Singleton
+    @Provides
+    fun provideEventRepository(
+        cardDao: CardDao,
+        goalscorerDao: GoalscorerDao,
+        lineupDao: LineupDao,
+        statisticDao: StatisticDao,
+        substitutionDao: SubstitutionDao,
+        eventsDao: EventDao,
+        eventDtoMapper: EventDtoMapper,
+        api: ApiFootballService
+    ) =
+        DefaultEventRepository(
+            cardDao,
+            goalscorerDao,
+            lineupDao,
+            statisticDao,
+            substitutionDao,
+            eventsDao,
+            eventDtoMapper,
+            api
+        ) as EventRepository
+
+    @Singleton
+    @Provides
+    fun provideCountryRepository(
+        countryDao: CountryDao,
+        api: ApiFootballService
+    ) =
+        DefaultCountryRepository(
+            countryDao,
+            api
+        ) as CountryRepository
+
+    @Singleton
+    @Provides
+    fun providePlayerRepository(
+        playerDao: PlayerDao,
+        api: ApiFootballService
+    ) =
+        DefaultPlayerRepository(
+            playerDao,
+            api
+        ) as PlayerRepository
 
     @Singleton
     @Provides
@@ -141,6 +263,12 @@ object AppModule {
     @Provides
     fun provideStandingDtoMapper(): StandingDtoMapper {
         return StandingDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideEventDtoMapper(): EventDtoMapper {
+        return EventDtoMapper()
     }
 
 
