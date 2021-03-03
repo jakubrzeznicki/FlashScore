@@ -66,7 +66,6 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         super.onViewCreated(view, savedInstanceState)
 
         subscribeToObservers(country)
-
     }
 
 
@@ -82,9 +81,6 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
                 when (result.status) {
                     Status.SUCCESS -> {
                         val leagues = result.data
-                        Timber.d("DEJZI ${leagues}")
-
-                        Timber.d("JUREK fetch leagues in fragment form db leag aaaa")
                         if (leagues != null) {
                             leagueAdapter.league = leagues.leagues
                         }

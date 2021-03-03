@@ -17,7 +17,7 @@ import com.kuba.flashscore.local.models.entities.event.EventEntity
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
 import timber.log.Timber
 
-class EventAdapter:
+class EventAdapter :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     inner class EventViewHolder(val binding: EventItemBinding) :
@@ -29,14 +29,14 @@ class EventAdapter:
                 oldItem: EventEntity,
                 newItem: EventEntity
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.matchId == newItem.matchId
             }
 
             override fun areContentsTheSame(
                 oldItem: EventEntity,
                 newItem: EventEntity
             ): Boolean {
-                return oldItem.hashCode() == newItem.hashCode()
+                return oldItem == newItem
             }
         }
 
@@ -46,7 +46,7 @@ class EventAdapter:
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-     lateinit var  countryWithLeagueAndTeams: CountryWithLeagueAndTeams
+    lateinit var countryWithLeagueWithEventsAndTeams: CountryWithLeagueWithEventsAndTeams
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = EventItemBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -58,11 +58,11 @@ class EventAdapter:
         holder.binding.apply {
             val event = events[position]
             val homeTeam =
-                countryWithLeagueAndTeams.teams[0].teams.filter { teamEntity ->
+                countryWithLeagueWithEventsAndTeams.leagueWithTeams[0].teams.filter { teamEntity ->
                     teamEntity.teamKey == event?.matchHometeamId
                 }
             val awayTeam =
-                countryWithLeagueAndTeams.teams[0].teams.filter { teamEntity ->
+                countryWithLeagueWithEventsAndTeams.leagueWithTeams[0].teams.filter { teamEntity ->
                     teamEntity.teamKey == event?.matchAwayteamId
                 }
             Glide.with(holder.itemView).load(homeTeam[0].teamBadge).into(imageViewFirstTeamLogo)
@@ -110,14 +110,14 @@ class EventAdapter:
 
             }
 
-//            holder.itemView.setOnClickListener {
-//                val action =
-//                    EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
-//                        countryWithLeagueAndTeams,
-//                        event?.matchId!!
-//                    )
-//                it.findNavController().navigate(action)
-//            }
+            holder.itemView.setOnClickListener {
+                val action =
+                    EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
+                        countryWithLeagueWithEventsAndTeams,
+                        event?.matchId!!
+                    )
+                it.findNavController().navigate(action)
+            }
         }
     }
 

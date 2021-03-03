@@ -48,8 +48,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private lateinit var eventsAdapter: EventAdapter
 
     private lateinit var countryAndLeague: CountryAndLeagues
-    private var eventsList: List<EventEntity> = mutableListOf()
-    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
     private lateinit var fromToDate: String
     private var firstFetch = true
 
@@ -66,41 +64,22 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         setTitleAndSubtitle(countryAndLeague, true, null)
         setInformationAboutCountry(countryAndLeague)
 
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
-        coroutineScope.launch {
-            launch(Dispatchers.Main) {
-                getEvents(
-                    countryAndLeague.leagues[0].leagueId,
-                    fromToDate
-                )
-            }
+        if (firstFetch) {
+            getEvents(
+                countryAndLeague.leagues[0].leagueId,
+                fromToDate
+            )
         }
-//        getCountryWithLeagueAndTeams(
-//            countryAndLeague.leagues[0].leagueId
-//        )
+
         setHasOptionsMenu(true)
-        Timber.d("JUREKKKK I DEJZIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIiiiii")
 
-        //  goToTableOnClick(countryWithLeagueAndTeams)
-
-//        val dateString =
-//            (activity as AppCompatActivity).supportActionBar?.subtitle?.takeWhile { it != ',' }
-//
-//        leagueId = leagueId
-//        fromToDate = DateUtils.parseAndFormatDate(
-//            dateString as String,
-//            DATE_FORMAT_DAY_MONTH_YEAR,
-//            DATE_FORMAT_YEAR_MONTH_DAY
-//        )
-
+        goToTableOnClick(countryAndLeague)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        subscribeToObservers(countryAndLeague.leagues[0].leagueId, fromToDate)
-
+        subscribeToObservers()
     }
 
     override fun onDestroyView() {
@@ -109,131 +88,74 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
 
-//    private fun goToTableOnClick(countryWithLeague: CountryAndLeagues) {
-//        binding.apply {
-//            imageButtonGoToLeagueTable.setOnClickListener {
-//                val action =
-//                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-//                        countryWithLeague
-//                    )
-//                it.findNavController().navigate(action)
-//            }
-//
-//            constraintLayoutEventListTable.setOnClickListener {
-//                val action =
-//                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-//                        countryWithLeague
-//                    )
-//                it.findNavController().navigate(action)
-//            }
-//        }
-//    }
+    private fun goToTableOnClick(countryWithLeague: CountryAndLeagues) {
+        binding.apply {
+            imageButtonGoToLeagueTable.setOnClickListener {
+                val action =
+                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
+                        countryWithLeague
+                    )
+                it.findNavController().navigate(action)
+            }
 
-    private fun subscribeToObservers(leagueId: String, fromTo: String) {
-        viewModel.teamsFromDb.observe(viewLifecycleOwner, Observer { items ->
-            Timber.d("JUREKKKKKK $items")
-            //setupRecyclerView(items)
-            items?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        if (result != null) {
-                            countryWithLeagueAndTeams = result.data!!
+            constraintLayoutEventListTable.setOnClickListener {
+                val action =
+                    EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
+                        countryWithLeague
+                    )
+                it.findNavController().navigate(action)
+            }
+        }
+    }
+
+    private fun subscribeToObservers() {
+        viewModel.countryWithLeagueWithTeamsAndEvents.observe(
+            viewLifecycleOwner,
+            Observer { items ->
+                items?.getContentIfNotHandled()?.let { result ->
+                    when (result.status) {
+                        Status.SUCCESS -> {
+                            if (result.data != null) {
+                                eventsAdapter.events =
+                                    result.data.leagueWithEvents[0].events.filter { it?.matchDate == fromToDate }
+                                eventsAdapter.countryWithLeagueWithEventsAndTeams = result.data
+
+                            }
+                        }
+                        Status.ERROR -> {
+                            Snackbar.make(
+                                requireView(),
+                                result.message ?: "Default No Internet",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        Status.LOADING -> {
                         }
                     }
-                    Status.ERROR -> {
-                        Timber.d("JUREKKK problem with network, error")
-                        Snackbar.make(
-                            requireView(),
-                            result.message ?: "Default No Internet",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Status.LOADING -> {
-                    }
                 }
-            }
-            //  eventsAdapter.countryWithLeagueAndTeams = items
-            //delay(1000)
-
-
-        })
-        viewModel.eventsFromDb.observe(viewLifecycleOwner, Observer { events ->
-            Timber.d("JUREKKKKKK $events")
-            //eventsAdapter.events = events
-            events?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        eventsList = result.data ?: emptyList()
-                    }
-                    Status.ERROR -> {
-                        Timber.d("JUREKKK problem with network, error")
-                        Snackbar.make(
-                            requireView(),
-                            result.message ?: "Default No Internet",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-
-        })
-        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
-            if (isNetwork) {
-                Timber.d("JUREKKK fetch again data")
-                //  getEvents(leagueId, fromTo)
-            }
-        })
-        viewModel.eventsFromNetworkStatus.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                    }
-                    Status.ERROR -> {
-                        Timber.d("JUREKKK problem with network, error")
-                        Snackbar.make(
-                            requireView(),
-                            result.message ?: "Default No Internet",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-        })
-
-
+            })
+//        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+//            if (isNetwork) {
+//                getEvents(
+//                    countryAndLeague.leagues[0].leagueId,
+//                    fromToDate
+//                )
+//            }
+//        })
     }
 
     private fun getEvents(leagueId: String, fromTo: String) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            val events =
-                async { viewModel.getEventsFromSpecificLeague(leagueId, fromTo, fromTo) }.await()
-            val teams = async { viewModel.getTeamsFormSpecificLeague(leagueId) }.await()
-            Timber.d("JUREKKKKKKKK $leagueId, $fromTo")
-            Timber.d("JUREKKK in fragment ")
+            viewModel.getCountryWithLeagueWithTeamsAndEvents(leagueId, fromTo, fromTo)
             setupRecyclerView()
-
         }
     }
-//
-//    private fun getCountryWithLeagueAndTeams(leagueId: String) {
-//        var job: Job? = null
-//        job?.cancel()
-//        job = lifecycleScope.launch {
-//        }
-//    }
-
 
     private fun setupRecyclerView() {
-        eventsAdapter = EventAdapter()
-        eventsAdapter.countryWithLeagueAndTeams = countryWithLeagueAndTeams
-        eventsAdapter.events = eventsList
         binding.recyclerViewEvents.apply {
+            eventsAdapter = EventAdapter()
             adapter = eventsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
@@ -294,7 +216,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
             }
             R.id.actionMenuPickDate -> {
                 setDatePickerDialog(requireContext())
-                subscribeToObservers(countryAndLeague.leagues[0].leagueId, fromToDate)
+                subscribeToObservers()
                 return true
             }
         }
@@ -316,18 +238,19 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 )
                 setTitleAndSubtitle(countryAndLeague, false, date)
                 firstFetch = false
+                fromToDate = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
+
                 getEvents(
                     leagueId = countryAndLeague.leagues[0].leagueId,
                     DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
                 )
-//                getCountryWithLeagueAndTeams(
-//                    leagueId = countryAndLeague.leagues[0].leagueId
-//                )
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.show()
+
     }
+
 }

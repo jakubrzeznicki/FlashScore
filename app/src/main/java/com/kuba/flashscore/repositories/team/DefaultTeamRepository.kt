@@ -48,7 +48,7 @@ class DefaultTeamRepository @Inject constructor(
                         )
                     )
 
-                    it?.toList().forEach { teamDtoItem ->
+                    it.toList().forEach { teamDtoItem ->
                         insertPlayers(
                             playerDtoMapper.toLocalList(
                                 teamDtoItem.players,

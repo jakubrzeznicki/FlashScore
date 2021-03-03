@@ -6,10 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventDetailAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
+import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.local.models.incident.INCIDENTTYPE
 import com.kuba.flashscore.local.models.incident.Incident
 import com.kuba.flashscore.local.models.incident.IncidentHeader
@@ -21,9 +26,13 @@ import com.kuba.flashscore.other.Constants.INCIDENT_HEADER_OVERTIME
 import com.kuba.flashscore.other.Constants.MATCH_STATUS_FINISHED
 import com.kuba.flashscore.other.Constants.RESULT_NULL_TO_NULL
 import com.kuba.flashscore.other.Constants.SUBSTITUTION_DIVIDER
+import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.events.EventsViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 
-class EventDetailsFragment(private val event: EventDto) :
+class EventDetailsFragment(private val eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions) :
     Fragment(R.layout.fragment_event_details) {
 
     private var _binding: FragmentEventDetailsBinding? = null
@@ -46,7 +55,7 @@ class EventDetailsFragment(private val event: EventDto) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (event.matchStatus == MATCH_STATUS_FINISHED) {
+        if (eventDetails.eventEntity.matchStatus == MATCH_STATUS_FINISHED) {
             binding.constraintLayoutEventDetailsInformationAboutMatch.visibility = View.VISIBLE
             setInformationAboutFirstHalf()
             setupRecyclerView()
@@ -65,14 +74,14 @@ class EventDetailsFragment(private val event: EventDto) :
     private fun setInformationAboutFirstHalf() {
         binding.apply {
             textViewInformationAboutFirstHalfResult.text =
-                "${event.matchHometeamHalftimeScore} - ${event.matchAwayteamHalftimeScore}"
+                "${eventDetails.eventEntity.matchHometeamHalftimeScore} - ${eventDetails.eventEntity.matchAwayteamHalftimeScore}"
         }
     }
 
     private fun setInformationAboutRefereeAndStadium() {
         binding.apply {
-            textViewRefereeName.text = event.matchReferee
-            textViewStadiumName.text = event.matchStadium
+            textViewRefereeName.text = eventDetails.eventEntity.matchReferee
+            textViewStadiumName.text = eventDetails.eventEntity.matchStadium
         }
     }
 
@@ -129,13 +138,13 @@ class EventDetailsFragment(private val event: EventDto) :
 
     private fun getGoalscorersFromEventDtoToIncidentList(): List<IncidentItem> {
         val goalscorersList = mutableListOf<IncidentItem>()
-        goalscorersList.addAll(event.goalscorer.map { goal ->
+        goalscorersList.addAll(eventDetails.goalscorers.map { goal ->
             IncidentItem(
-                if (goal.homeScorerId.isNotEmpty()) goal.homeScorer else goal.awayScorer,
-                if (goal.homeScorerId.isNotEmpty()) goal.homeAssist else goal.awayAssist,
+                goal.scorerId,
+                goal.assistId,
                 goal.time,
                 INCIDENTTYPE.GOAL,
-                goal.homeScorerId.isNotEmpty(),
+                goal.whichTeam,
                 goal.score
             )
         })
@@ -145,13 +154,13 @@ class EventDetailsFragment(private val event: EventDto) :
 
     private fun getCardsFromEventDtoToIncidentList(): List<IncidentItem> {
         val cardsList = mutableListOf<IncidentItem>()
-        cardsList.addAll(event.cards.map { card ->
+        cardsList.addAll(eventDetails.cards.map { card ->
             IncidentItem(
-                if (card.homeFault.isNotEmpty()) card.homeFault else card.awayFault,
+                card.fault,
                 "",
                 card.time,
                 if (card.card == CARD_YELLOW) INCIDENTTYPE.YELLOW_CARD else INCIDENTTYPE.RED_CARD,
-                card.homeFault.isNotEmpty()
+                card.whichTeam
             )
         })
         return cardsList
@@ -160,7 +169,7 @@ class EventDetailsFragment(private val event: EventDto) :
     private fun getSubstitutionsFromEventDtoToIncidentItemList(): List<IncidentItem> {
         val substitutionsList = mutableListOf<IncidentItem>()
         substitutionsList.apply {
-            addAll(event.substitutions.home.map { sub ->
+            addAll(eventDetails.substitutions.map { sub ->
                 val subPlayer = sub.substitution.split(SUBSTITUTION_DIVIDER)
                 IncidentItem(
                     subPlayer[1].trim(),
@@ -168,16 +177,6 @@ class EventDetailsFragment(private val event: EventDto) :
                     sub.time,
                     INCIDENTTYPE.SUBSTITUTION,
                     true
-                )
-            })
-            addAll(event.substitutions.away.map { sub ->
-                val subPlayer = sub.substitution.split(SUBSTITUTION_DIVIDER)
-                IncidentItem(
-                    subPlayer[1].trim(),
-                    subPlayer[0].trim(),
-                    sub.time,
-                    INCIDENTTYPE.SUBSTITUTION,
-                    false
                 )
             })
         }

@@ -4,6 +4,7 @@ import androidx.room.*
 import com.kuba.flashscore.local.models.entities.*
 import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
 import com.kuba.flashscore.local.models.entities.event.EventEntity
+import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 
 @Dao
 interface EventDao {
@@ -17,9 +18,18 @@ interface EventDao {
         date: String
     ): List<EventEntity>
 
-    @Query("SELECT * FROM countries_table c INNER JOIN leagues_table l ON c.country_id = l.league_country_id INNER JOIN event_table e ON l.league_id = e.league_id WHERE l.league_id = :leagueId AND e.match_date = :date")
+    @Transaction
+    @Query("SELECT * FROM countries_table c  JOIN leagues_table l ON c.country_id = l.league_country_id  JOIN event_table e ON l.league_id = e.league_id WHERE e.league_id = :leagueId AND e.match_date = :date")
     suspend fun getCountryWithLeagueWithTeamsAndEvents(
         leagueId: String,
         date: String
     ): CountryWithLeagueWithEventsAndTeams
+
+    @Transaction
+    @Query("SELECT * FROM event_table c WHERE match_id = :eventId")
+    suspend fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
+        eventId: String
+    ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+
+
 }

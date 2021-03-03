@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -18,8 +20,10 @@ import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
 import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
 import com.kuba.flashscore.local.models.entities.event.EventEntity
+import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.network.models.PlayerDto
 import com.kuba.flashscore.network.models.events.EventDto
+import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
 import com.kuba.flashscore.other.Constants.EVENT_DERAILS_TAB
 import com.kuba.flashscore.other.Constants.EVENT_HEAD_2_HEAD_TAB
@@ -29,14 +33,21 @@ import com.kuba.flashscore.other.Constants.EVENT_TEAM_TAB
 import com.kuba.flashscore.other.Constants.PLAYER_AGE
 import com.kuba.flashscore.other.Constants.PLAYER_NUMBER
 import com.kuba.flashscore.ui.events.EventsListFragmentArgs
+import com.kuba.flashscore.ui.events.EventsViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 
+@AndroidEntryPoint
 class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_view_pager) {
 
     private var _binding: FragmentEventDetailsViewPagerBinding? = null
     private val binding get() = _binding!!
 
     private val args: EventDetailsViewPagerFragmentArgs by navArgs()
+
+    private val viewModel: EventsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +70,8 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
 
         setInformationCountryLeagueAndScore(event, eventId)
 
-        setEventViewPageAdapterAndTabLayout(event)
+        getEventDetails(eventId)
+        subscribeToObservers()
 
         return view
     }
@@ -70,10 +82,13 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
     }
 
 
-    private fun setEventViewPageAdapterAndTabLayout(event: CountryWithLeagueWithEventsAndTeams) {
+    private fun setEventViewPageAdapterAndTabLayout(
+        eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions:
+        EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+    ) {
 
         val eventFragmentList = arrayListOf<Fragment>(
-            // EventDetailsFragment(event),
+            EventDetailsFragment(eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions),
             //EventStatisticsFragment(event),
             //EventTeamsFragment(event),
             //EventHead2HeadFragment(event),
@@ -118,8 +133,10 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
     ) {
         binding.apply {
             val eventItem = event.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]
-            val teamHomeItem = event.leagueWithTeams[0].teams.filter { it.teamKey == eventItem?.matchHometeamId }[0]
-            val teamAwayItem = event.leagueWithTeams[0].teams.filter { it.teamKey == eventItem?.matchAwayteamId }[0]
+            val teamHomeItem =
+                event.leagueWithTeams[0].teams.filter { it.teamKey == eventItem?.matchHometeamId }[0]
+            val teamAwayItem =
+                event.leagueWithTeams[0].teams.filter { it.teamKey == eventItem?.matchAwayteamId }[0]
             textViewCountryName.text = event.countryEntity.countryName
             Glide.with(requireContext()).load(event.countryEntity.countryLogo)
                 .into(imageViewCountryFlag)
@@ -142,6 +159,22 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
 
         }
     }
+
+    private fun getEventDetails(eventId: String) {
+        var job: Job? = null
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId)
+        }
+    }
+
+    private fun subscribeToObservers() {
+        viewModel.eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.observe(
+            viewLifecycleOwner, androidx.lifecycle.Observer {
+                setEventViewPageAdapterAndTabLayout(it)
+            })
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

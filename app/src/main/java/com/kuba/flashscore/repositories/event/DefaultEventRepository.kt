@@ -16,6 +16,7 @@ import com.kuba.flashscore.other.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -27,9 +28,6 @@ class DefaultEventRepository @Inject constructor(
     private val substitutionDao: SubstitutionDao,
     private val eventsDao: EventDao,
     private val eventDtoMapper: EventDtoMapper,
-    private val teamDtoMapper: TeamDtoMapper,
-    private val coachDtoMapper: CoachDtoMapper,
-    private val playerDtoMapper: PlayerDtoMapper,
     private val apiFootballService: ApiFootballService
 ) : EventRepository {
     override suspend fun insertCards(cards: List<CardEntity>) {
@@ -118,14 +116,30 @@ class DefaultEventRepository @Inject constructor(
                             )
                         )
                     }
-                    Resource.success(eventsDao.getEventsFromSpecificLeague(leagueId, from))
+                    return Resource.success(eventsDao.getEventsFromSpecificLeague(leagueId, from))
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
+            Resource.error(ERROR_MESSAGE, null)
         }
     }
+
+    override suspend fun getCountryWithLeagueWithTeamsAndEvents(
+        leagueId: String,
+        from: String,
+        to: String
+    ): CountryWithLeagueWithEventsAndTeams {
+        return eventsDao.getCountryWithLeagueWithTeamsAndEvents(leagueId, from)
+    }
+
+    override suspend fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
+        eventId: String
+    ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions {
+
+        return eventsDao.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId)
+    }
+
 
 }

@@ -11,10 +11,24 @@ interface EventRepository {
     suspend fun insertStatistics(statistics: List<StatisticEntity>)
     suspend fun insertSubstitutions(substitutions: List<SubstitutionsEntity>)
     suspend fun insertEvents(events: List<EventEntity>)
-    suspend fun getEventsFromSpecificLeaguesFromDb(leagueId: String, date: String): List<EventEntity>
+    suspend fun getEventsFromSpecificLeaguesFromDb(
+        leagueId: String,
+        date: String
+    ): List<EventEntity>
+
     suspend fun getEventsFromSpecificLeaguesFromNetwork(
         leagueId: String,
         from: String,
         to: String
     ): Resource<List<EventEntity>>
+
+    suspend fun getCountryWithLeagueWithTeamsAndEvents(
+        leagueId: String,
+        from: String,
+        to: String
+    ): CountryWithLeagueWithEventsAndTeams
+
+    suspend fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
+        eventId: String
+    ) : EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 }
