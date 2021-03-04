@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.kuba.flashscore.local.models.entities.CountryEntity
 import com.kuba.flashscore.network.mappers.CountryDtoMapper
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.country.CountryRepository
@@ -15,8 +16,7 @@ import timber.log.Timber
 
 class CountryViewModel @ViewModelInject constructor(
     private val repository: CountryRepository,
-    private val connectivityManager: ConnectivityManager,
-    private val countryDtoMapper: CountryDtoMapper
+    private val connectivityManager: ConnectivityManager
 ) : ViewModel() {
 
     private val _countries = MutableLiveData<Event<Resource<List<CountryEntity>>>>()
@@ -26,25 +26,18 @@ class CountryViewModel @ViewModelInject constructor(
     val networkConnectivityChange: LiveData<Boolean> = _networkConnectivityChange
 
     suspend fun getCountries() {
-        _countries.value = Event(Resource.loading(null)).also {
-            delay(1000)
-        }
+        _countries.value = Event(Resource.loading(null))
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val response = repository.getCountriesFromNetwork()
-                    delay(100)
-                    repository.insertCountries(countryDtoMapper.toLocalList(response.data?.toList()!!, null))
-                    Timber.d("JUREK fetch cuntr form network")
-                    _countries.value =
-                        Event(Resource.success(countryDtoMapper.toLocalList(response.data.toList(), null)))
+                    _countries.value = Event(response)
                 } else {
                     val response = repository.getCountriesFromDb()
                     if (response.isNullOrEmpty()) {
-                        Timber.d("JUREK fetch country form db coun erro")
-                        _countries.value = Event(Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null))
+                        _countries.value =
+                            Event(Resource.error(ERROR_MESSAGE, null))
                     } else {
-                        Timber.d("JUREK fetch country form db coun succ ${response[0].countryName}")
                         _countries.value = Event(Resource.success(response))
                     }
                 }

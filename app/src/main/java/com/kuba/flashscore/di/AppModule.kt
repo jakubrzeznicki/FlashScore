@@ -133,10 +133,12 @@ object AppModule {
     @Provides
     fun provideLeagueRepository(
         leagueDao: LeagueDao,
+        leagueDtoMapper: LeagueDtoMapper,
         api: ApiFootballService
     ) =
         DefaultLeagueRepository(
             leagueDao,
+            leagueDtoMapper,
             api
         ) as LeagueRepository
 
@@ -165,10 +167,12 @@ object AppModule {
     @Provides
     fun provideStandingRepository(
         standingDao: StandingDao,
+        standingDtoMapper: StandingDtoMapper,
         api: ApiFootballService
     ) =
         DefaultStandingRepository(
             standingDao,
+            standingDtoMapper,
             api
         ) as StandingRepository
 
@@ -199,10 +203,12 @@ object AppModule {
     @Provides
     fun provideCountryRepository(
         countryDao: CountryDao,
+        countryDtoMapper: CountryDtoMapper,
         api: ApiFootballService
     ) =
         DefaultCountryRepository(
             countryDao,
+            countryDtoMapper,
             api
         ) as CountryRepository
 

@@ -6,6 +6,8 @@ import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
 import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
 import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.other.*
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.repositories.event.EventRepository
 import com.kuba.flashscore.repositories.player.PlayerRepository
 import com.kuba.flashscore.repositories.team.TeamRepository
@@ -52,54 +54,54 @@ class EventsViewModel @ViewModelInject constructor(
     )
 
 
-    fun getCountryWithLeagueWithTeamsAndEvents(leagueId: String, from: String, to: String) {
+    fun getCountryWithLeagueWithTeamsAndEvents(leagueId: String, date: String) {
+        _countryWithLeagueWithTeamsAndEvents.value = Event(Resource.loading(null))
         viewModelScope.launch(Dispatchers.IO) {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val eventResponse =
-                        eventRepository.getEventsFromSpecificLeaguesFromNetwork(leagueId, from, to)
+                        eventRepository.getEventsFromSpecificLeaguesFromNetwork(leagueId, date)
                     val teamsResponse =
                         teamRepository.getTeamsFromSpecificLeagueFromNetwork(leagueId)
 
                     if (eventResponse.status == Status.SUCCESS && teamsResponse.status == Status.SUCCESS) {
-
-                        _countryWithLeagueWithTeamsAndEvents.postValue(Event(Resource.loading(null)))
                         _countryWithLeagueWithTeamsAndEvents.postValue(
                             Event(
                                 Resource.success(
                                     eventRepository.getCountryWithLeagueWithTeamsAndEvents(
                                         leagueId,
-                                        from,
-                                        to
+                                        date
                                     )
                                 )
                             )
                         )
-                    } //else {
-//                        _countryWithLeagueWithTeamsAndEvents.postValue(
-//                            Event(
-//                                Resource.error(
-//                                    eventResponse.message ?: "Lack of data", null
-//                                )
-//                            )
-//                        )
-//                    }
+                    } else {
+                        _countryWithLeagueWithTeamsAndEvents.postValue(
+                            Event(
+                                Resource.error(
+                                    eventResponse.message ?: teamsResponse.message ?: ERROR_MESSAGE_LACK_OF_DATA, null
+                                )
+                            )
+                        )
+                    }
 
                 } else {
-                    _countryWithLeagueWithTeamsAndEvents.postValue(Event(Resource.loading(null)))
                     val countryWithLeagueWithEventsAndTeams =
                         eventRepository.getCountryWithLeagueWithTeamsAndEvents(
                             leagueId,
-                            from,
-                            to
+                            date
                         )
-                    _countryWithLeagueWithTeamsAndEvents.postValue(
-                        Event(
-                            Resource.success(
-                                countryWithLeagueWithEventsAndTeams
+                    if (countryWithLeagueWithEventsAndTeams.leagueWithEvents.isNullOrEmpty() || countryWithLeagueWithEventsAndTeams.leagueWithEvents[0].events.isNullOrEmpty()) {
+                        Event(Resource.error(ERROR_MESSAGE, null))
+                    } else {
+                        _countryWithLeagueWithTeamsAndEvents.postValue(
+                            Event(
+                                Resource.success(
+                                    countryWithLeagueWithEventsAndTeams
+                                )
                             )
                         )
-                    )
+                    }
                 }
             }
         }

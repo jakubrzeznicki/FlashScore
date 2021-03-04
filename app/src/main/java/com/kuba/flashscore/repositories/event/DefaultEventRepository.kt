@@ -12,6 +12,7 @@ import com.kuba.flashscore.network.mappers.event.EventDtoMapper
 import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -63,11 +64,10 @@ class DefaultEventRepository @Inject constructor(
 
     override suspend fun getEventsFromSpecificLeaguesFromNetwork(
         leagueId: String,
-        from: String,
-        to: String
+        date: String
     ): Resource<List<EventEntity>> {
         return try {
-            val response = apiFootballService.getEvents(from, to, leagueId)
+            val response = apiFootballService.getEvents(date, date, leagueId)
             if (response.isSuccessful) {
                 response.body().let {
                     eventsDao.insertEvents(
@@ -116,28 +116,26 @@ class DefaultEventRepository @Inject constructor(
                             )
                         )
                     }
-                    return Resource.success(eventsDao.getEventsFromSpecificLeague(leagueId, from))
+                    return Resource.success(eventsDao.getEventsFromSpecificLeague(leagueId, date))
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Resource.error(ERROR_MESSAGE, null)
+            Resource.error(ERROR_MESSAGE_LACK_OF_DATA, null)
         }
     }
 
     override suspend fun getCountryWithLeagueWithTeamsAndEvents(
         leagueId: String,
-        from: String,
-        to: String
+        date: String
     ): CountryWithLeagueWithEventsAndTeams {
-        return eventsDao.getCountryWithLeagueWithTeamsAndEvents(leagueId, from)
+        return eventsDao.getCountryWithLeagueWithTeamsAndEvents(leagueId, date)
     }
 
     override suspend fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
         eventId: String
     ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions {
-
         return eventsDao.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId)
     }
 

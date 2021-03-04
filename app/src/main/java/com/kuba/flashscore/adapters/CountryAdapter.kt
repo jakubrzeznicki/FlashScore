@@ -1,6 +1,5 @@
 package com.kuba.flashscore.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
@@ -11,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.kuba.flashscore.databinding.CountryItemBinding
 import com.kuba.flashscore.local.models.entities.CountryEntity
-import com.kuba.flashscore.network.models.CountryDto
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
 import javax.inject.Inject
 

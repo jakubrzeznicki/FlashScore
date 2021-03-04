@@ -7,6 +7,6 @@ import com.kuba.flashscore.other.Resource
 
 interface CountryRepository {
     suspend fun insertCountries(countries: List<CountryEntity>)
-    suspend fun getCountriesFromNetwork(): Resource<CountryResponse>
+    suspend fun getCountriesFromNetwork(): Resource<List<CountryEntity>>
     suspend fun getCountriesFromDb(): List<CountryEntity>
 }

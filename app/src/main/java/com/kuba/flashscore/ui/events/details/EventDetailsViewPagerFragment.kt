@@ -30,7 +30,6 @@ import com.kuba.flashscore.ui.events.EventsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_view_pager) {
@@ -50,7 +49,7 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         _binding = FragmentEventDetailsViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val event = args.eventItem
+        val countryWithLeagueWithEventsAndTeams = args.countryWithLeagueWithEventsAndTeams
         val eventId = args.eventId
 
         setHasOptionsMenu(true)
@@ -61,11 +60,11 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
             subtitle = ""
         }
 
-        setInformationCountryLeagueAndScore(event, eventId)
+        setInformationCountryLeagueAndScore(countryWithLeagueWithEventsAndTeams, eventId)
 
         getEventDetails(eventId)
-        getHomeTeamWithPlayersAndCoach(event.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]?.matchHometeamId!!)
-        getAwayTeamWithPlayersAndCoach(event.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]?.matchAwayteamId!!)
+        getHomeTeamWithPlayersAndCoach(countryWithLeagueWithEventsAndTeams.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]?.matchHometeamId!!)
+        getAwayTeamWithPlayersAndCoach(countryWithLeagueWithEventsAndTeams.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]?.matchAwayteamId!!)
         subscribeToObservers()
 
         return view

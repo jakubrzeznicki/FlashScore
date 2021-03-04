@@ -7,47 +7,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.network.mappers.LeagueDtoMapper
-import com.kuba.flashscore.network.responses.LeagueResponse
 import com.kuba.flashscore.other.Constants
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.league.LeagueRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class LeagueViewModel @ViewModelInject constructor(
     private val repository: LeagueRepository,
-    private val connectivityManager: ConnectivityManager,
-    private val leagueDtoMapper: LeagueDtoMapper
+    private val connectivityManager: ConnectivityManager
 ) : ViewModel() {
 
-    private val _leaguesFromDb = MutableLiveData<Event<Resource<CountryAndLeagues>>>()
-    val leaguesFromDb: LiveData<Event<Resource<CountryAndLeagues>>> = _leaguesFromDb
-
-    private val _leaguesFromNetworkStatus = MutableLiveData<Event<Resource<LeagueResponse>>>()
-    val leaguesFromNetworkStatus: LiveData<Event<Resource<LeagueResponse>>> = _leaguesFromNetworkStatus
+    private val _leagues = MutableLiveData<Event<Resource<CountryAndLeagues>>>()
+    val leagues: LiveData<Event<Resource<CountryAndLeagues>>> = _leagues
 
     private val _networkConnectivityChange = connectivityManager.isNetworkAvailable
     val networkConnectivityChange: LiveData<Boolean> = _networkConnectivityChange
 
     suspend fun getLeaguesFromSpecificCountry(countryId: String) {
-        _leaguesFromNetworkStatus.value = Event(Resource.loading(null))
+        _leagues.value = Event(Resource.loading(null))
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val response = repository.getLeaguesFromSpecificCountryFromNetwork(countryId)
-                    _leaguesFromNetworkStatus.postValue(Event(response))
-                    repository.insertLeagues(leagueDtoMapper.toLocalList(response.data?.toList()!!, null))
-                    _leaguesFromDb.value = Event(Resource.success(repository.getLeagueFromSpecificCountryFromDb(countryId)))
+                    _leagues.value = Event(response)
                 } else {
                     val response = repository.getLeagueFromSpecificCountryFromDb(countryId)
                     if (response.leagues.isNullOrEmpty()) {
-                        _leaguesFromDb.value =
-                            Event(Resource.error(Constants.ERROR_INTERNET_CONNECTION_MESSAGE, null))
+                        _leagues.value =
+                            Event(Resource.error(ERROR_MESSAGE, null))
                     } else {
-                        _leaguesFromDb.value = Event(Resource.success(response))
+                        _leagues.value = Event(Resource.success(response))
                     }
                 }
             }

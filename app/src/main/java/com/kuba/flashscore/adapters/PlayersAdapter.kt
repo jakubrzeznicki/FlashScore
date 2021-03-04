@@ -10,7 +10,6 @@ import com.kuba.flashscore.databinding.PlayerItemBinding
 import com.kuba.flashscore.local.models.entities.PlayerEntity
 import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentDirections
-import timber.log.Timber
 
 class PlayersAdapter(
     private val team: TeamEntity

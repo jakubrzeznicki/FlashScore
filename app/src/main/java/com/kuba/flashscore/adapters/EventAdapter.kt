@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.EventItemBinding
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
 import com.kuba.flashscore.local.models.entities.event.EventEntity
+import com.kuba.flashscore.other.Constants.MATCH_STATUS_FINISHED
+import com.kuba.flashscore.other.Constants.MATCH_STATUS_ZERO
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
-import timber.log.Timber
 
 class EventAdapter :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
@@ -25,17 +25,11 @@ class EventAdapter :
 
     private val diffCallback =
         object : DiffUtil.ItemCallback<EventEntity>() {
-            override fun areItemsTheSame(
-                oldItem: EventEntity,
-                newItem: EventEntity
-            ): Boolean {
+            override fun areItemsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
                 return oldItem.matchId == newItem.matchId
             }
 
-            override fun areContentsTheSame(
-                oldItem: EventEntity,
-                newItem: EventEntity
-            ): Boolean {
+            override fun areContentsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
                 return oldItem == newItem
             }
         }
@@ -70,9 +64,9 @@ class EventAdapter :
             textViewFirstTeamName.text = homeTeam[0].teamName
             textViewSecondTeamName.text = awayTeam[0].teamName
 
-            if (event?.matchLive == "0") {
+            if (event?.matchLive == MATCH_STATUS_ZERO) {
                 textViewEventMinutes.visibility = View.INVISIBLE
-                if (event.matchStatus.isNotEmpty() && event.matchStatus == "Finished") {
+                if (event.matchStatus.isNotEmpty() && event.matchStatus == MATCH_STATUS_FINISHED) {
                     textViewEventHour.visibility = View.INVISIBLE
                     textViewEventGoalsFirstTeam.apply {
                         visibility = View.VISIBLE

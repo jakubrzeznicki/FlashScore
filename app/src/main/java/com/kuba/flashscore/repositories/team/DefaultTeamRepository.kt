@@ -9,8 +9,10 @@ import com.kuba.flashscore.network.mappers.CoachDtoMapper
 import com.kuba.flashscore.network.mappers.PlayerDtoMapper
 import com.kuba.flashscore.network.mappers.TeamDtoMapper
 import com.kuba.flashscore.network.responses.*
+import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
 import java.lang.Exception
 import javax.inject.Inject
@@ -69,7 +71,7 @@ class DefaultTeamRepository @Inject constructor(
                 Resource.error(ERROR_MESSAGE, null)
             }
         } catch (e: Exception) {
-            Resource.error(ERROR_INTERNET_CONNECTION_MESSAGE, null)
+            Resource.error(ERROR_MESSAGE_LACK_OF_DATA, null)
         }
     }
 

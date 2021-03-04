@@ -7,6 +7,6 @@ import com.kuba.flashscore.other.Resource
 
 interface StandingRepository {
     suspend fun insertStandings(standings: List<StandingEntity>)
-    suspend fun getStandingsFromSpecificLeague(leagueId: String): Resource<StandingResponse>
+    suspend fun getStandingsFromSpecificLeagueFromNetwork(leagueId: String): Resource<List<StandingEntity>>
     suspend fun getStandingsFromSpecificLeagueFromDb(leagueId: String): List<StandingEntity>
 }

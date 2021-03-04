@@ -25,7 +25,6 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LeagueFragment : Fragment(R.layout.fragment_league) {
@@ -76,7 +75,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
 
 
     private fun subscribeToObservers(country: CountryEntity) {
-        viewModel.leaguesFromDb.observe(viewLifecycleOwner, Observer {
+        viewModel.leagues.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {

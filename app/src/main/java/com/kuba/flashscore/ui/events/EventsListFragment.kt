@@ -21,9 +21,6 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
-import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
-import com.kuba.flashscore.local.models.entities.event.EventEntity
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
@@ -32,7 +29,6 @@ import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.util.*
 
 
@@ -49,7 +45,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
     private lateinit var countryAndLeague: CountryAndLeagues
     private lateinit var fromToDate: String
-    private var firstFetch = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,27 +55,22 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
         countryAndLeague = args.countryAndLeague
         fromToDate = viewModel.switchedDate.value!!
-        Timber.d("POMP ${viewModel.switchedDate.value!!}")
-        setTitleAndSubtitle(countryAndLeague,  DateUtils.parseDate(
-            fromToDate,
-            DATE_FORMAT_YEAR_MONTH_DAY))
+
+        setTitleAndSubtitle(
+            countryAndLeague, DateUtils.parseDate(
+                fromToDate,
+                DATE_FORMAT_YEAR_MONTH_DAY
+            )
+        )
         setInformationAboutCountry(countryAndLeague)
 
-        getEvents(
-            countryAndLeague.leagues[0].leagueId,
-            fromToDate
-        )
+        getEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
 
 
         setHasOptionsMenu(true)
 
-        goToTableOnClick(countryAndLeague)
+        gotToTeamsListAndStandings(countryAndLeague)
         return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.d("POMP2 ${viewModel.switchedDate.value!!}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,7 +84,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
 
-    private fun goToTableOnClick(countryWithLeague: CountryAndLeagues) {
+    private fun gotToTeamsListAndStandings(countryWithLeague: CountryAndLeagues) {
         binding.apply {
             imageButtonGoToLeagueTable.setOnClickListener {
                 val action =
@@ -116,8 +106,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
     private fun subscribeToObservers() {
         viewModel.countryWithLeagueWithTeamsAndEvents.observe(
-            viewLifecycleOwner,
-            Observer { items ->
+            viewLifecycleOwner, Observer { items ->
                 items?.getContentIfNotHandled()?.let { result ->
                     when (result.status) {
                         Status.SUCCESS -> {
@@ -125,7 +114,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                                 eventsAdapter.events =
                                     result.data.leagueWithEvents[0].events.filter { it?.matchDate == fromToDate }
                                 eventsAdapter.countryWithLeagueWithEventsAndTeams = result.data
-
                             }
                         }
                         Status.ERROR -> {
@@ -154,7 +142,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getCountryWithLeagueWithTeamsAndEvents(leagueId, fromTo, fromTo)
+            viewModel.getCountryWithLeagueWithTeamsAndEvents(leagueId, fromTo)
             setupRecyclerView()
         }
     }
@@ -185,9 +173,9 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                     Locale.ROOT
                 )
             subtitle =
-            "${DateUtils.formatDate(date!!, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
-                DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
-            }"
+                "${DateUtils.formatDate(date!!, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
+                    DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
+                }"
         }
 
     }

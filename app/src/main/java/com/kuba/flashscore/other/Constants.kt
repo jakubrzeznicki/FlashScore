@@ -5,6 +5,7 @@ object Constants {
 
     const val DATABASE_NAME = "flash_score.db"
     const val ERROR_MESSAGE = "An unknown error occured"
+    const val ERROR_MESSAGE_LACK_OF_DATA = "A lack of data"
     const val ERROR_INTERNET_CONNECTION_MESSAGE =
         "Couldn't reach the server. Check your internet connection"
 
@@ -71,6 +72,7 @@ object Constants {
     const val SUBSTITUTION_DIVIDER = "|"
     const val CARD_YELLOW = "yellow card"
     const val RESULT_NULL_TO_NULL = "0 - 0"
+    const val MATCH_STATUS_ZERO = "0"
 
 
 }

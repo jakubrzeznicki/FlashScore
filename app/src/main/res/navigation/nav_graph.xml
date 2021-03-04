@@ -128,7 +128,7 @@
             android:id="@+id/action_eventDetailsViewPagerFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment" />
         <argument
-            android:name="eventItem"
+            android:name="countryWithLeagueWithEventsAndTeams"
             app:argType="com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams" />
         <argument
             android:name="eventId"

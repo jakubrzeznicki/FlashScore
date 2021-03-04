@@ -6,21 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kuba.flashscore.local.models.entities.StandingEntity
-import com.kuba.flashscore.local.models.entities.TeamEntity
-import com.kuba.flashscore.network.mappers.StandingDtoMapper
 import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.other.ViewModelUtils
 import com.kuba.flashscore.repositories.standing.StandingRepository
-import com.kuba.flashscore.repositories.team.TeamRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.launch
 
 class StandingsViewModel @ViewModelInject constructor(
     private val standingRepository: StandingRepository,
-    private val connectivityManager: ConnectivityManager,
-    private val standingDtoMapper: StandingDtoMapper
+    private val connectivityManager: ConnectivityManager
 ) : ViewModel() {
 
     private val _standings = MutableLiveData<Event<Resource<List<StandingEntity>>>>()
@@ -34,23 +29,13 @@ class StandingsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
-                    val response = standingRepository.getStandingsFromSpecificLeague(leagueId)
-                    standingRepository.insertStandings(
-                        standingDtoMapper.toLocalList(
-                            response.data?.toList()!!,
-                            null
-                        )
-                    )
-                    _standings.value = Event(
-                        Resource.success(
-                            standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId)
-                        )
-                    )
+                    val response = standingRepository.getStandingsFromSpecificLeagueFromNetwork(leagueId)
+                    _standings.value = Event(response)
                 } else {
                     val response = standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId)
                     if (response.isNullOrEmpty()) {
                         _standings.value =
-                            Event(Resource.error(Constants.ERROR_INTERNET_CONNECTION_MESSAGE, null))
+                            Event(Resource.error(Constants.ERROR_MESSAGE, null))
                     } else {
                         _standings.value = Event(Resource.success(response))
                     }

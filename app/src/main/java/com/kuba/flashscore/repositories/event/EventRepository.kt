@@ -18,17 +18,15 @@ interface EventRepository {
 
     suspend fun getEventsFromSpecificLeaguesFromNetwork(
         leagueId: String,
-        from: String,
-        to: String
+        date: String
     ): Resource<List<EventEntity>>
 
     suspend fun getCountryWithLeagueWithTeamsAndEvents(
         leagueId: String,
-        from: String,
-        to: String
+        date: String
     ): CountryWithLeagueWithEventsAndTeams
 
     suspend fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
         eventId: String
-    ) : EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+    ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 }

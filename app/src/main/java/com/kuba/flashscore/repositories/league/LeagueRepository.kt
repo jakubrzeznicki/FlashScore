@@ -6,7 +6,7 @@ import com.kuba.flashscore.network.responses.*
 import com.kuba.flashscore.other.Resource
 
 interface LeagueRepository {
-    suspend fun getLeaguesFromSpecificCountryFromNetwork(countryId: String): Resource<LeagueResponse>
+    suspend fun getLeaguesFromSpecificCountryFromNetwork(countryId: String): Resource<CountryAndLeagues>
     suspend fun insertLeagues(leagues: List<LeagueEntity>)
     suspend fun getLeaguesFromDb(): List<LeagueEntity>
     suspend fun getLeagueFromSpecificCountryFromDb(countryId: String): CountryAndLeagues
