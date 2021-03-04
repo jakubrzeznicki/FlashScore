@@ -9,10 +9,16 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
 import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
 import com.kuba.flashscore.databinding.FragmentEventHead2HeadBinding
+import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
+import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.network.models.events.EventDto
 
 
-class EventHead2HeadFragment(private val event: EventDto) : Fragment(R.layout.fragment_event_head_2_head) {
+class EventHead2HeadFragment(
+    private val eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions,
+    private val homeTeam: TeamWithPlayersAndCoach,
+    private val awayTeam: TeamWithPlayersAndCoach
+) : Fragment(R.layout.fragment_event_head_2_head) {
 
     private var _binding: FragmentEventHead2HeadBinding? = null
     private val binding get() = _binding!!

@@ -8,4 +8,5 @@ import com.kuba.flashscore.other.Resource
 interface PlayerRepository {
     suspend fun getPlayerBySpecificName(name: String): Resource<PlayerResponse>
     suspend fun getPlayerInformationFromDb(playerId: String): PlayerEntity
+    suspend fun getPlayersFromSpecificTeamFromDb(teamId: String): TeamWithPlayersAndCoach
 }

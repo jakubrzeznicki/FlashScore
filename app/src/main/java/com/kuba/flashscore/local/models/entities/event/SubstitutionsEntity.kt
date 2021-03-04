@@ -10,7 +10,10 @@ import com.kuba.flashscore.other.DateUtils.dateToLong
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "substitution_table")
+@Entity(
+    tableName = "substitution_table",
+    primaryKeys = ["substitutions_match_id", "substitution"]
+)
 data class SubstitutionsEntity(
     @ColumnInfo(name = "substitutions_match_id")
     val matchId: String,
@@ -18,8 +21,4 @@ data class SubstitutionsEntity(
     val time: String,
     @ColumnInfo(name = "which_team")
     val whichTeam: Boolean,
-) : Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "substitution_id")
-    var substitutionId: Int = 0
-}
+) : Parcelable

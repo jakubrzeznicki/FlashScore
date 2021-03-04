@@ -7,9 +7,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,26 +18,19 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
+import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
 import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
-import com.kuba.flashscore.local.models.entities.event.EventEntity
 import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
-import com.kuba.flashscore.network.models.PlayerDto
-import com.kuba.flashscore.network.models.events.EventDto
-import com.kuba.flashscore.other.Constants
-import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
 import com.kuba.flashscore.other.Constants.EVENT_DERAILS_TAB
 import com.kuba.flashscore.other.Constants.EVENT_HEAD_2_HEAD_TAB
 import com.kuba.flashscore.other.Constants.EVENT_STATISTICS_TAB
 import com.kuba.flashscore.other.Constants.EVENT_TABLE_TAB
 import com.kuba.flashscore.other.Constants.EVENT_TEAM_TAB
-import com.kuba.flashscore.other.Constants.PLAYER_AGE
-import com.kuba.flashscore.other.Constants.PLAYER_NUMBER
-import com.kuba.flashscore.ui.events.EventsListFragmentArgs
 import com.kuba.flashscore.ui.events.EventsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
+import timber.log.Timber
 
 @AndroidEntryPoint
 class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_view_pager) {
@@ -71,6 +64,8 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         setInformationCountryLeagueAndScore(event, eventId)
 
         getEventDetails(eventId)
+        getHomeTeamWithPlayersAndCoach(event.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]?.matchHometeamId!!)
+        getAwayTeamWithPlayersAndCoach(event.leagueWithEvents[0].events.filter { it?.matchId == eventId }[0]?.matchAwayteamId!!)
         subscribeToObservers()
 
         return view
@@ -83,16 +78,17 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
 
 
     private fun setEventViewPageAdapterAndTabLayout(
-        eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions:
-        EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+        eventsWithDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions,
+        homeTeam: TeamWithPlayersAndCoach,
+        awayTeam: TeamWithPlayersAndCoach
     ) {
 
         val eventFragmentList = arrayListOf<Fragment>(
-            EventDetailsFragment(eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions),
-            //EventStatisticsFragment(event),
-            //EventTeamsFragment(event),
-            //EventHead2HeadFragment(event),
-            //EventDetailsFragment(event)
+            EventDetailsFragment(eventsWithDetails, homeTeam, awayTeam),
+            EventStatisticsFragment(eventsWithDetails, homeTeam, awayTeam),
+            EventTeamsFragment(eventsWithDetails, homeTeam, awayTeam),
+            EventHead2HeadFragment(eventsWithDetails, homeTeam, awayTeam),
+            EventDetailsFragment(eventsWithDetails, homeTeam, awayTeam)
         )
 
         val eventViewPagerAdapter = ViewPagerAdapter(
@@ -168,11 +164,47 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         }
     }
 
+    private fun getHomeTeamWithPlayersAndCoach(teamId: String) {
+        var job: Job? = null
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.getPlayersAndCoachFromHomeTeam(teamId)
+        }
+    }
+
+    private fun getAwayTeamWithPlayersAndCoach(teamId: String) {
+        var job: Job? = null
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.getPlayersAndCoachFromAwayTeam(teamId)
+        }
+    }
+
     private fun subscribeToObservers() {
-        viewModel.eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.observe(
-            viewLifecycleOwner, androidx.lifecycle.Observer {
-                setEventViewPageAdapterAndTabLayout(it)
-            })
+//        viewModel.eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.observe(
+//            viewLifecycleOwner, androidx.lifecycle.Observer {
+//                Timber.d("DEJZIII ${it.eventEntity.matchId}")
+//                Timber.d("DEJZIII ${it.cards.size}")
+//                Timber.d("DEJZIII ${it.cards.forEach { Timber.d("DEJZIII cardId, card: ${it.card}, matchId: ${it.matchId}") }}")
+//                eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions = it
+//            })
+//
+//        viewModel.homeTeamWithPlayersAndCoach.observe(viewLifecycleOwner, Observer {
+//            homeTeamWithPlayersAndCoach = it
+//        })
+//
+//        viewModel.awayTeamWithPlayersAndCoach.observe(viewLifecycleOwner, Observer {
+//            awayTeamWithPlayersAndCoach = it
+//        })
+
+//        viewModel.aaa.observe(viewLifecycleOwner, Observer {
+//            Timber.d("DEJZIII mediator home team name: ${it[0]?.team?.teamName}, away team name: ${it[1]?.team?.teamName}")
+//        })
+
+        viewModel.eventsWithDetailsWithHomeAndAwayTeams.observe(viewLifecycleOwner, Observer {
+            Timber.d("DEJZIII mediator home team name: ${it.first.team.teamName}, away team name: ${it.second.team.teamName}, event: ${it.third.eventEntity.matchId}")
+            setEventViewPageAdapterAndTabLayout(it.third, it.first, it.second)
+        })
     }
 
 

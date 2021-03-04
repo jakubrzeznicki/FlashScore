@@ -31,5 +31,4 @@ interface EventDao {
         eventId: String
     ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 
-
 }

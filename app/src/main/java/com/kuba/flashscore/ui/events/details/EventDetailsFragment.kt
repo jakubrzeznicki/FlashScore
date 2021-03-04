@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventDetailAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
+import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
 import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.local.models.incident.INCIDENTTYPE
 import com.kuba.flashscore.local.models.incident.Incident
@@ -30,9 +31,14 @@ import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.events.EventsViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
-class EventDetailsFragment(private val eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions) :
+class EventDetailsFragment(
+    private val eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions,
+    private val homeTeam: TeamWithPlayersAndCoach,
+    private val awayTeam: TeamWithPlayersAndCoach
+) :
     Fragment(R.layout.fragment_event_details) {
 
     private var _binding: FragmentEventDetailsBinding? = null
@@ -140,8 +146,12 @@ class EventDetailsFragment(private val eventDetails: EventWithCardsAndGoalscorer
         val goalscorersList = mutableListOf<IncidentItem>()
         goalscorersList.addAll(eventDetails.goalscorers.map { goal ->
             IncidentItem(
-                goal.scorerId,
-                goal.assistId,
+                if (goal.whichTeam) homeTeam.players.firstOrNull { it.playerKey.toString() == goal.scorerId }?.playerName
+                    ?: "" else awayTeam.players.firstOrNull { it.playerKey.toString() == goal.scorerId }?.playerName
+                    ?: "",
+                if (goal.whichTeam) homeTeam.players.firstOrNull { it.playerKey.toString() == goal.assistId }?.playerName
+                    ?: "" else awayTeam.players.firstOrNull { it.playerKey.toString() == goal.assistId }?.playerName
+                    ?: "",
                 goal.time,
                 INCIDENTTYPE.GOAL,
                 goal.whichTeam,
@@ -176,7 +186,7 @@ class EventDetailsFragment(private val eventDetails: EventWithCardsAndGoalscorer
                     subPlayer[0].trim(),
                     sub.time,
                     INCIDENTTYPE.SUBSTITUTION,
-                    true
+                    sub.whichTeam
                 )
             })
         }

@@ -59,22 +59,28 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         val view = binding.root
 
         countryAndLeague = args.countryAndLeague
-        fromToDate = DateUtils.formatDateCurrentDate(DATE_FORMAT_YEAR_MONTH_DAY)
-
-        setTitleAndSubtitle(countryAndLeague, true, null)
+        fromToDate = viewModel.switchedDate.value!!
+        Timber.d("POMP ${viewModel.switchedDate.value!!}")
+        setTitleAndSubtitle(countryAndLeague,  DateUtils.parseDate(
+            fromToDate,
+            DATE_FORMAT_YEAR_MONTH_DAY))
         setInformationAboutCountry(countryAndLeague)
 
-        if (firstFetch) {
-            getEvents(
-                countryAndLeague.leagues[0].leagueId,
-                fromToDate
-            )
-        }
+        getEvents(
+            countryAndLeague.leagues[0].leagueId,
+            fromToDate
+        )
+
 
         setHasOptionsMenu(true)
 
         goToTableOnClick(countryAndLeague)
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("POMP2 ${viewModel.switchedDate.value!!}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -169,7 +175,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
     private fun setTitleAndSubtitle(
         countryAndLeagues: CountryAndLeagues,
-        isCurrentDate: Boolean,
         date: Date?
     ) {
         (activity as AppCompatActivity).supportActionBar?.apply {
@@ -179,18 +184,12 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 countryAndLeagues.leagues[0].leagueName.toUpperCase(
                     Locale.ROOT
                 )
-            subtitle = if (isCurrentDate) {
-                "${DateUtils.formatDateCurrentDate(DATE_FORMAT_DAY_MONTH_YEAR)}, ${
-                    DateUtils.formatDateCurrentDate(
-                        DATE_FORMAT_DAY_OF_WEEK
-                    ).toUpperCase()
-                }"
-            } else {
-                "${DateUtils.formatDate(date!!, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
-                    DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
-                }"
-            }
+            subtitle =
+            "${DateUtils.formatDate(date!!, DATE_FORMAT_DAY_MONTH_YEAR)}, ${
+                DateUtils.formatDate(date, DATE_FORMAT_DAY_OF_WEEK)
+            }"
         }
+
     }
 
     private fun setInformationAboutCountry(countryAndLeagues: CountryAndLeagues) {
@@ -236,14 +235,14 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                     "$dayOfMonth.${month + 1}.$year",
                     DATE_FORMAT_DAY_MONTH_YEAR
                 )
-                setTitleAndSubtitle(countryAndLeague, false, date)
-                firstFetch = false
+                setTitleAndSubtitle(countryAndLeague, date)
                 fromToDate = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
 
                 getEvents(
                     leagueId = countryAndLeague.leagues[0].leagueId,
                     DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
                 )
+                viewModel.switchDate(date = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY))
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
