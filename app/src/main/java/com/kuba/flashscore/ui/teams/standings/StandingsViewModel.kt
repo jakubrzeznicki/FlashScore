@@ -6,17 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kuba.flashscore.local.models.entities.StandingEntity
+import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.network.mappers.StandingDtoMapper
 import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
+import com.kuba.flashscore.other.ViewModelUtils
 import com.kuba.flashscore.repositories.standing.StandingRepository
+import com.kuba.flashscore.repositories.team.TeamRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class StandingsViewModel @ViewModelInject constructor(
-    private val repository: StandingRepository,
+    private val standingRepository: StandingRepository,
     private val connectivityManager: ConnectivityManager,
     private val standingDtoMapper: StandingDtoMapper
 ) : ViewModel() {
@@ -32,8 +34,8 @@ class StandingsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
-                    val response = repository.getStandingsFromSpecificLeague(leagueId)
-                    repository.insertStandings(
+                    val response = standingRepository.getStandingsFromSpecificLeague(leagueId)
+                    standingRepository.insertStandings(
                         standingDtoMapper.toLocalList(
                             response.data?.toList()!!,
                             null
@@ -41,17 +43,15 @@ class StandingsViewModel @ViewModelInject constructor(
                     )
                     _standings.value = Event(
                         Resource.success(
-                            standingDtoMapper.toLocalList(response.data.toList()!!, null)
+                            standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId)
                         )
                     )
                 } else {
-                    val response = repository.getStandingsFromSpecificLeagueFromDb(leagueId)
+                    val response = standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId)
                     if (response.isNullOrEmpty()) {
-                        Timber.d("JUREK fetch standing form db coun erro")
                         _standings.value =
                             Event(Resource.error(Constants.ERROR_INTERNET_CONNECTION_MESSAGE, null))
                     } else {
-                        Timber.d("JUREK fetch teams form db league succ ${response[0].awayLeagueD}")
                         _standings.value = Event(Resource.success(response))
                     }
                 }
@@ -60,5 +60,4 @@ class StandingsViewModel @ViewModelInject constructor(
 
         }
     }
-
 }

@@ -6,13 +6,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.StandingsItemBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.local.models.entities.StandingEntity
+import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.network.models.StandingDto
 import com.kuba.flashscore.other.Constants.HOME_LEAGUE
 import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS
@@ -22,10 +26,11 @@ import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_PREMIER_LEAGUE
 import com.kuba.flashscore.other.Constants.LEAGUE_RELEGATION
 import com.kuba.flashscore.other.Constants.LEAGUE_RELEGATION_LIGUE_2
 import com.kuba.flashscore.other.Constants.OVERALL_LEAGUE
+import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
 class StandingsAdapter(
     private val context: Context,
-    private val countryAndLeagues: CountryAndLeagues,
+    private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams,
     private val whichStandings: String
 ) :
     RecyclerView.Adapter<StandingsAdapter.StandingsViewHolder>() {
@@ -60,8 +65,9 @@ class StandingsAdapter(
     override fun onBindViewHolder(holder: StandingsViewHolder, position: Int) {
         holder.binding.apply {
             val standing = standings[position]
-          //  Glide.with(holder.itemView).load(standing.teamBadge).into(imageViewTeamLogo)
-          //  textViewTeamName.text = standing.teamName
+            val team = countryWithLeagueAndTeams.leagueWithTeams[0].teams.firstOrNull { it.teamKey == standing.teamId }
+            Glide.with(holder.itemView).load(team?.teamBadge).into(imageViewTeamLogo)
+            textViewTeamName.text = team?.teamName
             textViewTeamBalance.text = when (whichStandings) {
                 OVERALL_LEAGUE -> "${standing.overallLeagueGF} - ${standing.overallLeagueGA}"
                 HOME_LEAGUE -> "${standing.homeLeagueGF} - ${standing.homeLeagueGA}"
@@ -85,26 +91,24 @@ class StandingsAdapter(
             }
 
             if (whichStandings == OVERALL_LEAGUE && standing.overallPromotion.isNotEmpty()) {
-                //setColorDependingOnThePosition(textViewTeamPosition, standing, position)
+                setColorDependingOnThePosition(textViewTeamPosition, standing, position)
             }
 
-//            holder.itemView.setOnClickListener {
-//                val action =
-//                    TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
-//                        standing.teamId,
-//                        countryAndLeagues,
-//                        standing.teamName,
-//                        standing.teamBadge
-//                    )
-//                it.findNavController().navigate(action)
-//            }
+            holder.itemView.setOnClickListener {
+                val action =
+                    TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
+                        standing.teamId,
+                        countryWithLeagueAndTeams
+                    )
+                it.findNavController().navigate(action)
+            }
         }
     }
 
 
     private fun setColorDependingOnThePosition(
         positionTextView: TextView,
-        standing: StandingDto,
+        standing: StandingEntity,
         position: Int
     ) {
         if ((standing.overallPromotion == LEAGUE_PROMOTION_PREMIER_LEAGUE || standing.overallPromotion == LEAGUE_PROMOTION_LIGUE_1) && (position == 0 || position == 1)) {

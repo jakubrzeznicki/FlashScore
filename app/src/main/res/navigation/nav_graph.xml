@@ -46,14 +46,8 @@
             android:id="@+id/action_clubViewPagerFragment_to_teamsViewPagerFragment"
             app:destination="@id/teamsViewPagerFragment" />
         <argument
-            android:name="countryAndLeagueItem"
-            app:argType="com.kuba.flashscore.local.models.entities.CountryAndLeagues" />
-        <argument
-            android:name="teamName"
-            app:argType="string" />
-        <argument
-            android:name="teamBadge"
-            app:argType="string" />
+            android:name="countryWithLeagueAndTeams"
+            app:argType="com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams" />
         <action
             android:id="@+id/action_clubViewPagerFragment_to_playerViewPagerFragment"
             app:destination="@id/playerViewPagerFragment" />
@@ -101,14 +95,11 @@
             android:id="@+id/action_playerViewPagerFragment_to_clubViewPagerFragment"
             app:destination="@id/clubViewPagerFragment" />
         <argument
-            android:name="teamName"
-            app:argType="string" />
+            android:name="teamItem"
+            app:argType="com.kuba.flashscore.local.models.entities.TeamEntity" />
         <argument
             android:name="playerItem"
             app:argType="com.kuba.flashscore.local.models.entities.PlayerEntity" />
-        <argument
-            android:name="teamLogo"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/eventsListFragment"

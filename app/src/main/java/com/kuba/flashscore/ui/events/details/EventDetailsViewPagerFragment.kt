@@ -181,28 +181,7 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
     }
 
     private fun subscribeToObservers() {
-//        viewModel.eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.observe(
-//            viewLifecycleOwner, androidx.lifecycle.Observer {
-//                Timber.d("DEJZIII ${it.eventEntity.matchId}")
-//                Timber.d("DEJZIII ${it.cards.size}")
-//                Timber.d("DEJZIII ${it.cards.forEach { Timber.d("DEJZIII cardId, card: ${it.card}, matchId: ${it.matchId}") }}")
-//                eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions = it
-//            })
-//
-//        viewModel.homeTeamWithPlayersAndCoach.observe(viewLifecycleOwner, Observer {
-//            homeTeamWithPlayersAndCoach = it
-//        })
-//
-//        viewModel.awayTeamWithPlayersAndCoach.observe(viewLifecycleOwner, Observer {
-//            awayTeamWithPlayersAndCoach = it
-//        })
-
-//        viewModel.aaa.observe(viewLifecycleOwner, Observer {
-//            Timber.d("DEJZIII mediator home team name: ${it[0]?.team?.teamName}, away team name: ${it[1]?.team?.teamName}")
-//        })
-
         viewModel.eventsWithDetailsWithHomeAndAwayTeams.observe(viewLifecycleOwner, Observer {
-            Timber.d("DEJZIII mediator home team name: ${it.first.team.teamName}, away team name: ${it.second.team.teamName}, event: ${it.third.eventEntity.matchId}")
             setEventViewPageAdapterAndTabLayout(it.third, it.first, it.second)
         })
     }

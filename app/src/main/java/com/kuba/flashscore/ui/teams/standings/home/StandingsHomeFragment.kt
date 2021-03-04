@@ -14,6 +14,7 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.other.Constants.HOME
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
@@ -23,7 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StandingsHomeFragment(private val countryAndLeagues: CountryAndLeagues) :
+class StandingsHomeFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
     Fragment(R.layout.fragment_standings_home) {
 
     private var _binding: FragmentStandingsHomeBinding? = null
@@ -45,7 +46,7 @@ class StandingsHomeFragment(private val countryAndLeagues: CountryAndLeagues) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getStandings(countryAndLeagues.leagues[0].leagueId)
+        getStandings(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
         subscribeToObservers()
     }
 
@@ -84,10 +85,19 @@ class StandingsHomeFragment(private val countryAndLeagues: CountryAndLeagues) :
         }
     }
 
+    private fun getTeams(leagueId: String) {
+        var job: Job? = null
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.getStandingsFromSpecificLeague(leagueId)
+            setupRecyclerView()
+        }
+    }
+
 
     private fun setupRecyclerView() {
         binding.recyclerViewHomeStandings.apply {
-            standingsAdapter = StandingsAdapter(requireContext(), countryAndLeagues, HOME)
+            standingsAdapter = StandingsAdapter(requireContext(), countryWithLeagueAndTeams, HOME)
             adapter = standingsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

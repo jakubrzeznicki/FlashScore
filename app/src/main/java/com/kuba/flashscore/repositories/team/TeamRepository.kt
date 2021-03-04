@@ -10,6 +10,6 @@ interface TeamRepository {
     suspend fun insertPlayers(players: List<PlayerEntity>)
     suspend fun insertTeams(teams: List<TeamEntity>)
     suspend fun getTeamsFromSpecificLeagueFromNetwork(leagueId: String): Resource<CountryWithLeagueAndTeams>
-    suspend fun getTeamsFromLeagueFromDb(leagueId: String): CountryWithLeagueAndTeams
+    suspend fun getTeamsWithLeagueAndCountryInformationFromLeagueFromDb(leagueId: String): CountryWithLeagueAndTeams
     suspend fun getTeamWithPlayersAndCoachFromDb(teamId: String): TeamWithPlayersAndCoach
 }

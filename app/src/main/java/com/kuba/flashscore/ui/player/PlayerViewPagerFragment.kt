@@ -17,6 +17,7 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentPlayerViewPagerBinding
 import com.kuba.flashscore.local.models.entities.PlayerEntity
+import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.network.models.LeagueDto
 import com.kuba.flashscore.network.models.PlayerDto
 import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
@@ -41,8 +42,7 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
         _binding = FragmentPlayerViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val teamName = args.teamName
-        val teamLogo = args.teamLogo
+        val team = args.teamItem
         val player = args.playerItem
 
         setHasOptionsMenu(true)
@@ -52,7 +52,7 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
             title = player.playerName
         }
 
-        setInformationAboutPlayer(teamName, teamLogo, player)
+        setInformationAboutPlayer(team, player)
 
         setPlayerViewPageAdapterAndTabLayout(player)
 
@@ -92,22 +92,21 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
 
     @SuppressLint("SetTextI18n")
     private fun setInformationAboutPlayer(
-        teamName: String,
-        teamLogo: String,
+        team: TeamEntity,
         player: PlayerEntity
     ) {
         binding.apply {
             textViewCountryName.text = player.playerCountry
-            Glide.with(requireContext()).load(teamLogo).into(imageViewCountryFlag)
+            Glide.with(requireContext()).load(team.teamBadge).into(imageViewCountryFlag)
             Glide.with(requireContext())
                 .load(ContextCompat.getDrawable(requireContext(), R.drawable.ic_person))
                 .into(imageViewPlayerPhoto)
             textViewPlayerName.text = player.playerName
             textViewPlayerClubAndPosition.text =
-                "${teamName.toUpperCase(Locale.ROOT)}  (${player.playerType.take(player.playerType.length - 1)})"
+                "${team.teamName.toUpperCase(Locale.ROOT)}  (${player.playerType.take(player.playerType.length - 1)})"
             textViewPlayerAge.text = "$PLAYER_AGE ${player.playerAge}"
             textViewPlayerNumber.text = "$PLAYER_NUMBER ${player.playerNumber}"
-            Glide.with(requireContext()).load(teamLogo).into(imageViewClubLogo)
+            Glide.with(requireContext()).load(team.teamBadge).into(imageViewClubLogo)
 
         }
     }

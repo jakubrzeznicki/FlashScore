@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.databinding.TeamItemBinding
 import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
-class TeamsAdapter(private val countryAndLeagues: CountryAndLeagues) :
+class TeamsAdapter(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
     RecyclerView.Adapter<TeamsAdapter.TeamViewHolder>() {
 
     inner class TeamViewHolder(val binding: TeamItemBinding) :
@@ -49,7 +50,7 @@ class TeamsAdapter(private val countryAndLeagues: CountryAndLeagues) :
             holder.itemView.setOnClickListener {
                 val action =
                     TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
-                        team.teamKey, countryAndLeagues, team.teamName, team.teamBadge
+                        team.teamKey, countryWithLeagueAndTeams
                     )
                 it.findNavController().navigate(action)
             }

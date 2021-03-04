@@ -26,19 +26,12 @@ class EventsViewModel @ViewModelInject constructor(
     val countryWithLeagueWithTeamsAndEvents: LiveData<Event<Resource<CountryWithLeagueWithEventsAndTeams>>> =
         _countryWithLeagueWithTeamsAndEvents
 
-    private val _eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions =
+    private val eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions =
         MutableLiveData<EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions>()
-    val eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions:
-            LiveData<EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions> =
-        _eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 
-    private val _homeTeamWithPlayersAndCoach = MutableLiveData<TeamWithPlayersAndCoach>()
-    val homeTeamWithPlayersAndCoach: LiveData<TeamWithPlayersAndCoach> =
-        _homeTeamWithPlayersAndCoach
+    private val homeTeamWithPlayersAndCoach = MutableLiveData<TeamWithPlayersAndCoach>()
 
-    private val _awayTeamWithPlayersAndCoach = MutableLiveData<TeamWithPlayersAndCoach>()
-    val awayTeamWithPlayersAndCoach: LiveData<TeamWithPlayersAndCoach> =
-        _awayTeamWithPlayersAndCoach
+    private val awayTeamWithPlayersAndCoach = MutableLiveData<TeamWithPlayersAndCoach>()
 
     private val _networkConnectivityChange = connectivityManager.isNetworkAvailable
     val networkConnectivityChange: LiveData<Boolean> = _networkConnectivityChange
@@ -52,7 +45,7 @@ class EventsViewModel @ViewModelInject constructor(
     val switchedDate: LiveData<String> = _switchedDate
 
 
-    val eventsWithDetailsWithHomeAndAwayTeams = zipLiveData(
+    val eventsWithDetailsWithHomeAndAwayTeams = ViewModelUtils.zipTripleLiveData(
         homeTeamWithPlayersAndCoach,
         awayTeamWithPlayersAndCoach,
         eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
@@ -81,27 +74,6 @@ class EventsViewModel @ViewModelInject constructor(
                                     )
                                 )
                             )
-                        )
-
-                        Timber.d(
-                            "JUREKKK ${
-                                eventRepository.getCountryWithLeagueWithTeamsAndEvents(
-                                    leagueId,
-                                    from,
-                                    to
-                                ).leagueWithEvents[0].events.size
-                            }"
-                        )
-
-
-                        Timber.d(
-                            "JUREKKK ${
-                                eventRepository.getCountryWithLeagueWithTeamsAndEvents(
-                                    leagueId,
-                                    from,
-                                    to
-                                ).leagueWithEvents[0].events.forEach { Timber.d("JUREKKKK event date: ${it?.matchDate}, event id: ${it?.matchId}") }
-                            }"
                         )
                     } //else {
 //                        _countryWithLeagueWithTeamsAndEvents.postValue(
@@ -139,7 +111,7 @@ class EventsViewModel @ViewModelInject constructor(
                 eventRepository.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
                     eventId
                 )
-            _eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(data)
+            eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(data)
 
         }
     }
@@ -147,53 +119,20 @@ class EventsViewModel @ViewModelInject constructor(
     fun getPlayersAndCoachFromHomeTeam(teamId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val data = playerRepository.getPlayersFromSpecificTeamFromDb(teamId)
-            _homeTeamWithPlayersAndCoach.postValue(data)
+            homeTeamWithPlayersAndCoach.postValue(data)
         }
     }
 
     fun getPlayersAndCoachFromAwayTeam(teamId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val data = playerRepository.getPlayersFromSpecificTeamFromDb(teamId)
-            _awayTeamWithPlayersAndCoach.postValue(data)
+            awayTeamWithPlayersAndCoach.postValue(data)
         }
     }
 
     fun switchDate(date: String) {
         viewModelScope.launch {
             _switchedDate.value = date
-        }
-    }
-
-    private fun <A, B, C> zipLiveData(
-        a: LiveData<A>,
-        b: LiveData<B>,
-        c: LiveData<C>
-    ): LiveData<Triple<A, B, C>> {
-        return MediatorLiveData<Triple<A, B, C>>().apply {
-            var lastA: A? = null
-            var lastB: B? = null
-            var lastC: C? = null
-
-            fun update() {
-                val localLastA = lastA
-                val localLastB = lastB
-                val localLastC = lastC
-                if (localLastA != null && localLastB != null && localLastC != null)
-                    this.value = Triple(localLastA, localLastB, localLastC)
-            }
-
-            addSource(a) {
-                lastA = it
-                update()
-            }
-            addSource(b) {
-                lastB = it
-                update()
-            }
-            addSource(c) {
-                lastC = it
-                update()
-            }
         }
     }
 }

@@ -11,6 +11,6 @@ data class CountryWithLeagueAndTeams(
     val countryEntity: CountryEntity,
 
     @Relation(parentColumn = "country_id", entityColumn = "league_country_id", entity = LeagueEntity::class)
-    val teams: List<LeagueWithTeams> = emptyList()
+    val leagueWithTeams: List<LeagueWithTeams> = emptyList()
 
 ) : Parcelable

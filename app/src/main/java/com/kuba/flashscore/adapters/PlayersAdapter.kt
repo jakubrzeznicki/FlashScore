@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuba.flashscore.databinding.PlayerItemBinding
 import com.kuba.flashscore.local.models.entities.PlayerEntity
+import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentDirections
 import timber.log.Timber
 
 class PlayersAdapter(
-    private val teamName: String,
-    private val teamLogo: String
+    private val team: TeamEntity
 ) :
     RecyclerView.Adapter<PlayersAdapter.PlayersViewHolder>() {
 
@@ -43,8 +43,6 @@ class PlayersAdapter(
     }
 
     override fun onBindViewHolder(holder: PlayersViewHolder, position: Int) {
-        Timber.d("DEJZI2 ${players}")
-        Timber.d("DEJZI2 ${players.size}")
         holder.binding.apply {
             val player = players[position]
             textViewPlayerName.text = player.playerName
@@ -52,9 +50,8 @@ class PlayersAdapter(
             holder.itemView.setOnClickListener {
                 val action =
                     ClubViewPagerFragmentDirections.actionClubViewPagerFragmentToPlayerViewPagerFragment(
-                        teamName,
-                        player,
-                        teamLogo
+                        team,
+                        player
                     )
                 it.findNavController().navigate(action)
             }

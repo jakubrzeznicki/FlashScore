@@ -13,17 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.PlayersAdapter
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
+import com.kuba.flashscore.local.models.entities.TeamEntity
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.TeamsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
-class PlayersFragment(private val teamId: String, private val teamName: String, private val teamLogo: String) : Fragment(R.layout.fragment_players) {
-
+class PlayersFragment(private val team: TeamEntity) : Fragment(R.layout.fragment_players) {
     private var _binding: FragmentPlayersBinding? = null
     private val binding get() = _binding!!
 
@@ -36,8 +35,8 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
     ): View? {
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
 
-        playerAdapter = PlayersAdapter(teamName, teamLogo)
-        getTeam(teamId = teamId)
+        playerAdapter = PlayersAdapter(team)
+        getTeamWithPlayersAndCoaach(teamId = team.teamKey)
         subscribeToObservers()
 
         return binding.root
@@ -54,9 +53,7 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
                 when (result.status) {
                     Status.SUCCESS -> {
                         val team = result.data
-                       // Timber.d("DEJZI ${team}")
                         if (team != null) {
-                            Timber.d("DEJZI ${team.players}")
                             playerAdapter.players = team.players
                         }
                     }
@@ -70,11 +67,11 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
 
     }
 
-    private fun getTeam(teamId: String) {
+    private fun getTeamWithPlayersAndCoaach(teamId: String) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getTeamById(teamId)
+            viewModel.getTeamWithPlayersAndCoach(teamId)
             setupRecyclerView()
         }
 
@@ -82,7 +79,6 @@ class PlayersFragment(private val teamId: String, private val teamName: String, 
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
-            //playerAdapter = PlayersAdapter(teamName, teamLogo)
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

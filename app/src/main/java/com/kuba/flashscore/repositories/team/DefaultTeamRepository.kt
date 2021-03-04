@@ -73,7 +73,7 @@ class DefaultTeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamsFromLeagueFromDb(leagueId: String): CountryWithLeagueAndTeams {
+    override suspend fun getTeamsWithLeagueAndCountryInformationFromLeagueFromDb(leagueId: String): CountryWithLeagueAndTeams {
         return teamDao.getTeamsFromSpecificLeague(leagueId)
     }
 
