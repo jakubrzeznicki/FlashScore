@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.EventItemBinding
-import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
-import com.kuba.flashscore.local.models.entities.event.EventEntity
+import com.kuba.flashscore.data.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.data.local.models.entities.event.EventEntity
 import com.kuba.flashscore.other.Constants.MATCH_STATUS_FINISHED
 import com.kuba.flashscore.other.Constants.MATCH_STATUS_ZERO
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections

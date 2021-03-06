@@ -1,7 +1,6 @@
 package com.kuba.flashscore.repositories.event
 
-import com.kuba.flashscore.local.models.entities.event.*
-import com.kuba.flashscore.network.responses.*
+import com.kuba.flashscore.data.local.models.entities.event.*
 import com.kuba.flashscore.other.Resource
 
 interface EventRepository {

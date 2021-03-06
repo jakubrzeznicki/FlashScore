@@ -5,8 +5,9 @@ import com.google.common.truth.Truth.assertThat
 import com.kuba.flashscore.MainCoroutineRule
 import com.kuba.flashscore.getOrAwaitValueTest
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.repositories.FakeFlashScoreRepository
+import com.kuba.flashscore.repositories.FakeCountryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,13 +25,13 @@ class CountryViewModelTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var viewModel: CountryViewModel
-    lateinit var flashScoreRepository: FakeFlashScoreRepository
+    lateinit var countryRepository: FakeCountryRepository
 
 
     @Before
     fun setup() {
-        flashScoreRepository = FakeFlashScoreRepository()
-        viewModel = CountryViewModel(flashScoreRepository)
+        countryRepository = FakeCountryRepository()
+        viewModel = CountryViewModel(countryRepository)
     }
 
     //private val server: MockWebServer = MockWebServer()
@@ -58,28 +59,28 @@ class CountryViewModelTest {
 //    }
 
     @Test
-    fun `fetch correct data from network api, returns success`() {
+    fun `fetch correct data from network api, returns success`() = runBlocking {
 //        server.apply {
 //            enqueue(MockResponse().setBody(MockResponseFileReader("success_country.json").content))
 //            viewModel.getCountries()
 //        }
 
-        viewModel.getCountries()
-        val value = viewModel.countries.getOrAwaitValueTest()
+        viewModel.refreshCountries()
+        val value = viewModel.countriesStatus.getOrAwaitValueTest()
 
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
     }
 
     @Test
-    fun `fetch incorrect data from network api, returns error`() {
+    fun `fetch incorrect data from network api, returns error`() = runBlocking {
 //        server.apply {
 //            enqueue(MockResponse().setBody(MockResponseFileReader("error.json").content))
 //            flashScoreRepository.
 //            viewModel.getCountries()
 //        }
-        flashScoreRepository.setShouldReturnNetworkError(true)
-        viewModel.getCountries()
-        val value = viewModel.countries.getOrAwaitValueTest()
+        countryRepository.setShouldReturnNetworkError(true)
+        viewModel.refreshCountries()
+        val value = viewModel.countriesStatus.getOrAwaitValueTest()
 
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.ERROR)
     }

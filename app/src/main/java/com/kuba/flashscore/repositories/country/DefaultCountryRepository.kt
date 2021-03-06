@@ -1,11 +1,10 @@
 package com.kuba.flashscore.repositories.country
 
-import com.kuba.flashscore.local.*
-import com.kuba.flashscore.local.models.entities.*
-import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.network.mappers.CountryDtoMapper
-import com.kuba.flashscore.other.Constants
-import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
+import androidx.lifecycle.LiveData
+import com.kuba.flashscore.data.local.*
+import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.data.network.ApiFootballService
+import com.kuba.flashscore.data.network.mappers.CountryDtoMapper
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
@@ -18,7 +17,7 @@ class DefaultCountryRepository @Inject constructor(
     private val apiFootballService: ApiFootballService
 ) : CountryRepository {
 
-    override suspend fun getCountriesFromNetwork(): Resource<List<CountryEntity>> {
+    override suspend fun refreshCountries(): Resource<List<CountryEntity>> {
         return try {
             val response = apiFootballService.getCountries()
             if (response.isSuccessful) {
@@ -29,7 +28,7 @@ class DefaultCountryRepository @Inject constructor(
                             null
                         )
                     )
-                    return Resource.success(countryDao.getAllCountriesFromDb())
+                    return Resource.success(countryDao.getAllCountriesFromDb().value)
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -43,7 +42,7 @@ class DefaultCountryRepository @Inject constructor(
         countryDao.insertCountries(countries)
     }
 
-    override suspend fun getCountriesFromDb(): List<CountryEntity> {
-        return countryDao.getAllCountriesFromDb()
-    }
+    override fun getCountriesFromDb(): LiveData<List<CountryEntity>> =
+        countryDao.getAllCountriesFromDb()
+
 }

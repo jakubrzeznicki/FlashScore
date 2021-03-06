@@ -6,12 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kuba.flashscore.R
-import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
-import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
 import com.kuba.flashscore.databinding.FragmentEventHead2HeadBinding
-import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
-import com.kuba.flashscore.network.models.events.EventDto
+import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 
 
 class EventHead2HeadFragment(

@@ -1,6 +1,6 @@
 package com.kuba.flashscore.repositories
 
-import com.kuba.flashscore.network.responses.*
+import com.kuba.flashscore.data.network.responses.*
 import com.kuba.flashscore.other.Resource
 
 class FakeFlashScoreRepositoryAndroidTest : FlashScoreRepository {

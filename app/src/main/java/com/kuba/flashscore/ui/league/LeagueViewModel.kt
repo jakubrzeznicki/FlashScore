@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.network.mappers.LeagueDtoMapper
-import com.kuba.flashscore.other.Constants
+import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource

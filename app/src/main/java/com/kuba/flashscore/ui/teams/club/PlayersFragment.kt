@@ -14,7 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.PlayersAdapter
 import com.kuba.flashscore.databinding.FragmentPlayersBinding
-import com.kuba.flashscore.local.models.entities.TeamEntity
+import com.kuba.flashscore.data.local.models.entities.TeamEntity
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.TeamsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration

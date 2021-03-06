@@ -1,15 +1,9 @@
 package com.kuba.flashscore.repositories.league
 
-import com.kuba.flashscore.local.*
-import com.kuba.flashscore.local.models.entities.*
-import com.kuba.flashscore.local.models.entities.event.*
-import com.kuba.flashscore.local.models.event.*
-import com.kuba.flashscore.network.ApiFootballService
-import com.kuba.flashscore.network.mappers.LeagueDtoMapper
-import com.kuba.flashscore.network.models.LeagueDto
-import com.kuba.flashscore.network.responses.*
-import com.kuba.flashscore.other.Constants
-import com.kuba.flashscore.other.Constants.ERROR_INTERNET_CONNECTION_MESSAGE
+import com.kuba.flashscore.data.local.*
+import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.data.network.ApiFootballService
+import com.kuba.flashscore.data.network.mappers.LeagueDtoMapper
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource

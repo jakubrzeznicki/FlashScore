@@ -18,8 +18,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsViewPagerBinding
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.other.Constants.MATCHES_TAB
 import com.kuba.flashscore.other.Constants.RESULT_TAB
 import com.kuba.flashscore.other.Constants.TABLE_TAB

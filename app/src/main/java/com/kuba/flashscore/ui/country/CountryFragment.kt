@@ -21,7 +21,6 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,7 +53,7 @@ class CountryFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getCountries()
+        refreshCOuntries()
 
         subscribeToObservers()
     }
@@ -66,7 +65,10 @@ class CountryFragment @Inject constructor(
 
 
     private fun subscribeToObservers() {
-        viewModel.countries.observe(viewLifecycleOwner, Observer {
+        viewModel.countriesList.observe(viewLifecycleOwner, Observer {
+            countryAdapter.country = it
+        })
+        viewModel.countriesStatus.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
@@ -90,19 +92,18 @@ class CountryFragment @Inject constructor(
 
         viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
             if (isNetwork) {
-                getCountries()
+                refreshCOuntries()
             }
         })
     }
 
-    private fun getCountries() {
+    private fun refreshCOuntries() {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getCountries()
+            viewModel.refreshCountries()
             setupRecyclerView()
         }
-
     }
 
     private fun setupRecyclerView() {

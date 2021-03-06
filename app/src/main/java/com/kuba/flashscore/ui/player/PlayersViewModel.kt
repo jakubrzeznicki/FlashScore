@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kuba.flashscore.network.responses.PlayerResponse
+import com.kuba.flashscore.data.network.responses.PlayerResponse
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.player.PlayerRepository

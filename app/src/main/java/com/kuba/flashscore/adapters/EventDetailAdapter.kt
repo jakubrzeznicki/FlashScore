@@ -14,10 +14,10 @@ import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.EventDetailItemBinding
 import com.kuba.flashscore.databinding.EventDetailHeaderBinding
-import com.kuba.flashscore.local.models.incident.INCIDENTTYPE
-import com.kuba.flashscore.local.models.incident.Incident
-import com.kuba.flashscore.local.models.incident.IncidentHeader
-import com.kuba.flashscore.local.models.incident.IncidentItem
+import com.kuba.flashscore.data.local.models.incident.INCIDENTTYPE
+import com.kuba.flashscore.data.local.models.incident.Incident
+import com.kuba.flashscore.data.local.models.incident.IncidentHeader
+import com.kuba.flashscore.data.local.models.incident.IncidentItem
 import com.kuba.flashscore.other.Constants.ITEM_TYPE_HEADER
 import com.kuba.flashscore.other.Constants.ITEM_TYPE_NORMAL
 

@@ -5,18 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
-import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.network.mappers.CoachDtoMapper
-import com.kuba.flashscore.network.mappers.PlayerDtoMapper
-import com.kuba.flashscore.network.mappers.TeamDtoMapper
-import com.kuba.flashscore.other.Constants
+import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.team.TeamRepository
-import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class TeamsViewModel @ViewModelInject constructor(
     private val repository: TeamRepository,

@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.FragmentPlayerCurrentSeasonDetailBinding
-import com.kuba.flashscore.local.models.entities.PlayerEntity
-
-import com.kuba.flashscore.network.models.PlayerDto
+import com.kuba.flashscore.data.local.models.entities.PlayerEntity
 
 import dagger.hilt.android.AndroidEntryPoint
 

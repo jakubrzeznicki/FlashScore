@@ -1,12 +1,11 @@
 package com.kuba.flashscore.repositories.country
 
-import com.kuba.flashscore.local.models.entities.*
-import com.kuba.flashscore.local.models.entities.event.*
-import com.kuba.flashscore.network.responses.*
+import androidx.lifecycle.LiveData
+import com.kuba.flashscore.data.local.models.entities.*
 import com.kuba.flashscore.other.Resource
 
 interface CountryRepository {
     suspend fun insertCountries(countries: List<CountryEntity>)
-    suspend fun getCountriesFromNetwork(): Resource<List<CountryEntity>>
-    suspend fun getCountriesFromDb(): List<CountryEntity>
+    suspend fun refreshCountries(): Resource<List<CountryEntity>>
+    fun getCountriesFromDb(): LiveData<List<CountryEntity>>
 }

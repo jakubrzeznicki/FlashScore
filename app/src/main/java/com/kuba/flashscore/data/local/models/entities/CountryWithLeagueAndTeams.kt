@@ -1,0 +1,16 @@
+package com.kuba.flashscore.data.local.models.entities
+
+import android.os.Parcelable
+import androidx.room.*
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class CountryWithLeagueAndTeams(
+
+    @Embedded
+    val countryEntity: CountryEntity,
+
+    @Relation(parentColumn = "country_id", entityColumn = "league_country_id", entity = LeagueEntity::class)
+    val leagueWithTeams: List<LeagueWithTeams> = emptyList()
+
+) : Parcelable

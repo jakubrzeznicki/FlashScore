@@ -1,8 +1,7 @@
 package com.kuba.flashscore.repositories.player
 
-import com.kuba.flashscore.local.models.entities.*
-import com.kuba.flashscore.local.models.entities.event.*
-import com.kuba.flashscore.network.responses.*
+import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.data.network.responses.*
 import com.kuba.flashscore.other.Resource
 
 interface PlayerRepository {

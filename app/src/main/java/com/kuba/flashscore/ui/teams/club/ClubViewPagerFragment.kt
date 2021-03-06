@@ -14,8 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.other.Constants.TEAM_TAB
 
 class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {

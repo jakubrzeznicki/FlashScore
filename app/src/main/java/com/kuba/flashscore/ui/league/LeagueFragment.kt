@@ -19,7 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
-import com.kuba.flashscore.local.models.entities.CountryEntity
+import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint

@@ -18,9 +18,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
-import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
-import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.data.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.other.Constants.EVENT_DERAILS_TAB
 import com.kuba.flashscore.other.Constants.EVENT_HEAD_2_HEAD_TAB
 import com.kuba.flashscore.other.Constants.EVENT_STATISTICS_TAB

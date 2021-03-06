@@ -14,8 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.other.Constants.OVERALL
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel

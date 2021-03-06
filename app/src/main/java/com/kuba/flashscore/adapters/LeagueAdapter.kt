@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.databinding.LeagueItemBinding
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryEntity
-import com.kuba.flashscore.local.models.entities.LeagueEntity
+import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.data.local.models.entities.CountryEntity
+import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 
 class LeagueAdapter(private val country: CountryEntity) :

@@ -16,15 +16,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
 import com.kuba.flashscore.databinding.FragmentPlayerViewPagerBinding
-import com.kuba.flashscore.local.models.entities.PlayerEntity
-import com.kuba.flashscore.local.models.entities.TeamEntity
-import com.kuba.flashscore.network.models.LeagueDto
-import com.kuba.flashscore.network.models.PlayerDto
+import com.kuba.flashscore.data.local.models.entities.PlayerEntity
+import com.kuba.flashscore.data.local.models.entities.TeamEntity
 import com.kuba.flashscore.other.Constants.CURRENT_SEASON_TAB
 import com.kuba.flashscore.other.Constants.PLAYER_AGE
 import com.kuba.flashscore.other.Constants.PLAYER_NUMBER
-import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentArgs
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 
 class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {

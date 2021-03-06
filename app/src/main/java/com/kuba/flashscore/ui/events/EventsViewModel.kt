@@ -2,9 +2,9 @@ package com.kuba.flashscore.ui.events
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.kuba.flashscore.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
-import com.kuba.flashscore.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.data.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.other.*
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
@@ -14,7 +14,6 @@ import com.kuba.flashscore.repositories.team.TeamRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class EventsViewModel @ViewModelInject constructor(
     private val eventRepository: EventRepository,

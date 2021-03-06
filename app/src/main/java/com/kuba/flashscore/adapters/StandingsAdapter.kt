@@ -13,11 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
 import com.kuba.flashscore.databinding.StandingsItemBinding
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
-import com.kuba.flashscore.local.models.entities.StandingEntity
-import com.kuba.flashscore.local.models.entities.TeamEntity
-import com.kuba.flashscore.network.models.StandingDto
+import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.StandingEntity
 import com.kuba.flashscore.other.Constants.HOME_LEAGUE
 import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS
 import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_LEAGUE_1_PROMOTION

@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kuba.flashscore.local.models.entities.StandingEntity
+import com.kuba.flashscore.data.local.models.entities.StandingEntity
 import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource

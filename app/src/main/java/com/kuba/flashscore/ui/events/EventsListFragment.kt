@@ -20,7 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
-import com.kuba.flashscore.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY

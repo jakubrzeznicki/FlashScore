@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuba.flashscore.databinding.PlayerItemBinding
-import com.kuba.flashscore.local.models.entities.PlayerEntity
-import com.kuba.flashscore.local.models.entities.TeamEntity
+import com.kuba.flashscore.data.local.models.entities.PlayerEntity
+import com.kuba.flashscore.data.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentDirections
 
 class PlayersAdapter(

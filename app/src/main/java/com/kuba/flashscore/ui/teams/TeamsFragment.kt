@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.TeamsAdapter
 import com.kuba.flashscore.databinding.FragmentTeamsBinding
-import com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
-import dagger.hilt.android.AndroidEntryPoint
 
 class TeamsFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
     Fragment(R.layout.fragment_teams) {

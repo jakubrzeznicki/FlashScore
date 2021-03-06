@@ -16,7 +16,7 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.di.AppModule
 import com.kuba.flashscore.launchFragmentInHiltContainer
-import com.kuba.flashscore.network.models.CountryDto
+import com.kuba.flashscore.data.network.models.CountryDto
 import com.kuba.flashscore.repositories.FakeFlashScoreRepositoryAndroidTest
 import com.kuba.flashscore.ui.util.FlashScoreFragmentFactory
 import com.kuba.flashscore.util.MockServerDispatcher

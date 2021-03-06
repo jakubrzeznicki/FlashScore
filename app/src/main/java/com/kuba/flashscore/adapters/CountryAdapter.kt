@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.kuba.flashscore.databinding.CountryItemBinding
-import com.kuba.flashscore.local.models.entities.CountryEntity
+import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
 import javax.inject.Inject
 
