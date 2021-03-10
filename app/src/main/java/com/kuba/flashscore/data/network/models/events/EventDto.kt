@@ -2,6 +2,8 @@ package com.kuba.flashscore.data.network.models.events
 
 
 import com.google.gson.annotations.SerializedName
+import com.kuba.flashscore.data.local.models.entities.event.EventEntity
+import com.kuba.flashscore.data.local.models.entities.event.EventInformationEntity
 
 data class EventDto(
     val cards: List<Card>,
@@ -73,4 +75,46 @@ data class EventDto(
     val teamAwayBadge: String,
     @SerializedName("team_home_badge")
     val teamHomeBadge: String
-)
+) {
+    fun asLocalModel(): EventEntity {
+        return EventEntity(
+            leagueId,
+            matchDate,
+            matchId,
+            matchLive,
+            matchReferee,
+            matchRound,
+            matchStadium,
+            matchStatus,
+            matchTime
+        )
+    }
+
+    fun asLocalModelHomeTeamInformation(): EventInformationEntity {
+        return EventInformationEntity(
+            matchId,
+            matchHometeamExtraScore,
+            matchHometeamFtScore,
+            matchHometeamHalftimeScore,
+            matchHometeamId,
+            matchHometeamPenaltyScore,
+            matchHometeamScore,
+            matchHometeamSystem,
+            true
+        )
+    }
+
+    fun asLocalModelAwayTeamInformation(): EventInformationEntity {
+        return EventInformationEntity(
+            matchId,
+            matchAwayteamExtraScore,
+            matchAwayteamFtScore,
+            matchAwayteamHalftimeScore,
+            matchAwayteamId,
+            matchAwayteamPenaltyScore,
+            matchAwayteamScore,
+            matchAwayteamSystem,
+            false
+        )
+    }
+}

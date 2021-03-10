@@ -18,11 +18,11 @@ class PlayersViewModel @ViewModelInject constructor(
     private val _players = MutableLiveData<Event<Resource<PlayerResponse>>>()
     val players: LiveData<Event<Resource<PlayerResponse>>> = _players
 
-    fun getPlayerBySpecificName(name: String) {
-        _players.value = Event(Resource.loading(null))
-        viewModelScope.launch {
-            val response = repository.getPlayerBySpecificName(name)
-            _players.value = Event(response)
-        }
-    }
+//    fun getPlayerBySpecificName(name: String) {
+//        _players.value = Event(Resource.loading(null))
+//        viewModelScope.launch {
+//            val response = repository.getPlayerInformationFromDb(name)
+//            _players.value = Event(response)
+//        }
+//    }
 }

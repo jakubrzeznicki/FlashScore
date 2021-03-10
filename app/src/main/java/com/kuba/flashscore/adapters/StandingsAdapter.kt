@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kuba.flashscore.R
+import com.kuba.flashscore.data.domain.models.Standing
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.StandingsItemBinding
-import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
 import com.kuba.flashscore.data.local.models.entities.StandingEntity
 import com.kuba.flashscore.other.Constants.HOME_LEAGUE
 import com.kuba.flashscore.other.Constants.LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS
@@ -36,19 +38,19 @@ class StandingsAdapter(
     inner class StandingsViewHolder(val binding: StandingsItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<StandingEntity>() {
-        override fun areItemsTheSame(oldItem: StandingEntity, newItem: StandingEntity): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<Standing>() {
+        override fun areItemsTheSame(oldItem: Standing, newItem: Standing): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: StandingEntity, newItem: StandingEntity): Boolean {
+        override fun areContentsTheSame(oldItem: Standing, newItem: Standing): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var standings: List<StandingEntity>
+    var standings: List<Standing>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
@@ -65,29 +67,16 @@ class StandingsAdapter(
             val team = countryWithLeagueAndTeams.leagueWithTeams[0].teams.firstOrNull { it.teamKey == standing.teamId }
             Glide.with(holder.itemView).load(team?.teamBadge).into(imageViewTeamLogo)
             textViewTeamName.text = team?.teamName
-            textViewTeamBalance.text = when (whichStandings) {
-                OVERALL_LEAGUE -> "${standing.overallLeagueGF} - ${standing.overallLeagueGA}"
-                HOME_LEAGUE -> "${standing.homeLeagueGF} - ${standing.homeLeagueGA}"
-                else -> "${standing.awayLeagueGF} - ${standing.awayLeagueGA}"
-            }
-            textViewTeamPlayedMatch.text =
-                when (whichStandings) {
-                    OVERALL_LEAGUE -> standing.overallLeaguePayed
-                    HOME_LEAGUE -> standing.homeLeaguePayed
-                    else -> standing.awayLeaguePayed
-                }
-            textViewTeamPoints.text = when (whichStandings) {
-                OVERALL_LEAGUE -> standing.overallLeaguePTS
-                HOME_LEAGUE -> standing.homeLeaguePTS
-                else -> standing.awayLeaguePTS
-            }
-            textViewTeamPosition.text = when (whichStandings) {
-                OVERALL_LEAGUE -> standing.overallLeaguePosition
-                HOME_LEAGUE -> standing.homeLeaguePosition
-                else -> standing.awayLeaguePosition
-            }
+            textViewTeamBalance.text = "${standing.leagueGF} - ${standing.leagueGA}"
 
-            if (whichStandings == OVERALL_LEAGUE && standing.overallPromotion.isNotEmpty()) {
+            textViewTeamPlayedMatch.text = standing.leaguePayed
+
+            textViewTeamPoints.text = standing.leaguePTS
+
+            textViewTeamPosition.text = standing.leaguePosition
+
+
+            if (whichStandings == OVERALL_LEAGUE && standing.promotion.isNotEmpty()) {
                 setColorDependingOnThePosition(textViewTeamPosition, standing, position)
             }
 
@@ -105,17 +94,17 @@ class StandingsAdapter(
 
     private fun setColorDependingOnThePosition(
         positionTextView: TextView,
-        standing: StandingEntity,
+        standing: Standing,
         position: Int
     ) {
-        if ((standing.overallPromotion == LEAGUE_PROMOTION_PREMIER_LEAGUE || standing.overallPromotion == LEAGUE_PROMOTION_LIGUE_1) && (position == 0 || position == 1)) {
+        if ((standing.promotion == LEAGUE_PROMOTION_PREMIER_LEAGUE || standing.promotion == LEAGUE_PROMOTION_LIGUE_1) && (position == 0 || position == 1)) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
                     R.color.directPromotionColor
                 )
             )
-        } else if (standing.overallPromotion == LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS) {
+        } else if (standing.promotion == LEAGUE_PROMOTION_CHAMPIONSHIP_PLAY_OFFS) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
@@ -123,21 +112,21 @@ class StandingsAdapter(
                 )
             )
 
-        } else if (standing.overallPromotion == LEAGUE_PROMOTION_LEAGUE_1_PROMOTION) {
+        } else if (standing.promotion == LEAGUE_PROMOTION_LEAGUE_1_PROMOTION) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
                     R.color.promotionColor
                 )
             )
-        } else if (standing.overallPromotion == LEAGUE_RELEGATION_LIGUE_2) {
+        } else if (standing.promotion == LEAGUE_RELEGATION_LIGUE_2) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
                     R.color.playOffKeepingColor
                 )
             )
-        } else if (standing.overallPromotion == LEAGUE_RELEGATION) {
+        } else if (standing.promotion == LEAGUE_RELEGATION) {
             positionTextView.setBackgroundColor(
                 ContextCompat.getColor(
                     context,

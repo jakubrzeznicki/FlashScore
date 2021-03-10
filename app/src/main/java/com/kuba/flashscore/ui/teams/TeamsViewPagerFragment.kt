@@ -13,18 +13,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
+import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentTeamsViewPagerBinding
-import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.other.Constants.MATCHES_TAB
 import com.kuba.flashscore.other.Constants.RESULT_TAB
 import com.kuba.flashscore.other.Constants.TABLE_TAB
 import com.kuba.flashscore.other.Constants.TEAMS_TAB
-import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewPagerFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -58,7 +56,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
             subtitle = ""
         }
 
-        getCountryWithLeagueAndTeams(countryAndLeague.leagues[0].leagueId)
+        viewModel.getCountryWithLeagueAndTeams(countryAndLeague.leagues[0].leagueId)
         subscribeToObservers()
 
         setInformationAboutCountryAndLeague(countryAndLeague)
@@ -69,46 +67,21 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
 
     private fun subscribeToObservers() {
         viewModel.teams.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        val countryWithLeagueAndTeams = result.data
-                        if (countryWithLeagueAndTeams != null) {
-                            setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams)
-                        }
-                    }
-                    Status.ERROR -> {
-                        Snackbar.make(
-                            requireView(),
-                            result.message ?: "Default No Internet",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
+            setTeamsViewPageAdapterAndTabLayout(it)
         })
     }
-
-    private fun getCountryWithLeagueAndTeams(leagueId: String) {
-        var job: Job? = null
-        job?.cancel()
-        job = lifecycleScope.launch {
-            viewModel.getCountryWithLeagueAndTeams(leagueId)
-        }
-
-    }
-
 
     private fun setInformationAboutCountryAndLeague(countryAndLeague: CountryAndLeagues) {
         binding.apply {
             textViewCountryName.text = countryAndLeague.country.countryName
-            Glide.with(requireContext()).load(countryAndLeague.country.countryLogo).into(imageViewCountryFlag)
+            Glide.with(requireContext()).load(countryAndLeague.country.countryLogo)
+                .into(imageViewCountryFlag)
             textViewLeagueName.text = countryAndLeague.leagues[0].leagueName
-            Glide.with(requireContext()).load(countryAndLeague.leagues[0].leagueLogo).into(imageViewLeagueLogo)
+            Glide.with(requireContext()).load(countryAndLeague.leagues[0].leagueLogo)
+                .into(imageViewLeagueLogo)
         }
     }
+
     private fun setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams: CountryWithLeagueAndTeams) {
         val teamFragmentList = arrayListOf<Fragment>(
             TeamsFragment(countryWithLeagueAndTeams),
@@ -142,6 +115,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
             }
         }.attach()
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

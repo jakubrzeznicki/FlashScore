@@ -9,9 +9,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventDetailAdapter
+import com.kuba.flashscore.data.domain.models.customs.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.domain.models.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.domain.models.event.customs.EventWithEventInformation
 import com.kuba.flashscore.databinding.FragmentEventDetailsBinding
-import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.data.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
+import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
 import com.kuba.flashscore.data.local.models.incident.INCIDENTTYPE
 import com.kuba.flashscore.data.local.models.incident.Incident
 import com.kuba.flashscore.data.local.models.incident.IncidentHeader
@@ -25,6 +28,7 @@ import com.kuba.flashscore.other.Constants.SUBSTITUTION_DIVIDER
 
 
 class EventDetailsFragment(
+    private val eventWithEventInformation: EventWithEventInformation,
     private val eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions,
     private val homeTeam: TeamWithPlayersAndCoach,
     private val awayTeam: TeamWithPlayersAndCoach
@@ -51,7 +55,7 @@ class EventDetailsFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (eventDetails.eventEntity.matchStatus == MATCH_STATUS_FINISHED) {
+        if (eventDetails.event.matchStatus == MATCH_STATUS_FINISHED) {
             binding.constraintLayoutEventDetailsInformationAboutMatch.visibility = View.VISIBLE
             setInformationAboutFirstHalf()
             setupRecyclerView()
@@ -70,14 +74,14 @@ class EventDetailsFragment(
     private fun setInformationAboutFirstHalf() {
         binding.apply {
             textViewInformationAboutFirstHalfResult.text =
-                "${eventDetails.eventEntity.matchHometeamHalftimeScore} - ${eventDetails.eventEntity.matchAwayteamHalftimeScore}"
+                "${eventWithEventInformation.eventInformation[0].halftimeScore} - ${eventWithEventInformation.eventInformation[1].halftimeScore}"
         }
     }
 
     private fun setInformationAboutRefereeAndStadium() {
         binding.apply {
-            textViewRefereeName.text = eventDetails.eventEntity.matchReferee
-            textViewStadiumName.text = eventDetails.eventEntity.matchStadium
+            textViewRefereeName.text = eventDetails.event.matchReferee
+            textViewStadiumName.text = eventDetails.event.matchStadium
         }
     }
 

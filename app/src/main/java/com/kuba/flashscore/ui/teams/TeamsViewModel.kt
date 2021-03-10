@@ -1,12 +1,11 @@
 package com.kuba.flashscore.ui.teams
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
-import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
+import androidx.lifecycle.*
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.domain.models.customs.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
+import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.team.TeamRepository
@@ -16,21 +15,25 @@ class TeamsViewModel @ViewModelInject constructor(
     private val repository: TeamRepository,
 ) : ViewModel() {
 
-    private val _teams = MutableLiveData<Event<Resource<CountryWithLeagueAndTeams>>>()
-    val teams: LiveData<Event<Resource<CountryWithLeagueAndTeams>>> = _teams
+    private val _teams = MutableLiveData<CountryWithLeagueAndTeams>()
+    val teams: LiveData<CountryWithLeagueAndTeams> = _teams
 
-    private val _team = MutableLiveData<Event<Resource<TeamWithPlayersAndCoach>>>()
-    val team: LiveData<Event<Resource<TeamWithPlayersAndCoach>>> = _team
+    private val _team = MutableLiveData<TeamWithPlayersAndCoach>()
+    val team: LiveData<TeamWithPlayersAndCoach> = _team
 
     fun getCountryWithLeagueAndTeams(leagueId: String) {
         viewModelScope.launch {
-            val response =
+            _teams.postValue(
                 repository.getTeamsWithLeagueAndCountryInformationFromLeagueFromDb(leagueId)
-            _teams.value = Event(Resource.success(response))
+                    .asDomainModel()
+            )
         }
     }
 
     suspend fun getTeamWithPlayersAndCoach(teamId: String) {
-        _team.value = Event(Resource.success(repository.getTeamWithPlayersAndCoachFromDb(teamId)))
+        _team.value =
+            repository.getTeamWithPlayersAndCoachFromDb(teamId).asDomainModel()
+
+
     }
 }

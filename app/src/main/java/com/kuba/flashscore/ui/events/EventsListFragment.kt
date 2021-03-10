@@ -19,8 +19,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventAdapter
+import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
+import com.kuba.flashscore.data.domain.models.event.customs.CountryWithLeagueWithEventsAndTeams
 import com.kuba.flashscore.databinding.FragmentEventsListBinding
-import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
+import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
@@ -29,7 +31,9 @@ import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -42,7 +46,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private val args: EventsListFragmentArgs by navArgs()
 
     private lateinit var eventsAdapter: EventAdapter
-
+    private var wasRefresh = false
     private lateinit var countryAndLeague: CountryAndLeagues
     private lateinit var fromToDate: String
 
@@ -53,7 +57,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         _binding = FragmentEventsListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        countryAndLeague = args.countryAndLeague
+        countryAndLeague = args.countryAndLeagues
         fromToDate = viewModel.switchedDate.value!!
 
         setTitleAndSubtitle(
@@ -64,17 +68,19 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         )
         setInformationAboutCountry(countryAndLeague)
 
-        getEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
-
-
         setHasOptionsMenu(true)
 
-        gotToTeamsListAndStandings(countryAndLeague)
+        goToTeamsListAndStandings(countryAndLeague)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getCountryWithLeagueWithEventsAndTeams(
+            countryAndLeague.leagues[0].leagueId,
+            fromToDate
+        )
+        setupRecyclerView()
         subscribeToObservers()
     }
 
@@ -84,7 +90,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     }
 
 
-    private fun gotToTeamsListAndStandings(countryWithLeague: CountryAndLeagues) {
+    private fun goToTeamsListAndStandings(countryWithLeague: CountryAndLeagues) {
         binding.apply {
             imageButtonGoToLeagueTable.setOnClickListener {
                 val action =
@@ -106,15 +112,34 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
     private fun subscribeToObservers() {
         viewModel.countryWithLeagueWithTeamsAndEvents.observe(
+            viewLifecycleOwner, Observer {
+                Timber.d("EVENTS observe get events")
+                if (it == null) {
+                    Timber.d("EVENTS gert form db are null")
+                    if (!wasRefresh) {
+                        refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
+                    }
+                    setupRecyclerView()
+                } else {
+                    Timber.d("EVENTS gert form db are not null ${it.leagueWithEvents[0].eventsWithEventInformation.size}")
+                    eventsAdapter.countryWithLeagueWithEventsAndTeams = it
+                    eventsAdapter.events =
+                        it.leagueWithEvents[0].eventsWithEventInformation.filter { event ->
+                            event.event.matchDate == fromToDate
+                        }
+                }
+            }
+        )
+        viewModel.countryWithLeagueWithTeamsAndEventsEntityStatus.observe(
             viewLifecycleOwner, Observer { items ->
                 items?.getContentIfNotHandled()?.let { result ->
                     when (result.status) {
                         Status.SUCCESS -> {
-                            if (result.data != null) {
-                                eventsAdapter.events =
-                                    result.data.leagueWithEvents[0].events.filter { it?.matchDate == fromToDate }
-                                eventsAdapter.countryWithLeagueWithEventsAndTeams = result.data
-                            }
+                            Snackbar.make(
+                                requireView(),
+                                result.message ?: "Default No Internet",
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
                         Status.ERROR -> {
                             Snackbar.make(
@@ -138,12 +163,14 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 //        })
     }
 
-    private fun getEvents(leagueId: String, fromTo: String) {
+    private fun refreshEvents(leagueId: String, fromTo: String) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getCountryWithLeagueWithTeamsAndEvents(leagueId, fromTo)
-            setupRecyclerView()
+            viewModel.refreshEvents(leagueId, fromTo)
+            wasRefresh = true
+            delay(1000)
+            viewModel.getCountryWithLeagueWithEventsAndTeams(leagueId, fromTo)
         }
     }
 
@@ -226,7 +253,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 setTitleAndSubtitle(countryAndLeague, date)
                 fromToDate = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
 
-                getEvents(
+                refreshEvents(
                     leagueId = countryAndLeague.leagues[0].leagueId,
                     DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
                 )

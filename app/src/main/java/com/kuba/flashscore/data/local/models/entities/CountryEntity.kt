@@ -4,11 +4,11 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.other.DateUtils.createTimestamp
 import com.kuba.flashscore.other.DateUtils.dateToLong
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @Entity(tableName = "countries_table")
 data class CountryEntity(
     @PrimaryKey(autoGenerate = false)
@@ -22,4 +22,12 @@ data class CountryEntity(
     val dateCached: Long = dateToLong(
         createTimestamp()
     )
-) : Parcelable
+) {
+    fun asDomainModel(): Country {
+        return Country(
+            countryId,
+            countryLogo,
+            countryName
+        )
+    }
+}

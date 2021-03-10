@@ -2,9 +2,13 @@ package com.kuba.flashscore.ui.events
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.data.local.models.entities.event.CountryWithLeagueWithEventsAndTeams
-import com.kuba.flashscore.data.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.domain.models.Country
+import com.kuba.flashscore.data.domain.models.customs.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.domain.models.event.customs.CountryWithLeagueWithEventsAndTeams
+import com.kuba.flashscore.data.domain.models.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
+import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
+import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
 import com.kuba.flashscore.other.*
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
@@ -14,6 +18,7 @@ import com.kuba.flashscore.repositories.team.TeamRepository
 import com.kuba.flashscore.ui.util.ConnectivityManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class EventsViewModel @ViewModelInject constructor(
     private val eventRepository: EventRepository,
@@ -22,9 +27,14 @@ class EventsViewModel @ViewModelInject constructor(
     private val connectivityManager: ConnectivityManager,
 ) : ViewModel() {
 
+    private val _countryWithLeagueWithTeamsAndEventsStatus =
+        MutableLiveData<Event<Resource<List<com.kuba.flashscore.data.domain.models.event.Event>>>>()
+    val countryWithLeagueWithTeamsAndEventsEntityStatus: LiveData<Event<Resource<List<com.kuba.flashscore.data.domain.models.event.Event>>>> =
+        _countryWithLeagueWithTeamsAndEventsStatus
+
     private val _countryWithLeagueWithTeamsAndEvents =
-        MutableLiveData<Event<Resource<CountryWithLeagueWithEventsAndTeams>>>()
-    val countryWithLeagueWithTeamsAndEvents: LiveData<Event<Resource<CountryWithLeagueWithEventsAndTeams>>> =
+        MutableLiveData<CountryWithLeagueWithEventsAndTeams>()
+    val countryWithLeagueWithTeamsAndEvents: LiveData<CountryWithLeagueWithEventsAndTeams> =
         _countryWithLeagueWithTeamsAndEvents
 
     private val eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions =
@@ -53,56 +63,46 @@ class EventsViewModel @ViewModelInject constructor(
     )
 
 
-    fun getCountryWithLeagueWithTeamsAndEvents(leagueId: String, date: String) {
-        _countryWithLeagueWithTeamsAndEvents.value = Event(Resource.loading(null))
+    suspend fun refreshEvents(leagueId: String, date: String) {
+        _countryWithLeagueWithTeamsAndEventsStatus.value = Event(Resource.loading(null))
         viewModelScope.launch(Dispatchers.IO) {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     val eventResponse =
-                        eventRepository.getEventsFromSpecificLeaguesFromNetwork(leagueId, date)
+                        eventRepository.refreshEventsFromSpecificLeagues(leagueId, date)
                     val teamsResponse =
-                        teamRepository.getTeamsFromSpecificLeagueFromNetwork(leagueId)
+                        teamRepository.refreshTeamsFromSpecificLeague(leagueId)
 
                     if (eventResponse.status == Status.SUCCESS && teamsResponse.status == Status.SUCCESS) {
-                        _countryWithLeagueWithTeamsAndEvents.postValue(
-                            Event(
-                                Resource.success(
-                                    eventRepository.getCountryWithLeagueWithTeamsAndEvents(
-                                        leagueId,
-                                        date
-                                    )
-                                )
-                            )
+                        _countryWithLeagueWithTeamsAndEventsStatus.postValue(
+                            Event(eventResponse)
                         )
                     } else {
-                        _countryWithLeagueWithTeamsAndEvents.postValue(
+                        _countryWithLeagueWithTeamsAndEventsStatus.postValue(
                             Event(
                                 Resource.error(
-                                    eventResponse.message ?: teamsResponse.message ?: ERROR_MESSAGE_LACK_OF_DATA, null
+                                    eventResponse.message ?: teamsResponse.message
+                                    ?: ERROR_MESSAGE_LACK_OF_DATA, null
                                 )
                             )
                         )
                     }
-
                 } else {
-                    val countryWithLeagueWithEventsAndTeams =
-                        eventRepository.getCountryWithLeagueWithTeamsAndEvents(
-                            leagueId,
-                            date
-                        )
-                    if (countryWithLeagueWithEventsAndTeams.leagueWithEvents.isNullOrEmpty() || countryWithLeagueWithEventsAndTeams.leagueWithEvents[0].events.isNullOrEmpty()) {
-                        Event(Resource.error(ERROR_MESSAGE, null))
-                    } else {
-                        _countryWithLeagueWithTeamsAndEvents.postValue(
-                            Event(
-                                Resource.success(
-                                    countryWithLeagueWithEventsAndTeams
-                                )
-                            )
-                        )
-                    }
+                    Event(Resource.error(ERROR_MESSAGE, null))
                 }
             }
+        }
+
+    }
+
+    fun getCountryWithLeagueWithEventsAndTeams(leagueId: String, date: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _countryWithLeagueWithTeamsAndEvents.postValue(
+                eventRepository.getCountryWithLeagueWithTeamsAndEvents(
+                    leagueId,
+                    date
+                )?.asDomainModel()
+            )
         }
     }
 
@@ -111,23 +111,35 @@ class EventsViewModel @ViewModelInject constructor(
             val data =
                 eventRepository.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
                     eventId
-                )
-            eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(data)
-
+                ).asDomainModel()
+            Timber.d("EVENT DETAILS IN VIEW MODEL ${data.event.matchRound}")
+            eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(
+                data
+            )
         }
     }
 
     fun getPlayersAndCoachFromHomeTeam(teamId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val data = playerRepository.getPlayersFromSpecificTeamFromDb(teamId)
-            homeTeamWithPlayersAndCoach.postValue(data)
+            val date = playerRepository.getPlayersFromSpecificTeamFromDb(
+                teamId
+            ).asDomainModel()
+            Timber.d("EVENT DETAILS team home IN VIEW MODEL ${date.team.teamName}")
+            homeTeamWithPlayersAndCoach.postValue(
+                date
+            )
         }
     }
 
     fun getPlayersAndCoachFromAwayTeam(teamId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val data = playerRepository.getPlayersFromSpecificTeamFromDb(teamId)
-            awayTeamWithPlayersAndCoach.postValue(data)
+            val date = playerRepository.getPlayersFromSpecificTeamFromDb(
+                teamId
+            ).asDomainModel()
+            Timber.d("EVENT DETAILS team away IN VIEW MODEL ${date.team.teamName}")
+            awayTeamWithPlayersAndCoach.postValue(
+                date
+            )
         }
     }
 

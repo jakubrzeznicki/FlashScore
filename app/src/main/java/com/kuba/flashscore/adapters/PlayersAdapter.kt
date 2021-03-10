@@ -6,32 +6,34 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.kuba.flashscore.data.domain.models.Player
+import com.kuba.flashscore.data.domain.models.Team
 import com.kuba.flashscore.databinding.PlayerItemBinding
 import com.kuba.flashscore.data.local.models.entities.PlayerEntity
 import com.kuba.flashscore.data.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.club.ClubViewPagerFragmentDirections
 
 class PlayersAdapter(
-    private val team: TeamEntity
+    private val team: Team
 ) :
     RecyclerView.Adapter<PlayersAdapter.PlayersViewHolder>() {
 
     inner class PlayersViewHolder(val binding: PlayerItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<PlayerEntity>() {
-        override fun areItemsTheSame(oldItem: PlayerEntity, newItem: PlayerEntity): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<Player>() {
+        override fun areItemsTheSame(oldItem: Player, newItem: Player): Boolean {
             return oldItem.playerKey == newItem.playerKey
         }
 
-        override fun areContentsTheSame(oldItem: PlayerEntity, newItem: PlayerEntity): Boolean {
+        override fun areContentsTheSame(oldItem: Player, newItem: Player): Boolean {
             return oldItem == newItem
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var players: List<PlayerEntity>
+    var players: List<Player>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 

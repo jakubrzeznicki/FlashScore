@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.databinding.CountryItemBinding
 import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.ui.country.CountryFragmentDirections
@@ -19,19 +20,19 @@ class CountryAdapter @Inject constructor(private val glide: RequestManager) :
     inner class CountryViewHolder(val binding: CountryItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<CountryEntity>() {
-        override fun areItemsTheSame(oldItem: CountryEntity, newItem: CountryEntity): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<Country>() {
+        override fun areItemsTheSame(oldItem: Country, newItem: Country): Boolean {
             return oldItem.countryId == newItem.countryId
         }
 
-        override fun areContentsTheSame(oldItem: CountryEntity, newItem: CountryEntity): Boolean {
+        override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var country: List<CountryEntity>
+    var country: List<Country>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 

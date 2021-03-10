@@ -2,6 +2,8 @@ package com.kuba.flashscore.data.network.models
 
 
 import com.google.gson.annotations.SerializedName
+import com.kuba.flashscore.data.local.models.entities.StandingEntity
+import com.kuba.flashscore.data.local.models.entities.StandingType
 
 
 data class StandingDto(
@@ -73,4 +75,58 @@ data class StandingDto(
     val teamId: String,
     @SerializedName("team_name")
     val teamName: String
-)
+) {
+    fun asLocalModelHome(): StandingEntity {
+        return StandingEntity(
+            leagueRound,
+            homeLeagueD,
+            homeLeagueGA,
+            homeLeagueGF,
+            homeLeagueL,
+            homeLeaguePTS,
+            homeLeaguePayed,
+            homeLeaguePosition,
+            homeLeagueW,
+            homePromotion,
+            teamId,
+            leagueId,
+            StandingType.HOME
+        )
+    }
+
+    fun asLocalModelAway(): StandingEntity {
+        return StandingEntity(
+            leagueRound,
+            awayLeagueD,
+            awayLeagueGA,
+            awayLeagueGF,
+            awayLeagueL,
+            awayLeaguePTS,
+            awayLeaguePayed,
+            awayLeaguePosition,
+            awayLeagueW,
+            awayPromotion,
+            teamId,
+            leagueId,
+            StandingType.AWAY
+        )
+    }
+
+    fun asLocalModelOverall(): StandingEntity {
+        return StandingEntity(
+            leagueRound,
+            overallLeagueD,
+            overallLeagueGA,
+            overallLeagueGF,
+            overallLeagueL,
+            overallLeaguePTS,
+            overallLeaguePayed,
+            overallLeaguePosition,
+            overallLeagueW,
+            overallPromotion,
+            teamId,
+            leagueId,
+            StandingType.OVERALL
+        )
+    }
+}

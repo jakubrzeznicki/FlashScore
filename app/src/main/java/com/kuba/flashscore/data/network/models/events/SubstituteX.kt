@@ -2,6 +2,7 @@ package com.kuba.flashscore.data.network.models.events
 
 
 import com.google.gson.annotations.SerializedName
+import com.kuba.flashscore.data.local.models.entities.event.LineupEntity
 
 data class SubstituteX(
     @SerializedName("lineup_number")
@@ -12,4 +13,16 @@ data class SubstituteX(
     val lineupPosition: String,
     @SerializedName("player_key")
     val playerKey: String
-)
+) {
+    fun asLocalModel(matchId: String): LineupEntity {
+        return LineupEntity(
+            matchId,
+            lineupNumber,
+            lineupPosition,
+            false,
+            starting = false,
+            missing = false,
+            playerKey = playerKey
+        )
+    }
+}

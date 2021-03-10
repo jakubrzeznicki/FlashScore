@@ -2,6 +2,7 @@ package com.kuba.flashscore.data.network.models
 
 
 import com.google.gson.annotations.SerializedName
+import com.kuba.flashscore.data.local.models.entities.PlayerEntity
 
 data class PlayerDto(
     @SerializedName("player_age")
@@ -24,4 +25,20 @@ data class PlayerDto(
     val playerType: String,
     @SerializedName("player_yellow_cards")
     val playerYellowCards: String
-)
+) {
+    fun asLocalModel(teamId: String) : PlayerEntity {
+        return PlayerEntity(
+            teamId,
+            playerAge,
+            playerCountry,
+            playerGoals,
+            playerKey,
+            playerMatchPlayed,
+            playerName,
+            playerNumber,
+            playerRedCards,
+            playerType,
+            playerYellowCards
+        )
+    }
+}

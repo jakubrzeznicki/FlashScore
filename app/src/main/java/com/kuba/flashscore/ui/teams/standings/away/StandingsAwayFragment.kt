@@ -13,15 +13,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
+import com.kuba.flashscore.data.domain.models.Standing
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsAwayBinding
-import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
 import com.kuba.flashscore.other.Constants.AWAY
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class StandingsAwayFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
@@ -46,7 +49,8 @@ class StandingsAwayFragment(private val countryWithLeagueAndTeams: CountryWithLe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getStandings(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
+        viewModel.getAwayStandingsFromSpecificLeague(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
+        setupRecyclerView()
         subscribeToObservers()
     }
 
@@ -58,13 +62,25 @@ class StandingsAwayFragment(private val countryWithLeagueAndTeams: CountryWithLe
 
     private fun subscribeToObservers() {
         viewModel.standings.observe(viewLifecycleOwner, Observer {
+            Timber.d("STANDINGS gert form db")
+            if (it.isNullOrEmpty()) {
+                Timber.d("STANDINGS gert form db are null")
+                refreshStandings(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
+            } else {
+                Timber.d("STANDINGS gert form db are not null $it")
+                standingsAdapter.standings =
+                    it.sortedBy { standing -> standing.leaguePosition.toInt() }
+            }
+        })
+        viewModel.standingsStatus.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
-                        val standings = result.data?.sortedBy { standing -> standing.awayLeaguePosition.toInt() }
-                        if (standings != null) {
-                            standingsAdapter.standings = standings
-                        }
+                        Snackbar.make(
+                            requireView(),
+                            "Successfully fetched data from network",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.ERROR -> {
                         Snackbar.make(
@@ -78,18 +94,17 @@ class StandingsAwayFragment(private val countryWithLeagueAndTeams: CountryWithLe
                 }
             }
         })
-
     }
 
-    private fun getStandings(leagueId: String) {
+    private fun refreshStandings(leagueId: String) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getStandingsFromSpecificLeague(leagueId)
-            setupRecyclerView()
+            viewModel.refreshStandingsFromSpecificLeague(leagueId)
+            delay(1000)
+            viewModel.getAwayStandingsFromSpecificLeague(leagueId)
         }
     }
-
 
     private fun setupRecyclerView() {
         binding.recyclerViewAwayStandings.apply {

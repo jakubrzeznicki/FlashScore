@@ -14,13 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
+import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Constants.COUNTRIES
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,9 +55,8 @@ class CountryFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        refreshCOuntries()
-
+        getCountries()
+        setupRecyclerView()
         subscribeToObservers()
     }
 
@@ -65,17 +67,26 @@ class CountryFragment @Inject constructor(
 
 
     private fun subscribeToObservers() {
-        viewModel.countriesList.observe(viewLifecycleOwner, Observer {
-            countryAdapter.country = it
+        viewModel.countries.observe(viewLifecycleOwner, Observer {
+            Timber.d("COUNTRYY gert form db")
+            if (it.isNullOrEmpty()) {
+                Timber.d("COUNTRYY gert form db are null")
+                refreshCountries()
+            } else {
+                Timber.d("COUNTRYY gert form db are not null $it")
+                countryAdapter.country = it
+            }
         })
         viewModel.countriesStatus.observe(viewLifecycleOwner, Observer {
+            Timber.d("COUNTRYY gert form network")
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
-                        val countries = result.data
-                        if (countries != null) {
-                            countryAdapter.country = countries
-                        }
+                        Snackbar.make(
+                            requireView(),
+                            "Successfully fetched data from network",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.ERROR -> {
                         Snackbar.make(
@@ -90,19 +101,29 @@ class CountryFragment @Inject constructor(
             }
         })
 
-        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
-            if (isNetwork) {
-                refreshCOuntries()
-            }
-        })
+//        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+//            if (isNetwork) {
+//                refreshCOuntries()
+//            }
+//        })
     }
 
-    private fun refreshCOuntries() {
+    private fun refreshCountries() {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel.refreshCountries()
-            setupRecyclerView()
+            delay(1000)
+            getCountries()
+        }
+    }
+
+    private fun getCountries() {
+        var job: Job? = null
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.getCountries()
+            delay(1000)
         }
     }
 

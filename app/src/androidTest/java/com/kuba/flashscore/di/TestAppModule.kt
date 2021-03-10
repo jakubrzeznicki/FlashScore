@@ -4,8 +4,8 @@ import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.kuba.flashscore.R
-import com.kuba.flashscore.data.local.*
-import com.kuba.flashscore.data.local.models.event.*
+import com.kuba.flashscore.data.local.daos.*
+import com.kuba.flashscore.data.local.daos.event.*
 import com.kuba.flashscore.data.network.ApiFootballService
 import com.kuba.flashscore.data.network.mappers.*
 import com.kuba.flashscore.data.network.mappers.event.EventDtoMapper

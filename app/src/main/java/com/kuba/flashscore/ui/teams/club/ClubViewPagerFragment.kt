@@ -13,8 +13,9 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentClubViewPagerBinding
-import com.kuba.flashscore.data.local.models.entities.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
 import com.kuba.flashscore.other.Constants.TEAM_TAB
 
 class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
@@ -86,11 +87,15 @@ class ClubViewPagerFragment : Fragment(R.layout.fragment_club_view_pager) {
         countryWithLeagueAndTeams: CountryWithLeagueAndTeams
     ) {
         binding.apply {
-            textViewCountryName.text = countryWithLeagueAndTeams.countryEntity.countryName
-            Glide.with(requireContext()).load(countryWithLeagueAndTeams.countryEntity.countryLogo)
+            textViewCountryName.text = countryWithLeagueAndTeams.country.countryName
+            Glide.with(requireContext())
+                .load(countryWithLeagueAndTeams.country.countryLogo)
                 .into(imageViewCountryFlag)
-            textViewClubName.text = countryWithLeagueAndTeams.leagueWithTeams[0].teams.firstOrNull { it.teamKey == teamId }?.teamName
-            Glide.with(requireContext()).load(countryWithLeagueAndTeams.leagueWithTeams[0].teams.firstOrNull { it.teamKey == teamId }?.teamBadge).into(imageViewClubLogo)
+            textViewClubName.text =
+                countryWithLeagueAndTeams.leagueWithTeams[0].teams.firstOrNull { it.teamKey == teamId }?.teamName
+            Glide.with(requireContext())
+                .load(countryWithLeagueAndTeams.leagueWithTeams[0].teams.firstOrNull { it.teamKey == teamId }?.teamBadge)
+                .into(imageViewClubLogo)
         }
     }
 

@@ -1,14 +1,18 @@
 package com.kuba.flashscore.repositories.team
 
-import com.kuba.flashscore.data.local.*
+import androidx.lifecycle.LiveData
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
+import com.kuba.flashscore.data.local.daos.CoachDao
+import com.kuba.flashscore.data.local.daos.PlayerDao
+import com.kuba.flashscore.data.local.daos.TeamDao
 import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
+import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
 import com.kuba.flashscore.data.network.ApiFootballService
-import com.kuba.flashscore.data.network.mappers.CoachDtoMapper
-import com.kuba.flashscore.data.network.mappers.PlayerDtoMapper
-import com.kuba.flashscore.data.network.mappers.TeamDtoMapper
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
+import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -16,9 +20,6 @@ class DefaultTeamRepository @Inject constructor(
     private val coachDao: CoachDao,
     private val playerDao: PlayerDao,
     private val teamDao: TeamDao,
-    private val teamDtoMapper: TeamDtoMapper,
-    private val coachDtoMapper: CoachDtoMapper,
-    private val playerDtoMapper: PlayerDtoMapper,
     private val apiFootballService: ApiFootballService
 ) : TeamRepository {
     override suspend fun insertCoaches(coaches: List<CoachEntity>) {
@@ -33,34 +34,19 @@ class DefaultTeamRepository @Inject constructor(
         teamDao.insertTeams(teams)
     }
 
-    override suspend fun getTeamsFromSpecificLeagueFromNetwork(leagueId: String): Resource<CountryWithLeagueAndTeams> {
+    override suspend fun refreshTeamsFromSpecificLeague(leagueId: String): Resource<CountryWithLeagueAndTeams> {
         return try {
             val response = apiFootballService.getTeams(leagueId)
             if (response.isSuccessful) {
-                response.body().let {
-                    insertTeams(
-                        teamDtoMapper.toLocalList(
-                            it?.toList()!!,
-                            leagueId
-                        )
-                    )
+                response.body().let { teamResponse ->
+                    teamResponse?.toList()?.map { it.asLocalModel(leagueId) }
+                        ?.let { insertTeams(it) }
 
-                    it.toList().forEach { teamDtoItem ->
-                        insertPlayers(
-                            playerDtoMapper.toLocalList(
-                                teamDtoItem.players,
-                                teamDtoItem.teamKey
-                            )
-                        )
-
-                        insertCoaches(
-                            coachDtoMapper.toLocalList(
-                                teamDtoItem.coaches,
-                                teamDtoItem.teamKey
-                            )
-                        )
+                    teamResponse?.toList()?.forEach { teamDtoItem ->
+                        insertPlayers(teamDtoItem.players.map { it.asLocalModel(leagueId) })
+                        insertCoaches(teamDtoItem.coaches.map { it.asLocalModel(leagueId) })
                     }
-                    Resource.success(teamDao.getTeamsFromSpecificLeague(leagueId))
+                    Resource.success(teamDao.getTeamsFromSpecificLeague(leagueId).asDomainModel())
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -70,11 +56,13 @@ class DefaultTeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamsWithLeagueAndCountryInformationFromLeagueFromDb(leagueId: String): CountryWithLeagueAndTeams {
+    override suspend fun getTeamsWithLeagueAndCountryInformationFromLeagueFromDb(leagueId: String): CountryWithLeagueAndTeamsEntity {
         return teamDao.getTeamsFromSpecificLeague(leagueId)
     }
 
-    override suspend fun getTeamWithPlayersAndCoachFromDb(teamId: String): TeamWithPlayersAndCoach {
-        return teamDao.getTeamByTeamId(teamId)
+    override suspend fun getTeamWithPlayersAndCoachFromDb(teamId: String): TeamWithPlayersAndCoachEntity {
+        val data = teamDao.getTeamByTeamId(teamId)
+        Timber.d("PLAYERS in repo ${data.players.size}")
+        return data
     }
 }

@@ -5,12 +5,10 @@ import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.kuba.flashscore.R
-import com.kuba.flashscore.data.local.*
+import com.kuba.flashscore.data.local.daos.*
 import com.kuba.flashscore.data.local.database.FlashScoreDatabase
-import com.kuba.flashscore.data.local.models.event.*
+import com.kuba.flashscore.data.local.daos.event.*
 import com.kuba.flashscore.data.network.ApiFootballService
-import com.kuba.flashscore.data.network.mappers.*
-import com.kuba.flashscore.data.network.mappers.event.EventDtoMapper
 import com.kuba.flashscore.other.Constants.BASE_URL
 import com.kuba.flashscore.other.Constants.DATABASE_NAME
 import com.kuba.flashscore.repositories.country.CountryRepository
@@ -133,12 +131,10 @@ object AppModule {
     @Provides
     fun provideLeagueRepository(
         leagueDao: LeagueDao,
-        leagueDtoMapper: LeagueDtoMapper,
         api: ApiFootballService
     ) =
         DefaultLeagueRepository(
             leagueDao,
-            leagueDtoMapper,
             api
         ) as LeagueRepository
 
@@ -148,18 +144,12 @@ object AppModule {
         coachDao: CoachDao,
         playerDao: PlayerDao,
         teamDao: TeamDao,
-        teamDtoMapper: TeamDtoMapper,
-        coachDtoMapper: CoachDtoMapper,
-        playerDtoMapper: PlayerDtoMapper,
         api: ApiFootballService
     ) =
         DefaultTeamRepository(
             coachDao,
             playerDao,
             teamDao,
-            teamDtoMapper,
-            coachDtoMapper,
-            playerDtoMapper,
             api
         ) as TeamRepository
 
@@ -167,12 +157,10 @@ object AppModule {
     @Provides
     fun provideStandingRepository(
         standingDao: StandingDao,
-        standingDtoMapper: StandingDtoMapper,
         api: ApiFootballService
     ) =
         DefaultStandingRepository(
             standingDao,
-            standingDtoMapper,
             api
         ) as StandingRepository
 
@@ -185,7 +173,6 @@ object AppModule {
         statisticDao: StatisticDao,
         substitutionDao: SubstitutionDao,
         eventsDao: EventDao,
-        eventDtoMapper: EventDtoMapper,
         api: ApiFootballService
     ) =
         DefaultEventRepository(
@@ -195,7 +182,6 @@ object AppModule {
             statisticDao,
             substitutionDao,
             eventsDao,
-            eventDtoMapper,
             api
         ) as EventRepository
 
@@ -203,12 +189,10 @@ object AppModule {
     @Provides
     fun provideCountryRepository(
         countryDao: CountryDao,
-        countryDtoMapper: CountryDtoMapper,
         api: ApiFootballService
     ) =
         DefaultCountryRepository(
             countryDao,
-            countryDtoMapper,
             api
         ) as CountryRepository
 
@@ -233,50 +217,6 @@ object AppModule {
             .build()
             .create(ApiFootballService::class.java)
     }
-
-
-    @Singleton
-    @Provides
-    fun provideCountryDtoMapper(): CountryDtoMapper {
-        return CountryDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideLeagueDtoMapper(): LeagueDtoMapper {
-        return LeagueDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideCoachDtoMapper(): CoachDtoMapper {
-        return CoachDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun providePlayerDtoMapper(): PlayerDtoMapper {
-        return PlayerDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideTeamDtoMapper(): TeamDtoMapper {
-        return TeamDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideStandingDtoMapper(): StandingDtoMapper {
-        return StandingDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideEventDtoMapper(): EventDtoMapper {
-        return EventDtoMapper()
-    }
-
 
     @Singleton
     @Provides

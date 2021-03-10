@@ -1,14 +1,15 @@
 package com.kuba.flashscore.repositories.event
 
+import androidx.lifecycle.LiveData
+import com.kuba.flashscore.data.domain.models.event.Event
 import com.kuba.flashscore.data.local.models.entities.event.*
-import com.kuba.flashscore.data.local.models.event.*
+import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
+import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
+import com.kuba.flashscore.data.local.daos.event.*
 import com.kuba.flashscore.data.network.ApiFootballService
-import com.kuba.flashscore.data.network.mappers.event.EventDtoMapper
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -19,7 +20,6 @@ class DefaultEventRepository @Inject constructor(
     private val statisticDao: StatisticDao,
     private val substitutionDao: SubstitutionDao,
     private val eventsDao: EventDao,
-    private val eventDtoMapper: EventDtoMapper,
     private val apiFootballService: ApiFootballService
 ) : EventRepository {
     override suspend fun insertCards(cards: List<CardEntity>) {
@@ -46,68 +46,116 @@ class DefaultEventRepository @Inject constructor(
         eventsDao.insertEvents(events)
     }
 
+    override suspend fun insertEventInformation(eventInformation: List<EventInformationEntity>) {
+        eventsDao.insertEventInformation(eventInformation)
+    }
+
     override suspend fun getEventsFromSpecificLeaguesFromDb(
         leagueId: String,
         date: String
     ): List<EventEntity> {
-        return withContext(Dispatchers.IO) { eventsDao.getEventsFromSpecificLeague(leagueId, date) }
+        return eventsDao.getEventsFromSpecificLeague(leagueId, date)
     }
 
-    override suspend fun getEventsFromSpecificLeaguesFromNetwork(
+    override suspend fun refreshEventsFromSpecificLeagues(
         leagueId: String,
         date: String
-    ): Resource<List<EventEntity>> {
+    ): Resource<List<Event>> {
         return try {
             val response = apiFootballService.getEvents(date, date, leagueId)
             if (response.isSuccessful) {
-                response.body().let {
-                    eventsDao.insertEvents(
-                        eventDtoMapper.toLocalList(
-                            it?.toList()!!,
-                            null
-                        )
-                    )
-                    it.toList().forEach { eventDtoItem ->
-                        if (eventDtoItem.cards.isNotEmpty()) {
-                            insertCards(
-                                eventDtoMapper.mapCardToLocal(
-                                    eventDtoItem.cards,
-                                    eventDtoItem.matchId
-                                )
-                            )
-                        }
-                        if (eventDtoItem.goalscorer.isNotEmpty()) {
-                            insertGoalscorers(
-                                eventDtoMapper.mapGoalscorerToLocal(
-                                    eventDtoItem.goalscorer,
-                                    eventDtoItem.matchId
-                                )
-                            )
-                        }
-                        if (eventDtoItem.statistics.isNotEmpty()) {
-                            insertStatistics(
-                                eventDtoMapper.mapStatisticToLocal(
-                                    eventDtoItem.statistics,
-                                    eventDtoItem.matchId
-                                )
-                            )
-                        }
-                        if (eventDtoItem.substitutions.away.isNotEmpty() || eventDtoItem.substitutions.home.isNotEmpty()) {
-                            insertSubstitutions(
-                                eventDtoMapper.mapSubstitutionsToLocal(
-                                    eventDtoItem.substitutions,
-                                    eventDtoItem.matchId
-                                )
-                            )
-                        }
-                        insertLineups(
-                            eventDtoMapper.mapLineupToLocal(
-                                eventDtoItem.lineup,
-                                eventDtoItem.matchId
-                            )
-                        )
+                response.body().let { eventResponse ->
+                    eventsDao.apply {
+                        insertEvents(eventResponse?.toList()?.map { it.asLocalModel() }!!)
+                        insertEventInformation(
+                            eventResponse.toList().map { it.asLocalModelHomeTeamInformation() })
+                        insertEventInformation(
+                            eventResponse.toList().map { it.asLocalModelAwayTeamInformation() })
                     }
-                    return Resource.success(eventsDao.getEventsFromSpecificLeague(leagueId, date))
+                    eventResponse?.toList()?.forEach { eventDtoItem ->
+                        if (!eventDtoItem.cards.isNullOrEmpty()) {
+                            insertCards(
+                                eventDtoItem.cards.map { it.asLocalModel(eventDtoItem.matchId) }
+                            )
+                        }
+                        if (!eventDtoItem.goalscorer.isNullOrEmpty()) {
+                            insertGoalscorers(
+                                eventDtoItem.goalscorer.map { it.asLocalModel(eventDtoItem.matchId) }
+                            )
+                        }
+                        if (!eventDtoItem.statistics.isNullOrEmpty()) {
+                            insertStatistics(
+                                eventDtoItem.statistics.map { it.asLocalModel(eventDtoItem.matchId) }
+                            )
+                        }
+                        if (!eventDtoItem.substitutions.home.isNullOrEmpty()) {
+                            insertSubstitutions(
+                                eventDtoItem.substitutions.home.map { it.asLocalModel(eventDtoItem.matchId) }
+                            )
+                        }
+                        if (!eventDtoItem.substitutions.away.isNullOrEmpty()) {
+                            insertSubstitutions(
+                                eventDtoItem.substitutions.away.map { it.asLocalModel(eventDtoItem.matchId) }
+                            )
+                        }
+                        if (!eventDtoItem.lineup.home.startingLineups.isNullOrEmpty()) {
+                            insertLineups(
+                                eventDtoItem.lineup.home.startingLineups.map {
+                                    it.asLocalModel(
+                                        eventDtoItem.matchId
+                                    )
+                                }
+                            )
+                        }
+                        if (!eventDtoItem.lineup.home.missingPlayers.isNullOrEmpty()) {
+                            insertLineups(
+                                eventDtoItem.lineup.home.missingPlayers.map {
+                                    it.asLocalModel(
+                                        eventDtoItem.matchId
+                                    )
+                                }
+                            )
+                        }
+                        if (!eventDtoItem.lineup.home.substitutes.isNullOrEmpty()) {
+                            insertLineups(
+                                eventDtoItem.lineup.home.substitutes.map {
+                                    it.asLocalModel(
+                                        eventDtoItem.matchId
+                                    )
+                                }
+                            )
+                        }
+                        if (!eventDtoItem.lineup.away.startingLineups.isNullOrEmpty()) {
+                            insertLineups(
+                                eventDtoItem.lineup.away.startingLineups.map {
+                                    it.asLocalModel(
+                                        eventDtoItem.matchId
+                                    )
+                                }
+                            )
+                        }
+                        if (!eventDtoItem.lineup.away.missingPlayers.isNullOrEmpty()) {
+                            insertLineups(
+                                eventDtoItem.lineup.away.missingPlayers.map {
+                                    it.asLocalModel(
+                                        eventDtoItem.matchId
+                                    )
+                                }
+                            )
+                        }
+                        if (!eventDtoItem.lineup.away.substitutes.isNullOrEmpty()) {
+                            insertLineups(
+                                eventDtoItem.lineup.away.substitutes.map {
+                                    it.asLocalModel(
+                                        eventDtoItem.matchId
+                                    )
+                                }
+                            )
+                        }
+                    }
+                    return Resource.success(
+                        eventsDao.getEventsFromSpecificLeague(leagueId, date)
+                            .map { it.asDomainModel() })
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -120,14 +168,16 @@ class DefaultEventRepository @Inject constructor(
     override suspend fun getCountryWithLeagueWithTeamsAndEvents(
         leagueId: String,
         date: String
-    ): CountryWithLeagueWithEventsAndTeams {
+    ): CountryWithLeagueWithEventsAndTeamsEntity {
         return eventsDao.getCountryWithLeagueWithTeamsAndEvents(leagueId, date)
     }
 
     override suspend fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
         eventId: String
-    ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions {
-        return eventsDao.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId)
+    ): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity {
+        return eventsDao.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
+            eventId
+        )
     }
 
 

@@ -1,72 +1,64 @@
 package com.kuba.flashscore.data.local.models.entities
 
-import android.os.Parcelable
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import com.kuba.flashscore.data.domain.models.Standing
+import com.kuba.flashscore.other.DateUtils
 
-@Parcelize
-@Entity(tableName = "standing_table", primaryKeys = ["team_id","league_id"])
+@Entity(tableName = "standing_table", primaryKeys = ["team_id", "league_id", "standing_type"])
 data class StandingEntity(
-    @ColumnInfo(name = "away_league_D")
-    val awayLeagueD: String,
-    @ColumnInfo(name = "away_league_GA")
-    val awayLeagueGA: String,
-    @ColumnInfo(name = "away_league_GF")
-    val awayLeagueGF: String,
-    @ColumnInfo(name = "away_league_L")
-    val awayLeagueL: String,
-    @ColumnInfo(name = "away_league_PTS")
-    val awayLeaguePTS: String,
-    @ColumnInfo(name = "away_league_payed")
-    val awayLeaguePayed: String,
-    @ColumnInfo(name = "away_league_position")
-    val awayLeaguePosition: String,
-    @ColumnInfo(name = "away_league_W")
-    val awayLeagueW: String,
-    @ColumnInfo(name = "away_promotion")
-    val awayPromotion: String,
-    @ColumnInfo(name = "home_league_D")
-    val homeLeagueD: String,
-    @ColumnInfo(name = "home_league_GA")
-    val homeLeagueGA: String,
-    @ColumnInfo(name = "home_league_GF")
-    val homeLeagueGF: String,
-    @ColumnInfo(name = "home_league_L")
-    val homeLeagueL: String,
-    @ColumnInfo(name = "home_league_PTS")
-    val homeLeaguePTS: String,
-    @ColumnInfo(name = "home_league_payed")
-    val homeLeaguePayed: String,
-    @ColumnInfo(name = "home_league_position")
-    val homeLeaguePosition: String,
-    @ColumnInfo(name = "home_league_W")
-    val homeLeagueW: String,
-    @ColumnInfo(name = "home_promotion")
-    val homePromotion: String,
     @SerializedName("league_round")
     val leagueRound: String,
-    @ColumnInfo(name = "overall_league_D")
-    val overallLeagueD: String,
-    @ColumnInfo(name = "overall_league_GA")
-    val overallLeagueGA: String,
+    @ColumnInfo(name = "league_D")
+    val leagueD: String,
+    @ColumnInfo(name = "league_GA")
+    val leagueGA: String,
     @ColumnInfo(name = "overall_league_GF")
-    val overallLeagueGF: String,
+    val leagueGF: String,
     @ColumnInfo(name = "overall_league_L")
-    val overallLeagueL: String,
+    val leagueL: String,
     @ColumnInfo(name = "overall_league_PTS")
-    val overallLeaguePTS: String,
+    val leaguePTS: String,
     @ColumnInfo(name = "overall_league_payed")
-    val overallLeaguePayed: String,
+    val leaguePayed: String,
     @ColumnInfo(name = "overall_league_position")
-    val overallLeaguePosition: String,
+    val leaguePosition: String,
     @ColumnInfo(name = "overall_league_W")
-    val overallLeagueW: String,
+    val leagueW: String,
     @ColumnInfo(name = "overall_promotion")
-    val overallPromotion: String,
+    val promotion: String,
     @ColumnInfo(name = "team_id")
     val teamId: String,
     @ColumnInfo(name = "league_id")
-    val leagueId: String
+    val leagueId: String,
+    @ColumnInfo(name = "standing_type")
+    val standingType: StandingType,
+    @ColumnInfo(name = "date_cached")
+    val dateCached: Long = DateUtils.dateToLong(
+        DateUtils.createTimestamp()
+    )
+) {
+    fun asDomainModel(): Standing {
+        return Standing(
+            leagueRound,
+            leagueD,
+            leagueGA,
+            leagueGF,
+            leagueL,
+            leaguePTS,
+            leaguePayed,
+            leaguePosition,
+            leagueW,
+            promotion,
+            teamId,
+            leagueId,
+            standingType
+        )
+    }
+}
 
-) : Parcelable
+enum class StandingType {
+    AWAY,
+    HOME,
+    OVERALL
+}

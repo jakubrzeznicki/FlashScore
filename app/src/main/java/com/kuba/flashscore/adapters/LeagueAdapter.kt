@@ -7,31 +7,31 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.kuba.flashscore.data.domain.models.Country
+import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
+import com.kuba.flashscore.data.domain.models.League
 import com.kuba.flashscore.databinding.LeagueItemBinding
-import com.kuba.flashscore.data.local.models.entities.CountryAndLeagues
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
-import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 
-class LeagueAdapter(private val country: CountryEntity) :
+class LeagueAdapter(private val country: Country) :
     RecyclerView.Adapter<LeagueAdapter.LeagueViewHolder>() {
 
     inner class LeagueViewHolder(val binding: LeagueItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<LeagueEntity>() {
-        override fun areItemsTheSame(oldItem: LeagueEntity, newItem: LeagueEntity): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<League>() {
+        override fun areItemsTheSame(oldItem: League, newItem: League): Boolean {
             return oldItem.leagueId == newItem.leagueId
         }
 
-        override fun areContentsTheSame(oldItem: LeagueEntity, newItem: LeagueEntity): Boolean {
+        override fun areContentsTheSame(oldItem: League, newItem: League): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var league: List<LeagueEntity>
+    var league: List<League>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 

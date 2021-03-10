@@ -1,12 +1,13 @@
 package com.kuba.flashscore.ui.teams.standings
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.kuba.flashscore.data.domain.models.Standing
 import com.kuba.flashscore.data.local.models.entities.StandingEntity
+import com.kuba.flashscore.data.local.models.entities.StandingType
 import com.kuba.flashscore.other.Constants
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.OVERALL
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.standing.StandingRepository
@@ -18,31 +19,50 @@ class StandingsViewModel @ViewModelInject constructor(
     private val connectivityManager: ConnectivityManager
 ) : ViewModel() {
 
-    private val _standings = MutableLiveData<Event<Resource<List<StandingEntity>>>>()
-    val standings: LiveData<Event<Resource<List<StandingEntity>>>> = _standings
+    private val _standingsStatus = MutableLiveData<Event<Resource<List<Standing>>>>()
+    val standingsStatus: LiveData<Event<Resource<List<Standing>>>> = _standingsStatus
+
+    private val _standings = MutableLiveData<List<Standing>>()
+    val standings: LiveData<List<Standing>> = _standings
 
     private val _networkConnectivityChange = connectivityManager.isNetworkAvailable
     val networkConnectivityChange: LiveData<Boolean> = _networkConnectivityChange
 
-    fun getStandingsFromSpecificLeague(leagueId: String) {
-        _standings.value = Event(Resource.loading(null))
+    suspend fun refreshStandingsFromSpecificLeague(leagueId: String) {
+        _standingsStatus.value = Event(Resource.loading(null))
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
                 if (isNetworkAvailable) {
-                    val response = standingRepository.getStandingsFromSpecificLeagueFromNetwork(leagueId)
-                    _standings.value = Event(response)
+                    val response = standingRepository.refreshStandingsFromSpecificLeague(leagueId)
+                    _standingsStatus.value = Event(response)
                 } else {
-                    val response = standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId)
-                    if (response.isNullOrEmpty()) {
-                        _standings.value =
-                            Event(Resource.error(Constants.ERROR_MESSAGE, null))
-                    } else {
-                        _standings.value = Event(Resource.success(response))
-                    }
+                    Event(Resource.error(ERROR_MESSAGE, null))
                 }
-
             }
+        }
+    }
 
+    fun getOverallStandingsFromSpecificLeague(leagueId: String) {
+        viewModelScope.launch {
+            _standings.postValue(
+                standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId, StandingType.OVERALL).map { it.asDomainModel() }
+            )
+        }
+    }
+
+    fun getHomeStandingsFromSpecificLeague(leagueId: String) {
+        viewModelScope.launch {
+            _standings.postValue(
+                standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId, StandingType.HOME).map { it.asDomainModel() }
+            )
+        }
+    }
+
+    fun getAwayStandingsFromSpecificLeague(leagueId: String) {
+        viewModelScope.launch {
+            _standings.postValue(
+                standingRepository.getStandingsFromSpecificLeagueFromDb(leagueId, StandingType.AWAY).map { it.asDomainModel() }
+            )
         }
     }
 }

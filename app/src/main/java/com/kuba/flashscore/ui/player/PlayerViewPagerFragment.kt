@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
+import com.kuba.flashscore.data.domain.models.Player
+import com.kuba.flashscore.data.domain.models.Team
 import com.kuba.flashscore.databinding.FragmentPlayerViewPagerBinding
 import com.kuba.flashscore.data.local.models.entities.PlayerEntity
 import com.kuba.flashscore.data.local.models.entities.TeamEntity
@@ -38,8 +40,8 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
         _binding = FragmentPlayerViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val team = args.teamItem
-        val player = args.playerItem
+        val team = args.team
+        val player = args.players
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.apply {
@@ -61,7 +63,7 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
     }
 
 
-    private fun setPlayerViewPageAdapterAndTabLayout(player: PlayerEntity) {
+    private fun setPlayerViewPageAdapterAndTabLayout(player: Player) {
 
         val playerFragmentList = arrayListOf<Fragment>(
             PlayerCurrentSeasonDetailFragment(player)
@@ -88,8 +90,8 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
 
     @SuppressLint("SetTextI18n")
     private fun setInformationAboutPlayer(
-        team: TeamEntity,
-        player: PlayerEntity
+        team: Team,
+        player: Player
     ) {
         binding.apply {
             textViewCountryName.text = player.playerCountry

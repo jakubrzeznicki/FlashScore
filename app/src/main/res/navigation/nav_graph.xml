@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_league" >
         <argument
             android:name="countryItem"
-            app:argType="com.kuba.flashscore.local.models.entities.CountryEntity" />
+            app:argType="com.kuba.flashscore.data.domain.models.Country" />
         <action
             android:id="@+id/action_leagueFragment_to_countryFragment"
             app:destination="@id/countryFragment" />
@@ -45,12 +45,12 @@
         <action
             android:id="@+id/action_clubViewPagerFragment_to_teamsViewPagerFragment"
             app:destination="@id/teamsViewPagerFragment" />
-        <argument
-            android:name="countryWithLeagueAndTeams"
-            app:argType="com.kuba.flashscore.local.models.entities.CountryWithLeagueAndTeams" />
         <action
             android:id="@+id/action_clubViewPagerFragment_to_playerViewPagerFragment"
             app:destination="@id/playerViewPagerFragment" />
+        <argument
+            android:name="countryWithLeagueAndTeams"
+            app:argType="com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams" />
     </fragment>
     <fragment
         android:id="@+id/teamsViewPagerFragment"
@@ -65,7 +65,7 @@
             app:destination="@id/eventsListFragment" />
         <argument
             android:name="countryAndLeague"
-            app:argType="com.kuba.flashscore.local.models.entities.CountryAndLeagues" />
+            app:argType="com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues" />
     </fragment>
     <fragment
         android:id="@+id/standingsViewPagerFragment"
@@ -95,11 +95,11 @@
             android:id="@+id/action_playerViewPagerFragment_to_clubViewPagerFragment"
             app:destination="@id/clubViewPagerFragment" />
         <argument
-            android:name="teamItem"
-            app:argType="com.kuba.flashscore.local.models.entities.TeamEntity" />
+            android:name="team"
+            app:argType="com.kuba.flashscore.data.domain.models.Team" />
         <argument
-            android:name="playerItem"
-            app:argType="com.kuba.flashscore.local.models.entities.PlayerEntity" />
+            android:name="players"
+            app:argType="com.kuba.flashscore.data.domain.models.Player" />
     </fragment>
     <fragment
         android:id="@+id/eventsListFragment"
@@ -116,8 +116,8 @@
             android:id="@+id/action_eventsListFragment_to_eventDetailsViewPagerFragment"
             app:destination="@id/eventDetailsViewPagerFragment" />
         <argument
-            android:name="countryAndLeague"
-            app:argType="com.kuba.flashscore.local.models.entities.CountryAndLeagues" />
+            android:name="countryAndLeagues"
+            app:argType="com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues" />
     </fragment>
     <fragment
         android:id="@+id/eventDetailsViewPagerFragment"
@@ -128,10 +128,10 @@
             android:id="@+id/action_eventDetailsViewPagerFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment" />
         <argument
-            android:name="countryWithLeagueWithEventsAndTeams"
-            app:argType="com.kuba.flashscore.local.models.entities.event.CountryWithLeagueWithEventsAndTeams" />
-        <argument
             android:name="eventId"
             app:argType="string" />
+        <argument
+            android:name="countryWithLeagueWithTeamsAndEvents"
+            app:argType="com.kuba.flashscore.data.domain.models.event.customs.CountryWithLeagueWithEventsAndTeams" />
     </fragment>
 </navigation>

@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kuba.flashscore.R
+import com.kuba.flashscore.data.domain.models.customs.TeamWithPlayersAndCoach
+import com.kuba.flashscore.data.domain.models.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.databinding.FragmentEventTeamsBinding
-import com.kuba.flashscore.data.local.models.entities.TeamWithPlayersAndCoach
-import com.kuba.flashscore.data.local.models.entities.event.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
+import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
 
 
 class EventTeamsFragment(

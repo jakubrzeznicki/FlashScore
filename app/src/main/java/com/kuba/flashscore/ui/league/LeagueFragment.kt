@@ -18,13 +18,15 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
+import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class LeagueFragment : Fragment(R.layout.fragment_league) {
@@ -36,7 +38,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     private val args: LeagueFragmentArgs by navArgs()
 
     private lateinit var leagueAdapter: LeagueAdapter
-    private lateinit var country: CountryEntity
+    private lateinit var country: Country
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,15 +58,15 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         }
         setInformationAboutCountry(country)
 
-        getLeagues(country)
         return view
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        subscribeToObservers(country)
+        viewModel.getCountryWithLeagues(country.countryId)
+        setupRecyclerView()
+        subscribeToObservers()
     }
 
 
@@ -74,15 +76,27 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     }
 
 
-    private fun subscribeToObservers(country: CountryEntity) {
-        viewModel.leagues.observe(viewLifecycleOwner, Observer {
+    private fun subscribeToObservers() {
+        viewModel.countriesWithLeagues.observe(viewLifecycleOwner, Observer {
+            Timber.d("LEAGUEE observe get leagues")
+            if (it.leagues.isNullOrEmpty()) {
+                Timber.d("LEAGUE gert form db are null")
+                refreshCountryWithLeagues(country)
+            } else {
+                Timber.d("LEAGUE gert form db are not null ${it.leagues}")
+                leagueAdapter.league = it.leagues
+            }
+        })
+        viewModel.countryWithLeaguesStatus.observe(viewLifecycleOwner, Observer {
+            Timber.d("LEAGUEE observe refresh leagues")
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
-                        val leagues = result.data
-                        if (leagues != null) {
-                            leagueAdapter.league = leagues.leagues
-                        }
+                        Snackbar.make(
+                            requireView(),
+                            "Successfully fetched data from network",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     Status.ERROR -> {
                         Snackbar.make(
@@ -96,25 +110,25 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
                 }
             }
         })
-        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
-            if (isNetwork) {
-                getLeagues(country)
-            }
-        })
+//        viewModel.networkConnectivityChange.observe(viewLifecycleOwner, Observer { isNetwork ->
+//            if (isNetwork) {
+//                getLeagues(country)
+//            }
+//        })
 
     }
 
-    private fun getLeagues(country: CountryEntity) {
+    private fun refreshCountryWithLeagues(country: Country) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getLeaguesFromSpecificCountry(country.countryId)
-            setupRecyclerView(country)
+            viewModel.refreshCountryWithLeagues(country.countryId)
+            delay(1000)
+            viewModel.getCountryWithLeagues(country.countryId)
         }
-
     }
 
-    private fun setupRecyclerView(country: CountryEntity) {
+    private fun setupRecyclerView() {
         binding.recyclerViewLeagues.apply {
             leagueAdapter = LeagueAdapter(country)
             adapter = leagueAdapter
@@ -128,7 +142,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         }
     }
 
-    private fun setInformationAboutCountry(country: CountryEntity) {
+    private fun setInformationAboutCountry(country: Country) {
         binding.apply {
             textViewCountryName.text = country.countryName
             Glide.with(requireContext()).load(country.countryLogo).into(imageViewCountryFlag)

@@ -2,6 +2,7 @@ package com.kuba.flashscore.data.network.models.events
 
 
 import com.google.gson.annotations.SerializedName
+import com.kuba.flashscore.data.local.models.entities.event.GoalscorerEntity
 
 data class Goalscorer(
     @SerializedName("away_assist")
@@ -23,4 +24,28 @@ data class Goalscorer(
     val info: String,
     val score: String,
     val time: String
-)
+) {
+    fun asLocalModel(matchId: String): GoalscorerEntity {
+        var scorer = ""
+        var assistantId = ""
+        var whichTeam = false
+        if (homeScorerId.isEmpty()) {
+            scorer = awayScorerId
+            assistantId = awayAssistId
+            whichTeam = false
+        } else {
+            scorer = homeScorerId
+            assistantId = homeAssistId
+            whichTeam = true
+        }
+        return GoalscorerEntity(
+            matchId,
+            assistantId,
+            scorer,
+            whichTeam,
+            info,
+            score,
+            time
+        )
+    }
+}

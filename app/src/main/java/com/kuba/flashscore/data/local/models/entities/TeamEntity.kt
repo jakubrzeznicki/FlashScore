@@ -2,9 +2,10 @@ package com.kuba.flashscore.data.local.models.entities
 
 import android.os.Parcelable
 import androidx.room.*
+import com.kuba.flashscore.data.domain.models.Team
+import com.kuba.flashscore.other.DateUtils
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @Entity(tableName = "team_table")
 data class TeamEntity(
     @ColumnInfo(name = "league_id")
@@ -15,5 +16,18 @@ data class TeamEntity(
     @PrimaryKey(autoGenerate = false)
     val teamKey: String,
     @ColumnInfo(name = "team_name")
-    val teamName: String
-) : Parcelable
+    val teamName: String,
+    @ColumnInfo(name = "date_cached")
+    val dateCached: Long = DateUtils.dateToLong(
+        DateUtils.createTimestamp()
+    )
+) {
+    fun asDomainModel() : Team  {
+        return Team(
+            leagueId,
+            teamBadge,
+            teamKey,
+            teamName
+        )
+    }
+}
