@@ -9,6 +9,7 @@ import com.kuba.flashscore.data.network.ApiFootballService
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
+import com.kuba.flashscore.other.wrapEspressoIdlingResource
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -25,7 +26,9 @@ class DefaultLeagueRepository @Inject constructor(
                     insertLeagues(
                         leagueResponse?.toList()!!.map { it.asLocalModel() }
                     )
-                    return Resource.success(leagueDao.getLeaguesFromSpecificCountry(countryId).asDomainModel())
+                    return Resource.success(
+                        leagueDao.getLeaguesFromSpecificCountry(countryId).asDomainModel()
+                    )
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -36,14 +39,20 @@ class DefaultLeagueRepository @Inject constructor(
     }
 
     override suspend fun insertLeagues(leagues: List<LeagueEntity>) {
-        leagueDao.insertLeagues(leagues)
+        wrapEspressoIdlingResource {
+            leagueDao.insertLeagues(leagues)
+        }
     }
 
-    override fun getLeaguesFromDb(): LiveData<List<LeagueEntity>> {
-        return leagueDao.getAllLeagues()
-    }
+    override suspend fun getLeaguesFromDb(): List<LeagueEntity> =
+        wrapEspressoIdlingResource {
+            leagueDao.getAllLeagues()
+        }
+
 
     override suspend fun getLeagueFromSpecificCountryFromDb(countryId: String): CountryAndLeaguesEntity {
-        return leagueDao.getLeaguesFromSpecificCountry(countryId)
+        wrapEspressoIdlingResource {
+            return leagueDao.getLeaguesFromSpecificCountry(countryId)
+        }
     }
 }

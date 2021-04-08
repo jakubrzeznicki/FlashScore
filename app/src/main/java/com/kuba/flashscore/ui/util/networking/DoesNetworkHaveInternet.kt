@@ -1,5 +1,4 @@
-package com.kuba.flashscore.ui.util
-import timber.log.Timber
+package com.kuba.flashscore.ui.util.networking
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket

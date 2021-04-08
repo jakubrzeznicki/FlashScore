@@ -30,9 +30,11 @@ class TeamsViewModel @ViewModelInject constructor(
         }
     }
 
-    suspend fun getTeamWithPlayersAndCoach(teamId: String) {
-        _team.value =
-            repository.getTeamWithPlayersAndCoachFromDb(teamId).asDomainModel()
+    fun getTeamWithPlayersAndCoach(teamId: String) {
+        viewModelScope.launch {
+            _team.value =
+                repository.getTeamWithPlayersAndCoachFromDb(teamId).asDomainModel()
+        }
 
 
     }

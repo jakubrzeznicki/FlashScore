@@ -8,6 +8,7 @@ import com.kuba.flashscore.data.network.ApiFootballService
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
+import com.kuba.flashscore.other.wrapEspressoIdlingResource
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -24,7 +25,8 @@ class DefaultCountryRepository @Inject constructor(
                     insertCountries(
                         countryResponse?.toList()?.map { it.asLocalModel() }!!
                     )
-                    return Resource.success(countryDao.getAllCountriesFromDb().map { it.asDomainModel() })
+                    return Resource.success(
+                        countryDao.getAllCountriesFromDb().map { it.asDomainModel() })
                 }
             } else {
                 Resource.error(ERROR_MESSAGE, null)
@@ -35,10 +37,13 @@ class DefaultCountryRepository @Inject constructor(
     }
 
     override suspend fun insertCountries(countries: List<CountryEntity>) {
-        countryDao.insertCountries(countries)
+        wrapEspressoIdlingResource {
+            countryDao.insertCountries(countries)
+        }
     }
 
     override suspend fun getCountriesFromDb(): List<CountryEntity> =
-        countryDao.getAllCountriesFromDb()
-
+        wrapEspressoIdlingResource {
+            countryDao.getAllCountriesFromDb()
+        }
 }

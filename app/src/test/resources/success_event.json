@@ -1,0 +1,524 @@
+[
+  {
+    "match_id": "411953",
+    "country_id": "41",
+    "country_name": "England",
+    "league_id": "149",
+    "league_name": "Championship",
+    "match_date": "2021-03-02",
+    "match_status": "Finished",
+    "match_time": "20:00",
+    "match_hometeam_id": "2637",
+    "match_hometeam_name": "Cardiff",
+    "match_hometeam_score": "4",
+    "match_awayteam_name": "Derby",
+    "match_awayteam_id": "2642",
+    "match_awayteam_score": "0",
+    "match_hometeam_halftime_score": "1",
+    "match_awayteam_halftime_score": "0",
+    "match_hometeam_extra_score": "",
+    "match_awayteam_extra_score": "",
+    "match_hometeam_penalty_score": "",
+    "match_awayteam_penalty_score": "",
+    "match_hometeam_ft_score": "",
+    "match_awayteam_ft_score": "",
+    "match_hometeam_system": "3 - 4 - 2 - 1",
+    "match_awayteam_system": "4 - 1 - 4 - 1",
+    "match_live": "0",
+    "match_round": "Round 34",
+    "match_stadium": "Cardiff City Stadium (Cardiff)",
+    "match_referee": "Whitestone D. (Eng)",
+    "team_home_badge": "https:\/\/apiv2.apifootball.com\/badges\/2637_cardiff.png",
+    "team_away_badge": "https:\/\/apiv2.apifootball.com\/badges\/2642_derby.png",
+    "league_logo": "https:\/\/apiv2.apifootball.com\/badges\/logo_leagues\/149_championship.png",
+    "country_logo": "https:\/\/apiv2.apifootball.com\/badges\/logo_country\/41_england.png",
+    "goalscorer": [
+      {
+        "time": "22",
+        "home_scorer": "Bacuna L.",
+        "home_scorer_id": "",
+        "home_assist": "",
+        "home_assist_id": "",
+        "score": "1 - 0",
+        "away_scorer": "",
+        "away_scorer_id": "",
+        "away_assist": "",
+        "away_assist_id": "",
+        "info": ""
+      },
+      {
+        "time": "48",
+        "home_scorer": "Moore K.",
+        "home_scorer_id": "",
+        "home_assist": "",
+        "home_assist_id": "",
+        "score": "2 - 0",
+        "away_scorer": "",
+        "away_scorer_id": "",
+        "away_assist": "",
+        "away_assist_id": "",
+        "info": ""
+      },
+      {
+        "time": "56",
+        "home_scorer": "Bacuna L.",
+        "home_scorer_id": "",
+        "home_assist": "",
+        "home_assist_id": "",
+        "score": "3 - 0",
+        "away_scorer": "",
+        "away_scorer_id": "",
+        "away_assist": "",
+        "away_assist_id": "",
+        "info": ""
+      },
+      {
+        "time": "90+2",
+        "home_scorer": "Vaulks W.",
+        "home_scorer_id": "",
+        "home_assist": "",
+        "home_assist_id": "",
+        "score": "4 - 0",
+        "away_scorer": "",
+        "away_scorer_id": "",
+        "away_assist": "",
+        "away_assist_id": "",
+        "info": ""
+      }
+    ],
+    "cards": [],
+    "substitutions": {
+      "home": [
+        {
+          "time": "39",
+          "substitution": "Bennett J. | Bagan J."
+        },
+        {
+          "time": "77",
+          "substitution": "Moore K. | Colwill R."
+        },
+        {
+          "time": "87",
+          "substitution": "Pack M. | Ralls J."
+        },
+        {
+          "time": "87",
+          "substitution": "Ojo S. | Williams J."
+        }
+      ],
+      "away": [
+        {
+          "time": "69",
+          "substitution": "Sibley L. | Waghorn M."
+        },
+        {
+          "time": "69",
+          "substitution": "Jozwiak K. | Watson L."
+        },
+        {
+          "time": "69",
+          "substitution": "Shinnie G. | Bird M."
+        },
+        {
+          "time": "70",
+          "substitution": "Wisdom A. | McDonald K."
+        }
+      ]
+    },
+    "lineup": {
+      "home": {
+        "starting_lineups": [
+          {
+            "lineup_player": "Bacuna L.",
+            "lineup_number": "7",
+            "lineup_position": "10",
+            "player_key": "4020592582"
+          },
+          {
+            "lineup_player": "Bennett J.",
+            "lineup_number": "3",
+            "lineup_position": "8",
+            "player_key": "380889119"
+          },
+          {
+            "lineup_player": "Flint A.",
+            "lineup_number": "5",
+            "lineup_position": "3",
+            "player_key": "3164434053"
+          },
+          {
+            "lineup_player": "Moore K.",
+            "lineup_number": "10",
+            "lineup_position": "11",
+            "player_key": "594263196"
+          },
+          {
+            "lineup_player": "Morrison S. (C)",
+            "lineup_number": "4",
+            "lineup_position": "2",
+            "player_key": "1704867020"
+          },
+          {
+            "lineup_player": "Nelson C.",
+            "lineup_number": "16",
+            "lineup_position": "4",
+            "player_key": "830497341"
+          },
+          {
+            "lineup_player": "Ng P.",
+            "lineup_number": "38",
+            "lineup_position": "5",
+            "player_key": "3127816943"
+          },
+          {
+            "lineup_player": "Ojo S.",
+            "lineup_number": "27",
+            "lineup_position": "9",
+            "player_key": "1296904177"
+          },
+          {
+            "lineup_player": "Pack M.",
+            "lineup_number": "21",
+            "lineup_position": "7",
+            "player_key": "1294343164"
+          },
+          {
+            "lineup_player": "Phillips D. (G)",
+            "lineup_number": "1",
+            "lineup_position": "1",
+            "player_key": "3699935353"
+          },
+          {
+            "lineup_player": "Vaulks W.",
+            "lineup_number": "6",
+            "lineup_position": "6",
+            "player_key": "2330017372"
+          }
+        ],
+        "substitutes": [
+          {
+            "lineup_player": "Bagan J.",
+            "lineup_number": "32",
+            "lineup_position": "",
+            "player_key": "4224645853"
+          },
+          {
+            "lineup_player": "Colwill R.",
+            "lineup_number": "40",
+            "lineup_position": "",
+            "player_key": "4119892652"
+          },
+          {
+            "lineup_player": "Harris M.",
+            "lineup_number": "29",
+            "lineup_position": "",
+            "player_key": "3647096462"
+          },
+          {
+            "lineup_player": "Hoilett J.",
+            "lineup_number": "33",
+            "lineup_position": "",
+            "player_key": "2319773928"
+          },
+          {
+            "lineup_player": "Murphy J.",
+            "lineup_number": "11",
+            "lineup_position": "",
+            "player_key": "2332613965"
+          },
+          {
+            "lineup_player": "Ralls J.",
+            "lineup_number": "8",
+            "lineup_position": "",
+            "player_key": "941215130"
+          },
+          {
+            "lineup_player": "Smithies A. (G)",
+            "lineup_number": "12",
+            "lineup_position": "",
+            "player_key": "1458058789"
+          },
+          {
+            "lineup_player": "Williams J.",
+            "lineup_number": "15",
+            "lineup_position": "",
+            "player_key": "3849612361"
+          },
+          {
+            "lineup_player": "Wilson H.",
+            "lineup_number": "23",
+            "lineup_position": "",
+            "player_key": "89279599"
+          }
+        ],
+        "coach": [
+          {
+            "lineup_player": "McCarthy M.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "4115168027"
+          }
+        ],
+        "missing_players": [
+          {
+            "lineup_player": "Bamba S.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "3674183838"
+          },
+          {
+            "lineup_player": "Osei-Tutu J.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "1519405440"
+          },
+          {
+            "lineup_player": "Tomlin L.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "2910314822"
+          },
+          {
+            "lineup_player": "Vassell I.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "268175960"
+          }
+        ]
+      },
+      "away": {
+        "starting_lineups": [
+          {
+            "lineup_player": "Baningime B.",
+            "lineup_number": "34",
+            "lineup_position": "8",
+            "player_key": "561035626"
+          },
+          {
+            "lineup_player": "Buchanan L.",
+            "lineup_number": "26",
+            "lineup_position": "5",
+            "player_key": "1545488467"
+          },
+          {
+            "lineup_player": "Clarke M.",
+            "lineup_number": "16",
+            "lineup_position": "4",
+            "player_key": "2412027297"
+          },
+          {
+            "lineup_player": "Edmundson G.",
+            "lineup_number": "6",
+            "lineup_position": "6",
+            "player_key": "3584672527"
+          },
+          {
+            "lineup_player": "Gregory L.",
+            "lineup_number": "19",
+            "lineup_position": "11",
+            "player_key": "1836011089"
+          },
+          {
+            "lineup_player": "Jozwiak K.",
+            "lineup_number": "7",
+            "lineup_position": "7",
+            "player_key": "3337859666"
+          },
+          {
+            "lineup_player": "Mengi T.",
+            "lineup_number": "15",
+            "lineup_position": "3",
+            "player_key": "1753574926"
+          },
+          {
+            "lineup_player": "Roos K. (G)",
+            "lineup_number": "21",
+            "lineup_position": "1",
+            "player_key": "1305122369"
+          },
+          {
+            "lineup_player": "Shinnie G.",
+            "lineup_number": "4",
+            "lineup_position": "9",
+            "player_key": "1965228160"
+          },
+          {
+            "lineup_player": "Sibley L.",
+            "lineup_number": "17",
+            "lineup_position": "10",
+            "player_key": "1730980492"
+          },
+          {
+            "lineup_player": "Wisdom A. (C)",
+            "lineup_number": "2",
+            "lineup_position": "2",
+            "player_key": "3845341945"
+          }
+        ],
+        "substitutes": [
+          {
+            "lineup_player": "Bird M.",
+            "lineup_number": "8",
+            "lineup_position": "",
+            "player_key": "2252417391"
+          },
+          {
+            "lineup_player": "Byrne N.",
+            "lineup_number": "12",
+            "lineup_position": "",
+            "player_key": "1572323138"
+          },
+          {
+            "lineup_player": "Forsyth C.",
+            "lineup_number": "3",
+            "lineup_position": "",
+            "player_key": "2273214689"
+          },
+          {
+            "lineup_player": "Idem E. O. (G)",
+            "lineup_number": "30",
+            "lineup_position": "",
+            "player_key": "3904445577"
+          },
+          {
+            "lineup_player": "Kazim-Richards C.",
+            "lineup_number": "13",
+            "lineup_position": "",
+            "player_key": "1535373414"
+          },
+          {
+            "lineup_player": "Knight J.",
+            "lineup_number": "38",
+            "lineup_position": "",
+            "player_key": "1170883403"
+          },
+          {
+            "lineup_player": "McDonald K.",
+            "lineup_number": "37",
+            "lineup_position": "",
+            "player_key": "3953506890"
+          },
+          {
+            "lineup_player": "Waghorn M.",
+            "lineup_number": "9",
+            "lineup_position": "",
+            "player_key": "1812076227"
+          },
+          {
+            "lineup_player": "Watson L.",
+            "lineup_number": "40",
+            "lineup_position": "",
+            "player_key": "3804110593"
+          }
+        ],
+        "coach": [
+          {
+            "lineup_player": "Rooney W.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "2584556620"
+          }
+        ],
+        "missing_players": [
+          {
+            "lineup_player": "Bielik K.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "474083308"
+          },
+          {
+            "lineup_player": "Davies C.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "2492690133"
+          },
+          {
+            "lineup_player": "Lawrence T.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "1822827015"
+          },
+          {
+            "lineup_player": "Marshall D.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "3407568507"
+          },
+          {
+            "lineup_player": "Stretton J.",
+            "lineup_number": "-1",
+            "lineup_position": "",
+            "player_key": "88229592"
+          }
+        ]
+      }
+    },
+    "statistics": [
+      {
+        "type": "Ball Possession",
+        "home": "27%",
+        "away": "73%"
+      },
+      {
+        "type": "Goal Attempts",
+        "home": "14",
+        "away": "7"
+      },
+      {
+        "type": "Shots on Goal",
+        "home": "11",
+        "away": "1"
+      },
+      {
+        "type": "Shots off Goal",
+        "home": "3",
+        "away": "3"
+      },
+      {
+        "type": "Blocked Shots",
+        "home": "0",
+        "away": "3"
+      },
+      {
+        "type": "Corner Kicks",
+        "home": "6",
+        "away": "5"
+      },
+      {
+        "type": "Offsides",
+        "home": "2",
+        "away": "0"
+      },
+      {
+        "type": "Goalkeeper Saves",
+        "home": "1",
+        "away": "7"
+      },
+      {
+        "type": "Fouls",
+        "home": "9",
+        "away": "5"
+      },
+      {
+        "type": "Total Passes",
+        "home": "229",
+        "away": "660"
+      },
+      {
+        "type": "Tackles",
+        "home": "12",
+        "away": "12"
+      },
+      {
+        "type": "Attacks",
+        "home": "89",
+        "away": "104"
+      },
+      {
+        "type": "Dangerous Attacks",
+        "home": "40",
+        "away": "26"
+      }
+    ]
+  }
+]

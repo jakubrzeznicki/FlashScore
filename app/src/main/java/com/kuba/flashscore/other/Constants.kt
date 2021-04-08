@@ -75,4 +75,5 @@ object Constants {
     const val MATCH_STATUS_ZERO = "0"
 
 
+    const val COUNTRY_DATA_FILENAME = "success_country.json"
 }

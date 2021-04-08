@@ -28,13 +28,14 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class CountryFragment @Inject constructor(
-    val countryAdapter: CountryAdapter
+    val countryAdapter: CountryAdapter,
+    var viewModel: CountryViewModel? = null
 ) : Fragment(R.layout.fragment_country) {
 
     private var _binding: FragmentCountryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: CountryViewModel by viewModels()
+    private val viewModel2: CountryViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -55,6 +56,8 @@ class CountryFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = viewModel ?: viewModel2
+
         getCountries()
         setupRecyclerView()
         subscribeToObservers()
@@ -67,7 +70,7 @@ class CountryFragment @Inject constructor(
 
 
     private fun subscribeToObservers() {
-        viewModel.countries.observe(viewLifecycleOwner, Observer {
+        viewModel?.countries?.observe(viewLifecycleOwner, Observer {
             Timber.d("COUNTRYY gert form db")
             if (it.isNullOrEmpty()) {
                 Timber.d("COUNTRYY gert form db are null")
@@ -77,7 +80,7 @@ class CountryFragment @Inject constructor(
                 countryAdapter.country = it
             }
         })
-        viewModel.countriesStatus.observe(viewLifecycleOwner, Observer {
+        viewModel?.countriesStatus?.observe(viewLifecycleOwner, Observer {
             Timber.d("COUNTRYY gert form network")
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
@@ -112,7 +115,7 @@ class CountryFragment @Inject constructor(
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.refreshCountries()
+            viewModel?.refreshCountries()
             delay(1000)
             getCountries()
         }
@@ -122,7 +125,7 @@ class CountryFragment @Inject constructor(
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.getCountries()
+            viewModel?.getCountries()
             delay(1000)
         }
     }

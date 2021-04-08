@@ -1,6 +1,5 @@
 package com.kuba.flashscore.data.local.daos
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy

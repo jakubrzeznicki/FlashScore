@@ -12,11 +12,11 @@ interface PlayerDao {
     suspend fun insertPlayers(players: List<PlayerEntity>)
 
     @Query("SELECT * FROM player_table")
-    fun getAllPlayers(): LiveData<List<PlayerEntity>>
+    suspend fun getAllPlayers(): List<PlayerEntity>
 
 
     @Query("SELECT * FROM player_table WHERE player_id = :playerId ")
-    suspend fun getPlayersByPlayerId(playerId: String): PlayerEntity
+    suspend fun getPlayersByPlayerId(playerId: Long): PlayerEntity
 
     @Transaction
     @Query("SELECT * FROM team_table WHERE team_id = :teamId ")

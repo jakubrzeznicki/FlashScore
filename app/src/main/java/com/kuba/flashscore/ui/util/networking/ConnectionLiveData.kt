@@ -1,4 +1,4 @@
-package com.kuba.flashscore.ui.util
+package com.kuba.flashscore.ui.util.networking
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 val TAG = "C-Manager"
 
@@ -76,7 +75,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
       Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onLost(android.net.Network)
      */
     override fun onLost(network: Network) {
-      Timber.d("JUREK INTERNET onLost: $network")
+     //Timber.d("JUREK INTERNET onLost: $network")
       validNetworks.remove(network)
       checkValidNetworks()
     }

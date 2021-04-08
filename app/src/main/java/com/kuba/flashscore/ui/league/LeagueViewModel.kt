@@ -7,9 +7,8 @@ import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.league.LeagueRepository
-import com.kuba.flashscore.ui.util.ConnectivityManager
+import com.kuba.flashscore.ui.util.networking.ConnectivityManager
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class LeagueViewModel @ViewModelInject constructor(
     private val repository: LeagueRepository,

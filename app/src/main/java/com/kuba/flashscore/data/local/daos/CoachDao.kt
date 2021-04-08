@@ -11,7 +11,7 @@ interface CoachDao {
     suspend fun insertCoaches(coaches: List<CoachEntity>)
 
     @Query("SELECT * FROM coach_table")
-    fun getAllCoaches(): LiveData<List<CoachEntity>>
+    suspend fun getAllCoaches(): List<CoachEntity>
 
     @Query("SELECT * FROM coach_table WHERE coach_team_id = :teamId ")
     suspend fun getCoachFromSpecificTeam(teamId: String): CoachEntity

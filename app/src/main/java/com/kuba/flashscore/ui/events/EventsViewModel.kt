@@ -2,20 +2,16 @@ package com.kuba.flashscore.ui.events
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.data.domain.models.customs.TeamWithPlayersAndCoach
 import com.kuba.flashscore.data.domain.models.event.customs.CountryWithLeagueWithEventsAndTeams
 import com.kuba.flashscore.data.domain.models.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
-import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
-import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
-import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
 import com.kuba.flashscore.other.*
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.repositories.event.EventRepository
 import com.kuba.flashscore.repositories.player.PlayerRepository
 import com.kuba.flashscore.repositories.team.TeamRepository
-import com.kuba.flashscore.ui.util.ConnectivityManager
+import com.kuba.flashscore.ui.util.networking.ConnectivityManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber

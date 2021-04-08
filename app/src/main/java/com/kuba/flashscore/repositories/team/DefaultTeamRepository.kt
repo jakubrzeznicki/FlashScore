@@ -1,6 +1,5 @@
 package com.kuba.flashscore.repositories.team
 
-import androidx.lifecycle.LiveData
 import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.data.local.daos.CoachDao
 import com.kuba.flashscore.data.local.daos.PlayerDao
@@ -12,7 +11,6 @@ import com.kuba.flashscore.data.network.ApiFootballService
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE_LACK_OF_DATA
 import com.kuba.flashscore.other.Resource
-import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -61,8 +59,6 @@ class DefaultTeamRepository @Inject constructor(
     }
 
     override suspend fun getTeamWithPlayersAndCoachFromDb(teamId: String): TeamWithPlayersAndCoachEntity {
-        val data = teamDao.getTeamByTeamId(teamId)
-        Timber.d("PLAYERS in repo ${data.players.size}")
-        return data
+        return teamDao.getTeamByTeamId(teamId)
     }
 }

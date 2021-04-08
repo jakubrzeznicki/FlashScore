@@ -3,15 +3,12 @@ package com.kuba.flashscore.ui.teams.standings
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.kuba.flashscore.data.domain.models.Standing
-import com.kuba.flashscore.data.local.models.entities.StandingEntity
 import com.kuba.flashscore.data.local.models.entities.StandingType
-import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
-import com.kuba.flashscore.other.Constants.OVERALL
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.standing.StandingRepository
-import com.kuba.flashscore.ui.util.ConnectivityManager
+import com.kuba.flashscore.ui.util.networking.ConnectivityManager
 import kotlinx.coroutines.launch
 
 class StandingsViewModel @ViewModelInject constructor(

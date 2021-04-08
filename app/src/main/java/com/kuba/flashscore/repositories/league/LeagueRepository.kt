@@ -9,6 +9,6 @@ import com.kuba.flashscore.other.Resource
 interface LeagueRepository {
     suspend fun refreshLeaguesFromSpecificCountry(countryId: String): Resource<CountryAndLeagues>
     suspend fun insertLeagues(leagues: List<LeagueEntity>)
-    fun getLeaguesFromDb(): LiveData<List<LeagueEntity>>
+    suspend fun getLeaguesFromDb(): List<LeagueEntity>
     suspend fun getLeagueFromSpecificCountryFromDb(countryId: String): CountryAndLeaguesEntity
 }

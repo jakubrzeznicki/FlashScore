@@ -34,7 +34,7 @@ class DefaultPlayerRepository @Inject constructor(
         }
     }
 
-    override suspend fun getPlayerInformationFromDb(playerId: String): PlayerEntity {
+    override suspend fun getPlayerInformationFromDb(playerId: Long): PlayerEntity {
         return playerDao.getPlayersByPlayerId(playerId)
     }
 

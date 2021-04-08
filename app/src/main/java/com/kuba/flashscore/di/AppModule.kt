@@ -1,5 +1,6 @@
 package com.kuba.flashscore.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.bumptech.glide.Glide
@@ -23,6 +24,8 @@ import com.kuba.flashscore.repositories.standing.DefaultStandingRepository
 import com.kuba.flashscore.repositories.standing.StandingRepository
 import com.kuba.flashscore.repositories.team.DefaultTeamRepository
 import com.kuba.flashscore.repositories.team.TeamRepository
+import com.kuba.flashscore.ui.util.networking.ConnectivityManager
+import com.kuba.flashscore.ui.util.networking.DefaultConnectivityManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -206,6 +209,17 @@ object AppModule {
             playerDao,
             api
         ) as PlayerRepository
+
+
+    @Singleton
+    @Provides
+    fun provideConnectivityManager(
+        application: Application
+    ) =
+        DefaultConnectivityManager(
+            application
+        ) as ConnectivityManager
+
 
     @Singleton
     @Provides
