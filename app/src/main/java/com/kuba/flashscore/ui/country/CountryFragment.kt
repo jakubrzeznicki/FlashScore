@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -28,14 +29,13 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class CountryFragment @Inject constructor(
-    val countryAdapter: CountryAdapter,
-    var viewModel: CountryViewModel? = null
+    val countryAdapter: CountryAdapter
 ) : Fragment(R.layout.fragment_country) {
 
     private var _binding: FragmentCountryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel2: CountryViewModel by viewModels()
+    lateinit var viewModel: CountryViewModel
 
 
     override fun onCreateView(
@@ -56,7 +56,8 @@ class CountryFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = viewModel ?: viewModel2
+
+        viewModel = ViewModelProvider(requireActivity()).get(CountryViewModel::class.java)
 
         getCountries()
         setupRecyclerView()
@@ -90,6 +91,7 @@ class CountryFragment @Inject constructor(
                             "Successfully fetched data from network",
                             Snackbar.LENGTH_LONG
                         ).show()
+                        getCountries()
                     }
                     Status.ERROR -> {
                         Snackbar.make(
@@ -115,9 +117,9 @@ class CountryFragment @Inject constructor(
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel?.refreshCountries()
-            delay(1000)
-            getCountries()
+             viewModel?.refreshCountries()
+            // delay(1000)
+            //getCountries()
         }
     }
 
@@ -126,7 +128,7 @@ class CountryFragment @Inject constructor(
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel?.getCountries()
-            delay(1000)
+//            delay(1000)
         }
     }
 

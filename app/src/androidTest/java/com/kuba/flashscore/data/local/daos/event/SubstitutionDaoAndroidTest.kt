@@ -18,13 +18,15 @@ import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
 import com.kuba.flashscore.data.local.models.entities.event.CardEntity
 import com.kuba.flashscore.data.local.models.entities.event.GoalscorerEntity
-import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
+import com.kuba.flashscore.data.local.models.entities.event.LineupEntity
+import com.kuba.flashscore.data.local.models.entities.event.SubstitutionsEntity
+import com.kuba.flashscore.util.DataProducer.produceSubstitutionEntity
 
 
 @ExperimentalCoroutinesApi
 @SmallTest
 @HiltAndroidTest
-class GoalscorerDaoAndroidTest {
+class SubstitutionDaoAndroidTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
@@ -34,21 +36,21 @@ class GoalscorerDaoAndroidTest {
     @Inject
     @Named("test_db")
     lateinit var database: FlashScoreDatabase
-    private lateinit var dao: GoalscorerDao
+    private lateinit var dao: SubstitutionDao
 
-    private lateinit var goalscorerItem1: GoalscorerEntity
-    private lateinit var goalscorerItem2: GoalscorerEntity
+    private lateinit var substitutionItem1: SubstitutionsEntity
+    private lateinit var substitutionItem2: SubstitutionsEntity
 
     @Before
     fun setup() {
         hiltRule.inject()
-        dao = database.goalscorerDao()
+        dao = database.substitutionDao()
 
-        goalscorerItem1 = produceGoalscorerEntity(1,1,true)
-        goalscorerItem2 = produceGoalscorerEntity(2,1,true)
+        substitutionItem1 = produceSubstitutionEntity(1, 1, true)
+        substitutionItem2 = produceSubstitutionEntity(2, 1, true)
 
         runBlockingTest {
-            dao.insertGoalscorers(listOf(goalscorerItem1, goalscorerItem2))
+            dao.insertSubstitutions(listOf(substitutionItem1, substitutionItem2))
         }
     }
 
@@ -58,9 +60,9 @@ class GoalscorerDaoAndroidTest {
     }
 
     @Test
-    fun insertGoalscorerItem_getGoalscorerFromSpecificMatch() = runBlockingTest {
-        val goalscorers = dao.getGoalscorersFromSpecificMatch("matchId1")
+    fun insertSubstitutionsItem_getSubstitutionsFromSpecificMatch() = runBlockingTest {
+        val substitutions = dao.getSubstitutionsFromSpecificMatch("matchId1")
 
-        assertThat(goalscorers).isEqualTo(listOf(goalscorerItem1, goalscorerItem2))
+        assertThat(substitutions).isEqualTo(listOf(substitutionItem1, substitutionItem2))
     }
 }

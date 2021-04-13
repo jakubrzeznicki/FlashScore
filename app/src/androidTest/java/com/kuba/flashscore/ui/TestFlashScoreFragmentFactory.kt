@@ -14,13 +14,7 @@ class TestFlashScoreFragmentFactory @Inject constructor(
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         return when (className) {
-            CountryFragment::class.java.name -> CountryFragment(
-                countryAdapter,
-                CountryViewModel(
-                    FakeCountryRepositoryAndroidTest(),
-                    FakeConnectivityManager()
-                )
-            )
+            CountryFragment::class.java.name -> CountryFragment(countryAdapter)
             else -> super.instantiate(classLoader, className)
         }
     }

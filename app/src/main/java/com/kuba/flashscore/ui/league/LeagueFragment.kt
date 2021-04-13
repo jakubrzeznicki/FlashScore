@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,6 +22,7 @@ import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.country.CountryViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -34,10 +36,10 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     private var _binding: FragmentLeagueBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LeagueViewModel by viewModels()
+    lateinit var viewModel: LeagueViewModel
     private val args: LeagueFragmentArgs by navArgs()
 
-    private lateinit var leagueAdapter: LeagueAdapter
+    lateinit var leagueAdapter: LeagueAdapter
     private lateinit var country: Country
 
     override fun onCreateView(
@@ -64,6 +66,8 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(LeagueViewModel::class.java)
+
         viewModel.getCountryWithLeagues(country.countryId)
         setupRecyclerView()
         subscribeToObservers()
@@ -79,7 +83,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
     private fun subscribeToObservers() {
         viewModel.countriesWithLeagues.observe(viewLifecycleOwner, Observer {
             Timber.d("LEAGUEE observe get leagues")
-            if (it.leagues.isNullOrEmpty()) {
+            if (it?.leagues.isNullOrEmpty()) {
                 Timber.d("LEAGUE gert form db are null")
                 refreshCountryWithLeagues(country)
             } else {
@@ -122,7 +126,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel.refreshCountryWithLeagues(country.countryId)
+            viewModel?.refreshCountryWithLeagues(country.countryId)
             delay(1000)
             viewModel.getCountryWithLeagues(country.countryId)
         }

@@ -18,13 +18,14 @@ import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
 import com.kuba.flashscore.data.local.models.entities.event.CardEntity
 import com.kuba.flashscore.data.local.models.entities.event.GoalscorerEntity
-import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
+import com.kuba.flashscore.data.local.models.entities.event.StatisticEntity
+import com.kuba.flashscore.util.DataProducer.produceStatisticEntity
 
 
 @ExperimentalCoroutinesApi
 @SmallTest
 @HiltAndroidTest
-class GoalscorerDaoAndroidTest {
+class StatisticDaoAndroidTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
@@ -34,21 +35,21 @@ class GoalscorerDaoAndroidTest {
     @Inject
     @Named("test_db")
     lateinit var database: FlashScoreDatabase
-    private lateinit var dao: GoalscorerDao
+    private lateinit var dao: StatisticDao
 
-    private lateinit var goalscorerItem1: GoalscorerEntity
-    private lateinit var goalscorerItem2: GoalscorerEntity
+    private lateinit var statisticItem1: StatisticEntity
+    private lateinit var statisticItem2: StatisticEntity
 
     @Before
     fun setup() {
         hiltRule.inject()
-        dao = database.goalscorerDao()
+        dao = database.statisticDao()
 
-        goalscorerItem1 = produceGoalscorerEntity(1,1,true)
-        goalscorerItem2 = produceGoalscorerEntity(2,1,true)
+        statisticItem1 = produceStatisticEntity(1, 1)
+        statisticItem2 = produceStatisticEntity(2, 1)
 
         runBlockingTest {
-            dao.insertGoalscorers(listOf(goalscorerItem1, goalscorerItem2))
+            dao.insertStatistics(listOf(statisticItem1, statisticItem2))
         }
     }
 
@@ -58,9 +59,9 @@ class GoalscorerDaoAndroidTest {
     }
 
     @Test
-    fun insertGoalscorerItem_getGoalscorerFromSpecificMatch() = runBlockingTest {
-        val goalscorers = dao.getGoalscorersFromSpecificMatch("matchId1")
+    fun insertStatisticItem_getStatisticsFromSpecificMatch() = runBlockingTest {
+        val statistics = dao.getStatisticsFromSpecificMatch("matchId1")
 
-        assertThat(goalscorers).isEqualTo(listOf(goalscorerItem1, goalscorerItem2))
+        assertThat(statistics).isEqualTo(listOf(statisticItem1, statisticItem2))
     }
 }

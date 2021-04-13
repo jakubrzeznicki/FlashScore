@@ -11,24 +11,24 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
-import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.data.domain.models.Country
-import com.kuba.flashscore.data.network.FakeApiFootballService
+import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.launchFragmentInHiltContainer
-import com.kuba.flashscore.other.Constants.COUNTRY_DATA_FILENAME
+import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
+import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.repositories.FakeCountryRepositoryAndroidTest
+import com.kuba.flashscore.ui.FakeConnectivityManager
 import com.kuba.flashscore.ui.TestFlashScoreFragmentFactory
-import com.kuba.flashscore.util.JsonUtilAndroid
-import com.kuba.flashscore.util.MockServerDispatcher
+import com.kuba.flashscore.util.DataProducer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
-import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
+import okhttp3.internal.wait
+
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,9 +38,7 @@ import javax.inject.Inject
 
 @MediumTest
 @HiltAndroidTest
-//@UninstallModules(AppModule::class)
 @ExperimentalCoroutinesApi
-//@RunWith(AndroidJUnit4::class)
 class CountryFragmentTest {
 
     @get:Rule
@@ -52,51 +50,63 @@ class CountryFragmentTest {
     @Inject
     lateinit var fragmentFactory: TestFlashScoreFragmentFactory
 
-
-    private lateinit var mockWebServer: MockWebServer
-
-    //
-    @Inject
-    lateinit var jsonUtilAndroid: JsonUtilAndroid
-
-    @Inject
-    lateinit var apiFootballService: FakeApiFootballService
-
-    @Inject
-    lateinit var countryRepository: FakeCountryRepositoryAndroidTest
-
-    @Inject
-    lateinit var okHttp: OkHttpClient
-
     @Before
     fun setup() {
         hiltRule.inject()
-        mockWebServer = MockWebServer()
-        mockWebServer.dispatcher = MockServerDispatcher().RequestDispatcher()
-        mockWebServer.start(8080)
-        IdlingRegistry.getInstance().register(OkHttp3IdlingResource.create("okhttp", okHttp))
     }
 
-    @After
-    fun tearDown() =
-        mockWebServer.shutdown()
-
     @Test
-    fun clickCountryItem_navigateToLeagueFragment() = runBlockingTest {
+    fun clickCountryItemFromDatabase_navigateToLeagueFragment() = runBlockingTest {
         val navController = mock(NavController::class.java)
-        val countryItem = Country("id", "logo", "name")
-        var testViewModel: CountryViewModel? = null
-
-        val apiService = configureFakeApiFootballService(
-            countriesDataSource = COUNTRY_DATA_FILENAME,
-            networkDelay = 0L
-        )
-        val repository = configureFakeRepository(apiService)
+        val countryItem = DataProducer.produceCountryEntity(1)
+        val testViewModel = CountryViewModel(FakeCountryRepositoryAndroidTest().also {
+            it.insertCountries(
+                listOf(countryItem)
+            )
+        }, FakeConnectivityManager().also { it.isNetworkAvailable.postValue(true) })
 
         launchFragmentInHiltContainer<CountryFragment>(fragmentFactory = fragmentFactory) {
             Navigation.setViewNavController(requireView(), navController)
-            testViewModel = viewModel
-            countryAdapter.country = listOf(countryItem)
+            //viewModel = testViewModel
+            countryAdapter.country = listOf(countryItem.asDomainModel())
+            countryAdapter
+        }
+
+
+        onView(withId(R.id.recyclerViewCountries))
+            .perform(
+                actionOnItemAtPosition<CountryAdapter.CountryViewHolder>(
+                    0,
+                    click()
+                )
+            )
+
+        verify(navController).navigate(
+            CountryFragmentDirections.actionCountryFragmentToLeagueFragment(
+                countryItem.asDomainModel()
+            )
+        )
+
+        testViewModel.getCountries()
+
+        assertThat(testViewModel.countries.getOrAwaitValue()).contains(
+            countryItem.asDomainModel()
+        )
+    }
+
+    @Test
+    fun clickCountryItemFromNetwork_navigateToLeagueFragment() = runBlockingTest {
+        val navController = mock(NavController::class.java)
+        val countryItem = DataProducer.produceCountryEntity(1)
+        val testViewModel = CountryViewModel(
+            FakeCountryRepositoryAndroidTest(),
+            FakeConnectivityManager().also { it.isNetworkAvailable.postValue(true) })
+
+        launchFragmentInHiltContainer<CountryFragment>(fragmentFactory = fragmentFactory) {
+            Navigation.setViewNavController(requireView(), navController)
+            viewModel = testViewModel
+            countryAdapter.country = listOf(countryItem.asDomainModel())
+
         }
 
         onView(withId(R.id.recyclerViewCountries))
@@ -109,57 +119,38 @@ class CountryFragmentTest {
 
         verify(navController).navigate(
             CountryFragmentDirections.actionCountryFragmentToLeagueFragment(
-                countryItem
+                countryItem.asDomainModel()
             )
         )
-        assertThat(testViewModel?.countries?.getOrAwaitValue()).contains(
-            countryItem
+
+        testViewModel.refreshCountries()
+        delay(3000)
+        assertThat(testViewModel.countriesStatus.getOrAwaitValue().getContentIfNotHandled()?.status).isEqualTo(
+            Status.SUCCESS
         )
     }
 
-    @Test
-    fun clickCountryItemFetchedFromNetwork_navigateToLeagueFragment() {
-        //Launch fragment
-        val navController = mock(NavController::class.java)
-        //  val testViewModel = CountryViewModel(FakeCountryRepositoryAndroidTest())
-
-        launchFragmentInHiltContainer<CountryFragment>(fragmentFactory = fragmentFactory) {
-            Navigation.setViewNavController(requireView(), navController)
-            //countryAdapter.country = testViewModel.countries.value?.peekContent()?.data?.toList()!!
-        }
-        //Click on first article
-        onView(withId(R.id.recyclerViewCountries))
-            .perform(actionOnItemAtPosition<CountryAdapter.CountryViewHolder>(0, click()))
-
-        //Check that it navigates to Detail screen
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.leagueFragment)
-    }
-
-
-    @Test
-    fun testtt() {
-        val apiService = configureFakeApiFootballService(
-            countriesDataSource = COUNTRY_DATA_FILENAME,
-            networkDelay = 0L
-        )
-        configureFakeRepository(apiService)
-    }
-
-    fun configureFakeApiFootballService(
-        countriesDataSource: String? = null,
-        networkDelay: Long? = null
-    ): FakeApiFootballService {
-        val fakeApiService = apiFootballService
-        countriesDataSource?.let { fakeApiService.countryyJsonFileName = it }
-        networkDelay?.let { fakeApiService.networkDelay = it }
-        return fakeApiService
-    }
-
-    fun configureFakeRepository(
-        apiFootballService: FakeApiFootballService
-    ): FakeCountryRepositoryAndroidTest {
-        val fakeRepository = countryRepository
-        fakeRepository.apiFootballService = apiFootballService
-        return fakeRepository
-    }
+//
+//    @Test
+//    fun networkIsNotAvailable_showSnackBarWithNetworkErrorInformation() = runBlockingTest {
+//        val navController = mock(NavController::class.java)
+//        val testViewModel = CountryViewModel(
+//            FakeCountryRepositoryAndroidTest(),
+//            FakeConnectivityManager().also { it.isNetworkAvailable.postValue(false) })
+//
+//        launchFragmentInHiltContainer<CountryFragment>(fragmentFactory = fragmentFactory) {
+//            Navigation.setViewNavController(requireView(), navController)
+//            viewModel = testViewModel
+//            countryAdapter.country = emptyList()
+//        }
+//
+//        testViewModel.refreshCountries()
+//        delay(3000)
+////        assertThat(testViewModel.countriesStatus.getOrAwaitValue().peekContent().status).isEqualTo(
+////            Status.ERROR
+////        )
+//        assertThat(testViewModel.countriesStatus.getOrAwaitValue().peekContent().message).isEqualTo(
+//            ERROR_MESSAGE
+//        )
+//    }
 }

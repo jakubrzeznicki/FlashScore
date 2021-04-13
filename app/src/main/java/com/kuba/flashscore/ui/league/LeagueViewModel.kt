@@ -2,13 +2,18 @@ package com.kuba.flashscore.ui.league
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.kuba.flashscore.data.domain.models.League
 import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
+import com.kuba.flashscore.data.local.models.entities.CountryEntity
+import com.kuba.flashscore.data.local.models.entities.LeagueEntity
+import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.league.LeagueRepository
 import com.kuba.flashscore.ui.util.networking.ConnectivityManager
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class LeagueViewModel @ViewModelInject constructor(
     private val repository: LeagueRepository,
@@ -28,8 +33,8 @@ class LeagueViewModel @ViewModelInject constructor(
     suspend fun refreshCountryWithLeagues(countryId: String) {
         _countryWithLeaguesStatus.value = Event(Resource.loading(null))
         viewModelScope.launch {
-            connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
-                if (isNetworkAvailable) {
+            connectivityManager.isNetworkAvailable.value.let { isNetworkAvailable ->
+                if (isNetworkAvailable == true) {
                     val response = repository.refreshLeaguesFromSpecificCountry(countryId)
                     _countryWithLeaguesStatus.value = Event(response)
                 } else {
@@ -42,7 +47,7 @@ class LeagueViewModel @ViewModelInject constructor(
     fun getCountryWithLeagues(countryId: String) {
         viewModelScope.launch {
             _countriesWithLeagues.postValue(
-                repository.getLeagueFromSpecificCountryFromDb(countryId).asDomainModel()
+                repository.getLeagueFromSpecificCountryFromDb(countryId)?.asDomainModel()
             )
         }
     }

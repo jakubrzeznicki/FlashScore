@@ -1,4 +1,5 @@
 package com.kuba.flashscore.ui.util.networking
+import timber.log.Timber
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -13,14 +14,14 @@ object DoesNetworkHaveInternet {
     // Make sure to execute this on a background thread.
     fun execute(): Boolean {
         return try {
-            //Timber.d("JUREK NETWORK PINGING google.")
+            Timber.d("JUREK NETWORK PINGING google.")
             val socket = Socket()
             socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
             socket.close()
-            //Timber.d("JUREK NETWORK PINGING success.")
+            Timber.d("JUREK NETWORK PINGING success.")
             true
         } catch (e: IOException) {
-          //  Timber.d("JUREK NETWORK No internet connection. ${e}")
+            Timber.d("JUREK NETWORK No internet connection. ${e}")
             false
         }
     }

@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -28,8 +29,11 @@ import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
 import com.kuba.flashscore.other.DateUtils
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.league.LeagueViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.*
@@ -42,10 +46,10 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private var _binding: FragmentEventsListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: EventsViewModel by viewModels()
+    lateinit var viewModel: EventsViewModel
     private val args: EventsListFragmentArgs by navArgs()
 
-    private lateinit var eventsAdapter: EventAdapter
+    lateinit var eventsAdapter: EventAdapter
     private var wasRefresh = false
     private lateinit var countryAndLeague: CountryAndLeagues
     private lateinit var fromToDate: String
@@ -56,6 +60,8 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     ): View? {
         _binding = FragmentEventsListBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        viewModel = ViewModelProvider(requireActivity()).get(EventsViewModel::class.java)
 
         countryAndLeague = args.countryAndLeagues
         fromToDate = viewModel.switchedDate.value!!
@@ -116,9 +122,10 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 Timber.d("EVENTS observe get events")
                 if (it == null) {
                     Timber.d("EVENTS gert form db are null")
-                    if (!wasRefresh) {
+                   // if (!wasRefresh) {
+                        Timber.d("EVENTS gert form db are null WAS REFRESH")
                         refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
-                    }
+                   // }
                     setupRecyclerView()
                 } else {
                     Timber.d("EVENTS gert form db are not null ${it.leagueWithEvents[0].eventsWithEventInformation.size}")
@@ -192,6 +199,11 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         countryAndLeagues: CountryAndLeagues,
         date: Date?
     ) {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            hide()
+        }
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarEventList)
+
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)

@@ -18,13 +18,14 @@ import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
 import com.kuba.flashscore.data.local.models.entities.event.CardEntity
 import com.kuba.flashscore.data.local.models.entities.event.GoalscorerEntity
-import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
+import com.kuba.flashscore.data.local.models.entities.event.LineupEntity
+import com.kuba.flashscore.util.DataProducer.produceLineupEntity
 
 
 @ExperimentalCoroutinesApi
 @SmallTest
 @HiltAndroidTest
-class GoalscorerDaoAndroidTest {
+class LineupDaoAndroidTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
@@ -34,21 +35,21 @@ class GoalscorerDaoAndroidTest {
     @Inject
     @Named("test_db")
     lateinit var database: FlashScoreDatabase
-    private lateinit var dao: GoalscorerDao
+    private lateinit var dao: LineupDao
 
-    private lateinit var goalscorerItem1: GoalscorerEntity
-    private lateinit var goalscorerItem2: GoalscorerEntity
+    private lateinit var lineupItem1: LineupEntity
+    private lateinit var lineupItem2: LineupEntity
 
     @Before
     fun setup() {
         hiltRule.inject()
-        dao = database.goalscorerDao()
+        dao = database.lineupDao()
 
-        goalscorerItem1 = produceGoalscorerEntity(1,1,true)
-        goalscorerItem2 = produceGoalscorerEntity(2,1,true)
+        lineupItem1 = produceLineupEntity(1, 1, true)
+        lineupItem2 = produceLineupEntity(2, 1, true)
 
         runBlockingTest {
-            dao.insertGoalscorers(listOf(goalscorerItem1, goalscorerItem2))
+            dao.insertLineup(listOf(lineupItem1, lineupItem2))
         }
     }
 
@@ -58,9 +59,9 @@ class GoalscorerDaoAndroidTest {
     }
 
     @Test
-    fun insertGoalscorerItem_getGoalscorerFromSpecificMatch() = runBlockingTest {
-        val goalscorers = dao.getGoalscorersFromSpecificMatch("matchId1")
+    fun insertLineupItem_getLineupFromSpecificMatch() = runBlockingTest {
+        val lineup = dao.getLineupsFromSpecificMatch("matchId1")
 
-        assertThat(goalscorers).isEqualTo(listOf(goalscorerItem1, goalscorerItem2))
+        assertThat(lineup).isEqualTo(listOf(lineupItem1, lineupItem2))
     }
 }

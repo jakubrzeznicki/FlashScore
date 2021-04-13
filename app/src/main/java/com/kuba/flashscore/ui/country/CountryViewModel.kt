@@ -8,12 +8,14 @@ import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Event
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.country.CountryRepository
+import com.kuba.flashscore.ui.MainActivity
 import com.kuba.flashscore.ui.util.networking.ConnectivityManager
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class CountryViewModel @ViewModelInject constructor(
     private val repository: CountryRepository,
-    private val connectivityManager: ConnectivityManager,
+    private val connectivityManager2: ConnectivityManager,
 ) : ViewModel() {
 
     private var _countries = MutableLiveData<List<Country>>()
@@ -22,17 +24,23 @@ class CountryViewModel @ViewModelInject constructor(
     private val _countriesStatus = MutableLiveData<Event<Resource<List<Country>>>>()
     val countriesStatus: LiveData<Event<Resource<List<Country>>>> = _countriesStatus
 
-    private val _networkConnectivityChange = connectivityManager.isNetworkAvailable
+    private val _networkConnectivityChange = connectivityManager2.isNetworkAvailable
     val networkConnectivityChange: LiveData<Boolean> = _networkConnectivityChange
 
     suspend fun refreshCountries() {
+        connectivityManager2.registerConnectionObserver()
+        //_networkConnectivityChange.observeForever(Observer {  })
+        Timber.d("COUNTRY in viewmodel network is available from mainactivity ${MainActivity().connectivityManager.isNetworkAvailable.value}")
+
         _countriesStatus.value = Event(Resource.loading(null))
         viewModelScope.launch {
-            connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
-                if (isNetworkAvailable) {
+            _networkConnectivityChange.value.let { isNetworkAvailable ->
+                if (isNetworkAvailable == true) {
+                    Timber.d("COUNTRY in viewmodel network is available")
                     val response = repository.refreshCountries()
                     _countriesStatus.value = Event(response)
                 } else {
+                    Timber.d("COUNTRY in viewmodel network is not available ${connectivityManager2.isNetworkAvailable.value}")
                     _countriesStatus.value = Event(Resource.error(ERROR_MESSAGE, null))
                 }
             }

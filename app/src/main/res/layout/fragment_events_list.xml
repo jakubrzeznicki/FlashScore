@@ -7,6 +7,20 @@
     android:background="@color/primaryColor"
     tools:context=".ui.events.EventsListFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarEventList"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSecondary"
+        android:elevation="4dp"
+        app:title="JUREKKKKKK"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutEventsList"
         android:layout_width="match_parent"
@@ -17,7 +31,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/viewDividerEventsOne"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarEventList">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageViewCountryFlag"
