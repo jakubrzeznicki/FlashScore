@@ -42,12 +42,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        connectivityManager.registerConnectionObserver()
+        connectivityManager.registerConnectionObserver(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        connectivityManager.unregisterConnectionObserver()
+        connectivityManager.unregisterConnectionObserver(this)
     }
 
 }

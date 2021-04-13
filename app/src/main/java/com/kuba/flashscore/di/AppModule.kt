@@ -1,6 +1,6 @@
 package com.kuba.flashscore.di
 
-import android.app.Application
+ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.bumptech.glide.Glide

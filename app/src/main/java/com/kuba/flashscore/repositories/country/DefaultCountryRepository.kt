@@ -39,13 +39,11 @@ class DefaultCountryRepository @Inject constructor(
     }
 
     override suspend fun insertCountries(countries: List<CountryEntity>) {
-        wrapEspressoIdlingResource {
             countryDao.insertCountries(countries)
-        }
+
     }
 
     override suspend fun getCountriesFromDb(): List<CountryEntity> =
-        wrapEspressoIdlingResource {
             countryDao.getAllCountriesFromDb()
-        }
+
 }

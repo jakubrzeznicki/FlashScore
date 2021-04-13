@@ -16,17 +16,16 @@ constructor(
 ) : ConnectivityManager {
     private val connectionLiveData = ConnectionLiveData(application)
 
-    private val networkObserver = Observer<Boolean> { isConnected -> isNetworkAvailable.value = isConnected }
-
     // observe this in ui
-    override val isNetworkAvailable = MutableLiveData<Boolean>()
+    override val isNetworkAvailable = MutableLiveData<Boolean>(false)
 
-
-    override fun registerConnectionObserver() {
-        connectionLiveData.observeForever(networkObserver)
+    override fun registerConnectionObserver(lifecycleOwner: LifecycleOwner){
+        connectionLiveData.observe(lifecycleOwner, { isConnected ->
+            isConnected?.let { isNetworkAvailable.value = it }
+        })
     }
 
-    override fun unregisterConnectionObserver() {
-        //connectionLiveData.removeObservers(networkObserver)
+    override fun unregisterConnectionObserver(lifecycleOwner: LifecycleOwner){
+        connectionLiveData.removeObservers(lifecycleOwner)
     }
 }

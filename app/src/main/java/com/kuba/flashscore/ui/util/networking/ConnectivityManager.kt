@@ -5,6 +5,6 @@ import androidx.lifecycle.MutableLiveData
 
 interface ConnectivityManager {
     val isNetworkAvailable: MutableLiveData<Boolean>
-    fun registerConnectionObserver()
-    fun unregisterConnectionObserver()
+    fun registerConnectionObserver(lifecycleOwner: LifecycleOwner)
+    fun unregisterConnectionObserver(lifecycleOwner: LifecycleOwner)
 }
