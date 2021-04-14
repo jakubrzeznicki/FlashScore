@@ -1,7 +1,8 @@
 package com.kuba.flashscore.di
 
- import android.app.Application
+import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LifecycleOwner
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -212,7 +213,7 @@ object AppModule {
         ) as PlayerRepository
 
 
-    //@Singleton
+    @Singleton
     @Provides
     fun provideConnectivityManager(
         application: Application

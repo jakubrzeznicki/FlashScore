@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class CountryViewModel @ViewModelInject constructor(
     private val repository: CountryRepository,
-    private val connectivityManager: DefaultConnectivityManager,
+    private val connectivityManager: ConnectivityManager,
 ) : ViewModel() {
 
     private var _countries = MutableLiveData<List<Country>>()
@@ -30,6 +30,7 @@ class CountryViewModel @ViewModelInject constructor(
 
     suspend fun refreshCountries() {
         _countriesStatus.value = Event(Resource.loading(null))
+        connectivityManager.registerConnectionObserver()
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value.let { isNetworkAvailable ->
                 if (isNetworkAvailable == true) {
