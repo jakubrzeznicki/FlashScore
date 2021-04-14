@@ -198,9 +198,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         countryAndLeagues: CountryAndLeagues,
         date: Date?
     ) {
-//        (activity as AppCompatActivity).supportActionBar?.apply {
-//            hide()
-//        }
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarEventList)
 
         (activity as AppCompatActivity).supportActionBar?.apply {

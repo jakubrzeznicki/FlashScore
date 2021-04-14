@@ -52,6 +52,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         country = args.countryItem
 
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarLeague)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)

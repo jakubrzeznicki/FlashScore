@@ -44,6 +44,7 @@ class PlayerViewPagerFragment : Fragment(R.layout.fragment_player_view_pager) {
         val player = args.players
 
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarPlayerViewPager)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)

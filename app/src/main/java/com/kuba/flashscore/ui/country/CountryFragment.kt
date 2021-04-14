@@ -45,6 +45,7 @@ class CountryFragment @Inject constructor(
         _binding = FragmentCountryBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarCountry)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
             setDisplayShowHomeEnabled(false)

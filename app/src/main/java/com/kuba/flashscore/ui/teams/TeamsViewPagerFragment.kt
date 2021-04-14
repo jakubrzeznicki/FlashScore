@@ -49,6 +49,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
         val countryAndLeague = args.countryAndLeague
 
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarTeamsViewPager)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)

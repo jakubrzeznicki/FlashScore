@@ -7,6 +7,19 @@
     android:background="@color/primaryColor"
     tools:context=".ui.teams.TeamsViewPagerFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarTeamsViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSecondary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutCountry"
         android:layout_width="match_parent"
@@ -16,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarTeamsViewPager">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageViewCountryFlag"

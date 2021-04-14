@@ -62,6 +62,7 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         eventId = args.eventId
 
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarEventDetailsViewPager)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
