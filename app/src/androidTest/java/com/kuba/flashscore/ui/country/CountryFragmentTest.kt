@@ -124,7 +124,6 @@ class CountryFragmentTest {
         )
 
         testViewModel.refreshCountries()
-        delay(3000)
         assertThat(testViewModel.countriesStatus.getOrAwaitValue().getContentIfNotHandled()?.status).isEqualTo(
             Status.SUCCESS
         )

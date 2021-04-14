@@ -1,51 +1,52 @@
 package com.kuba.flashscore.ui.event.details
 
-import android.widget.DatePicker
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 
 import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.PickerActions.setDate
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
-import com.google.common.truth.Truth.assertThat
 import com.kuba.flashscore.R
-import com.kuba.flashscore.adapters.EventAdapter
 import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.data.local.models.entities.TeamEntity
-import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.data.local.models.entities.customs.LeagueWithTeamsEntity
-import com.kuba.flashscore.data.local.models.entities.event.EventEntity
-import com.kuba.flashscore.data.local.models.entities.event.EventInformationEntity
+import com.kuba.flashscore.data.local.models.entities.event.*
 import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
+import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
 import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithEventInformationEntity
 import com.kuba.flashscore.data.local.models.entities.event.customs.LeagueWithEventsEntity
 import com.kuba.flashscore.launchFragmentInHiltContainer
-import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.repositories.*
 import com.kuba.flashscore.ui.FakeConnectivityManager
+import com.kuba.flashscore.ui.MainActivity
 import com.kuba.flashscore.ui.TestFlashScoreFragmentFactory
-import com.kuba.flashscore.ui.events.EventsListFragment
-import com.kuba.flashscore.ui.events.EventsListFragmentArgs
-import com.kuba.flashscore.ui.events.EventsListFragmentDirections
 import com.kuba.flashscore.ui.events.EventsViewModel
+import com.kuba.flashscore.ui.events.details.EventDetailsViewPagerFragment
+import com.kuba.flashscore.ui.events.details.EventDetailsViewPagerFragmentArgs
+import com.kuba.flashscore.util.DataProducer.produceCardEntity
 import com.kuba.flashscore.util.DataProducer.produceCountryEntity
 import com.kuba.flashscore.util.DataProducer.produceEventEntity
 import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
+import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
 import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducer.produceLineupEntity
+import com.kuba.flashscore.util.DataProducer.produceStatisticEntity
+import com.kuba.flashscore.util.DataProducer.produceSubstitutionEntity
 import com.kuba.flashscore.util.DataProducer.produceTeamEntity
-import com.kuba.flashscore.util.MatcherUtils.withToolbarTitle
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -70,7 +71,7 @@ class EventDetailsViewPagerFragmentTest {
     @Inject
     lateinit var fragmentFactory: TestFlashScoreFragmentFactory
 
-    private lateinit var countryAndLeagueItems: CountryAndLeaguesEntity
+    //private lateinit var countryAndLeagueItems: CountryAndLeaguesEntity
     private lateinit var leagueItem: LeagueEntity
     private lateinit var teamItems: List<TeamEntity>
 
@@ -82,15 +83,23 @@ class EventDetailsViewPagerFragmentTest {
     private lateinit var leagueWithTeamItems: List<LeagueWithTeamsEntity>
     private lateinit var leagueWithEventItems: List<LeagueWithEventsEntity>
 
+    private lateinit var cardsItems: List<CardEntity>
+    private lateinit var goalscorersItems: List<GoalscorerEntity>
+    private lateinit var substitutionsItems: List<SubstitutionsEntity>
+    private lateinit var lineupItems: List<LineupEntity>
+    private lateinit var statisticsItems: List<StatisticEntity>
+
+    private lateinit var eventsWithAllStuff: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
+
 
     @Before
     fun setup() {
         hiltRule.inject()
         leagueItem = produceLeagueEntity(1, 1)
-        countryAndLeagueItems = CountryAndLeaguesEntity(
-            produceCountryEntity(1),
-            listOf(leagueItem)
-        )
+//        countryAndLeagueItems = CountryAndLeaguesEntity(
+//            produceCountryEntity(1),
+//            listOf(leagueItem)
+//        )
 
         teamItems = listOf(
             produceTeamEntity(1, 1),
@@ -126,15 +135,55 @@ class EventDetailsViewPagerFragmentTest {
             leagueWithTeamItems,
             leagueWithEventItems
         )
+
+        cardsItems = listOf(
+            produceCardEntity(1, 1, true),
+            produceCardEntity(2, 1, false)
+        )
+
+        goalscorersItems = listOf(
+            produceGoalscorerEntity(1, 1, true),
+            produceGoalscorerEntity(2, 1, false)
+        )
+
+        lineupItems = listOf(
+            produceLineupEntity(1, 1, true),
+            produceLineupEntity(2, 1, false)
+        )
+
+        statisticsItems = listOf(
+            produceStatisticEntity(1, 1),
+            produceStatisticEntity(2, 1)
+        )
+
+        substitutionsItems = listOf(
+            produceSubstitutionEntity(1, 1, true),
+            produceSubstitutionEntity(2, 1, false)
+        )
+
+        eventsWithAllStuff =
+            EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity(
+                eventItem,
+                cardsItems,
+                goalscorersItems,
+                lineupItems,
+                statisticsItems,
+                substitutionsItems
+            )
     }
 
     @Test
-    fun clickEventItemFromDatabase_navigateToEventDetailFragment() = runBlockingTest {
+    fun informationAboutCountryAndLeagueAreCorrectlyDisplayed() = runBlockingTest {
         val navController = mock(NavController::class.java)
 
         val testViewModel = EventsViewModel(FakeEventRepositoryAndroidTest().also {
             it.insertEvents(listOf(eventItem))
             it.insertEventInformation(eventInformationItems)
+            it.insertCards(cardsItems)
+            it.insertGoalscorers(goalscorersItems)
+            it.insertLineups(lineupItems)
+            it.insertStatistics(statisticsItems)
+            it.insertSubstitutions(substitutionsItems)
         }, FakeTeamRepositoryAndroidTest().also {
             it.insertTeams(teamItems)
         },
@@ -143,52 +192,37 @@ class EventDetailsViewPagerFragmentTest {
                 it.isNetworkAvailable.postValue(true)
             })
 
-        val bundle = EventsListFragmentArgs(
-            countryAndLeagueItems.asDomainModel()
-        ).toBundle()
-
-        launchFragmentInHiltContainer<EventsListFragment>(
-            fragmentFactory = fragmentFactory,
-            fragmentArgs = bundle
-        ) {
-            navController.setGraph(R.navigation.nav_graph, bundle)
-            Navigation.setViewNavController(requireView(), navController)
-            viewModel = testViewModel
-
-            eventsAdapter.events = listOf(eventWithEventInformation.asDomainModel())
-            eventsAdapter.countryWithLeagueWithEventsAndTeams =
-                countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
-        }
-
-        onView(withId(R.id.recyclerViewEvents))
-            .perform(
-                actionOnItemAtPosition<EventAdapter.EventViewHolder>(
-                    0,
-                    click()
-                )
-            )
-
-        verify(navController).navigate(
-            EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
-                eventItem.matchId,
-                countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
-            )
-        )
-
-        testViewModel.getCountryWithLeagueWithEventsAndTeams("leagueId1", "matchDate1")
-
-        assertThat(testViewModel.countryWithLeagueWithTeamsAndEvents.getOrAwaitValue()).isEqualTo(
+        val bundle = EventDetailsViewPagerFragmentArgs(
+            eventItem.matchId,
             countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
-        )
+        ).toBundle()
+
+        launchFragmentInHiltContainer<EventDetailsViewPagerFragment>(
+            fragmentFactory = fragmentFactory,
+            fragmentArgs = bundle
+        ) {
+            navController.setGraph(R.navigation.nav_graph, bundle)
+            Navigation.setViewNavController(requireView(), navController)
+            viewModel = testViewModel
+        }
+
+        onView(withId(R.id.textViewCountryName)).check(matches(withText("countryName1")))
+        onView(withId(R.id.textViewLeagueName)).check(matches(withText("leagueName1 - matchRound1")))
     }
 
+
     @Test
-    fun clickEventItemFromNetwork_navigateToEventDetailFragment() = runBlockingTest {
+    fun informationAboutTeamsAndScoreAreCorrectlyDisplayed() = runBlockingTest {
         val navController = mock(NavController::class.java)
 
         val testViewModel = EventsViewModel(FakeEventRepositoryAndroidTest().also {
             it.insertEvents(listOf(eventItem))
             it.insertEventInformation(eventInformationItems)
+            it.insertCards(cardsItems)
+            it.insertGoalscorers(goalscorersItems)
+            it.insertLineups(lineupItems)
+            it.insertStatistics(statisticsItems)
+            it.insertSubstitutions(substitutionsItems)
         }, FakeTeamRepositoryAndroidTest().also {
             it.insertTeams(teamItems)
         },
@@ -197,112 +231,39 @@ class EventDetailsViewPagerFragmentTest {
                 it.isNetworkAvailable.postValue(true)
             })
 
-        val bundle = EventsListFragmentArgs(
-            countryAndLeagueItems.asDomainModel()
+        val bundle = EventDetailsViewPagerFragmentArgs(
+            eventItem.matchId,
+            countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
         ).toBundle()
 
-        launchFragmentInHiltContainer<EventsListFragment>(
+        launchFragmentInHiltContainer<EventDetailsViewPagerFragment>(
             fragmentFactory = fragmentFactory,
             fragmentArgs = bundle
         ) {
             navController.setGraph(R.navigation.nav_graph, bundle)
             Navigation.setViewNavController(requireView(), navController)
             viewModel = testViewModel
-
-            eventsAdapter.events = listOf(eventWithEventInformation.asDomainModel())
-            eventsAdapter.countryWithLeagueWithEventsAndTeams =
-                countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
         }
 
-        onView(withId(R.id.recyclerViewEvents))
-            .perform(
-                actionOnItemAtPosition<EventAdapter.EventViewHolder>(
-                    0,
-                    click()
-                )
-            )
+        onView(withId(R.id.textViewFirstClubName)).check(matches(withText("teamName1")))
+        onView(withId(R.id.textViewSecondClubName)).check(matches(withText("teamName2")))
+        onView(withId(R.id.textViewDateAndTime)).check(matches(withText("matchDate1  matchTime1")))
+        onView(withId(R.id.textViewFirstScore)).check(matches(withText("teamScore1")))
+        onView(withId(R.id.textViewSecondScore)).check(matches(withText("teamScore2")))
 
-        verify(navController).navigate(
-            EventsListFragmentDirections.actionEventsListFragmentToEventDetailsViewPagerFragment(
-                eventItem.matchId,
-                countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
-            )
-        )
-
-        testViewModel.refreshEvents("leagueId1", "matchDate1")
-
-        assertThat(
-            testViewModel.countryWithLeagueWithTeamsAndEventsEntityStatus.getOrAwaitValue()
-                .getContentIfNotHandled()?.status
-        ).isEqualTo(
-            Status.SUCCESS
-        )
     }
 
-    @Test
-    fun clickImageButtonGoToLeagueTable_navigateToTeamsViewPagerFragment() = runBlockingTest {
-        val navController = mock(NavController::class.java)
-
-        val bundle = EventsListFragmentArgs(
-            countryAndLeagueItems.asDomainModel()
-        ).toBundle()
-
-        launchFragmentInHiltContainer<EventsListFragment>(
-            fragmentFactory = fragmentFactory,
-            fragmentArgs = bundle
-        ) {
-            navController.setGraph(R.navigation.nav_graph, bundle)
-            Navigation.setViewNavController(requireView(), navController)
-        }
-
-        onView(withId(R.id.imageButtonGoToLeagueTable))
-            .perform(click())
-
-
-        verify(navController).navigate(
-            EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-                countryAndLeagueItems.asDomainModel()
-            )
-        )
-    }
-
-
-    @Test
-    fun clickConstraintLayoutEventListTable_navigateToTeamsViewPagerFragment() = runBlockingTest {
-        val navController = mock(NavController::class.java)
-
-        val bundle = EventsListFragmentArgs(
-            countryAndLeagueItems.asDomainModel()
-        ).toBundle()
-
-        launchFragmentInHiltContainer<EventsListFragment>(
-            fragmentFactory = fragmentFactory,
-            fragmentArgs = bundle
-        ) {
-            navController.setGraph(R.navigation.nav_graph, bundle)
-            Navigation.setViewNavController(requireView(), navController)
-        }
-
-        onView(withId(R.id.constraintLayoutEventListTable))
-            .perform(click())
-
-
-        verify(navController).navigate(
-            EventsListFragmentDirections.actionEventsListFragmentToTeamsViewPagerFragment(
-                countryAndLeagueItems.asDomainModel()
-            )
-        )
-    }
 
     @Test
     fun clickBackButton_popBackStack() = runBlockingTest {
         val navController = mock(NavController::class.java)
 
-        val bundle = EventsListFragmentArgs(
-            countryAndLeagueItems.asDomainModel()
+        val bundle = EventDetailsViewPagerFragmentArgs(
+            eventItem.matchId,
+            countryWithLeagueWithEventsAndTeamsEntity.asDomainModel()
         ).toBundle()
 
-        launchFragmentInHiltContainer<EventsListFragment>(
+        launchFragmentInHiltContainer<EventDetailsViewPagerFragment>(
             fragmentFactory = fragmentFactory,
             themeResId = R.style.MyActionBar,
             fragmentArgs = bundle
@@ -312,32 +273,13 @@ class EventDetailsViewPagerFragmentTest {
         }
 
         onView(withContentDescription("Navigate up")).perform(click());
-
-        verify(navController).popBackStack()
+        //onView(withId(android.R.id.home)).perform(click())
+        //verify(navController).popBackStack()
     }
 
-    @Test
-    fun clickPickDateMenuItem_switchDate() = runBlockingTest {
-        val navController = mock(NavController::class.java)
-
-        val bundle = EventsListFragmentArgs(
-            countryAndLeagueItems.asDomainModel()
-        ).toBundle()
-
-        launchFragmentInHiltContainer<EventsListFragment>(
-            fragmentFactory = fragmentFactory,
-            themeResId = R.style.MyActionBar,
-            fragmentArgs = bundle
-        ) {
-            navController.setGraph(R.navigation.nav_graph, bundle)
-            Navigation.setViewNavController(requireView(), navController)
-        }
-
-        onView(withId(R.id.actionMenuPickDate)).perform(click())
-        onView(isAssignableFrom(DatePicker::class.java)).perform(setDate(2020, 10, 30))
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.toolbarEventList)).check(matches(allOf(withToolbarTitle("30.10.2020, Friday"))))
+    private fun launchActivity(): ActivityScenario<MainActivity>? {
+        return launch(MainActivity::class.java)
     }
 }
+
 

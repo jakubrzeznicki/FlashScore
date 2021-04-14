@@ -126,7 +126,8 @@
         tools:layout="@layout/fragment_event_details_view_pager" >
         <action
             android:id="@+id/action_eventDetailsViewPagerFragment_to_eventsListFragment"
-            app:destination="@id/eventsListFragment" />
+            app:destination="@id/eventsListFragment"
+            app:popUpTo="@id/eventsListFragment" />
         <argument
             android:name="eventId"
             app:argType="string" />

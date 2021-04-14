@@ -107,8 +107,8 @@ class EventsViewModel @ViewModelInject constructor(
             val data =
                 eventRepository.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
                     eventId
-                ).asDomainModel()
-            Timber.d("EVENT DETAILS IN VIEW MODEL ${data.event.matchRound}")
+                )?.asDomainModel()
+            //Timber.d("EVENT DETAILS IN VIEW MODEL ${data.event.matchRound}")
             eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(
                 data
             )
@@ -119,8 +119,8 @@ class EventsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val date = playerRepository.getPlayersFromSpecificTeamFromDb(
                 teamId
-            ).asDomainModel()
-            Timber.d("EVENT DETAILS team home IN VIEW MODEL ${date.team.teamName}")
+            )?.asDomainModel()
+            //Timber.d("EVENT DETAILS team home IN VIEW MODEL ${date.team.teamName}")
             homeTeamWithPlayersAndCoach.postValue(
                 date
             )
@@ -131,8 +131,8 @@ class EventsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val date = playerRepository.getPlayersFromSpecificTeamFromDb(
                 teamId
-            ).asDomainModel()
-            Timber.d("EVENT DETAILS team away IN VIEW MODEL ${date.team.teamName}")
+            )?.asDomainModel()
+            //Timber.d("EVENT DETAILS team away IN VIEW MODEL ${date.team.teamName}")
             awayTeamWithPlayersAndCoach.postValue(
                 date
             )
