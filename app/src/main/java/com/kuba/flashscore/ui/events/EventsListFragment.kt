@@ -125,7 +125,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                    // if (!wasRefresh) {
                         Timber.d("EVENTS gert form db are null WAS REFRESH")
                         refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
-                   // }
+                  //  }
                     setupRecyclerView()
                 } else {
                     Timber.d("EVENTS gert form db are not null ${it.leagueWithEvents[0].eventsWithEventInformation.size}")
@@ -147,6 +147,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                                 result.message ?: "Default No Internet",
                                 Snackbar.LENGTH_LONG
                             ).show()
+                            viewModel.getCountryWithLeagueWithEventsAndTeams(countryAndLeague.leagues[0].leagueId, fromToDate)
                         }
                         Status.ERROR -> {
                             Snackbar.make(
@@ -176,8 +177,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         job = lifecycleScope.launch {
             viewModel.refreshEvents(leagueId, fromTo)
             wasRefresh = true
-            delay(1000)
-            viewModel.getCountryWithLeagueWithEventsAndTeams(leagueId, fromTo)
         }
     }
 
@@ -199,9 +198,9 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         countryAndLeagues: CountryAndLeagues,
         date: Date?
     ) {
-        (activity as AppCompatActivity).supportActionBar?.apply {
-            hide()
-        }
+//        (activity as AppCompatActivity).supportActionBar?.apply {
+//            hide()
+//        }
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarEventList)
 
         (activity as AppCompatActivity).supportActionBar?.apply {

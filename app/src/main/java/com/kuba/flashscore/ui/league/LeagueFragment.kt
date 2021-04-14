@@ -101,6 +101,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
                             "Successfully fetched data from network",
                             Snackbar.LENGTH_LONG
                         ).show()
+                        viewModel.getCountryWithLeagues(country.countryId)
                     }
                     Status.ERROR -> {
                         Snackbar.make(
@@ -126,9 +127,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            viewModel?.refreshCountryWithLeagues(country.countryId)
-            delay(1000)
-            viewModel.getCountryWithLeagues(country.countryId)
+            viewModel.refreshCountryWithLeagues(country.countryId)
         }
     }
 

@@ -59,7 +59,7 @@ class CountryFragment @Inject constructor(
 
         viewModel = ViewModelProvider(requireActivity()).get(CountryViewModel::class.java)
 
-        getCountries()
+        viewModel.getCountries()
         setupRecyclerView()
         subscribeToObservers()
     }
@@ -71,7 +71,7 @@ class CountryFragment @Inject constructor(
 
 
     private fun subscribeToObservers() {
-        viewModel?.countries?.observe(viewLifecycleOwner, Observer {
+        viewModel.countries.observe(viewLifecycleOwner, Observer {
             Timber.d("COUNTRYY gert form db")
             if (it.isNullOrEmpty()) {
                 Timber.d("COUNTRYY gert form db are null")
@@ -81,7 +81,7 @@ class CountryFragment @Inject constructor(
                 countryAdapter.country = it
             }
         })
-        viewModel?.countriesStatus?.observe(viewLifecycleOwner, Observer {
+        viewModel.countriesStatus.observe(viewLifecycleOwner, Observer {
             Timber.d("COUNTRYY gert form network")
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
@@ -91,7 +91,7 @@ class CountryFragment @Inject constructor(
                             "Successfully fetched data from network",
                             Snackbar.LENGTH_LONG
                         ).show()
-                        getCountries()
+                        viewModel?.getCountries()
                     }
                     Status.ERROR -> {
                         Snackbar.make(
@@ -117,18 +117,7 @@ class CountryFragment @Inject constructor(
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-             viewModel?.refreshCountries()
-            // delay(1000)
-            //getCountries()
-        }
-    }
-
-    private fun getCountries() {
-        var job: Job? = null
-        job?.cancel()
-        job = lifecycleScope.launch {
-            viewModel?.getCountries()
-//            delay(1000)
+            viewModel.refreshCountries()
         }
     }
 

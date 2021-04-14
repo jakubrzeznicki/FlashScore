@@ -11,8 +11,10 @@ import com.kuba.flashscore.repositories.country.CountryRepository
 import com.kuba.flashscore.ui.MainActivity
 import com.kuba.flashscore.ui.util.networking.ConnectivityManager
 import com.kuba.flashscore.ui.util.networking.DefaultConnectivityManager
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 class CountryViewModel @ViewModelInject constructor(
     private val repository: CountryRepository,
@@ -31,14 +33,13 @@ class CountryViewModel @ViewModelInject constructor(
     suspend fun refreshCountries() {
         _countriesStatus.value = Event(Resource.loading(null))
         connectivityManager.registerConnectionObserver()
+        delay(500)
         viewModelScope.launch {
             connectivityManager.isNetworkAvailable.value.let { isNetworkAvailable ->
                 if (isNetworkAvailable == true) {
-                    Timber.d("COUNTRY in viewmodel network is available")
                     val response = repository.refreshCountries()
                     _countriesStatus.value = Event(response)
                 } else {
-                    Timber.d("COUNTRY in viewmodel network is not available ${connectivityManager.isNetworkAvailable.value}")
                     _countriesStatus.value = Event(Resource.error(ERROR_MESSAGE, null))
                 }
             }

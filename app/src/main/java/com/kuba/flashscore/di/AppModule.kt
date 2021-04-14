@@ -49,7 +49,7 @@ object AppModule {
 
     ) = Room.databaseBuilder(context, FlashScoreDatabase::class.java, DATABASE_NAME)
         .fallbackToDestructiveMigration()
-        //.allowMainThreadQueries()
+        .allowMainThreadQueries()
         .build()
 
     @Singleton
