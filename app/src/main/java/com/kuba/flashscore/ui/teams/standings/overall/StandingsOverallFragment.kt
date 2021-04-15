@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.StandingsAdapter
-import com.kuba.flashscore.data.domain.models.Standing
 import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
 import com.kuba.flashscore.other.Constants.OVERALL

@@ -14,7 +14,7 @@ import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueA
 import com.kuba.flashscore.data.local.models.entities.TeamEntity
 import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 
-class TeamsAdapter(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
+class TeamsAdapter :
     RecyclerView.Adapter<TeamsAdapter.TeamViewHolder>() {
 
     inner class TeamViewHolder(val binding: TeamItemBinding) :
@@ -35,6 +35,8 @@ class TeamsAdapter(private val countryWithLeagueAndTeams: CountryWithLeagueAndTe
     var teams: List<Team>
         get() = differ.currentList
         set(value) = differ.submitList(value)
+
+    lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamViewHolder {
         val binding = TeamItemBinding

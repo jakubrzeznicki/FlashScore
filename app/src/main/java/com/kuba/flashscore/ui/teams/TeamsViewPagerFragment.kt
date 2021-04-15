@@ -91,8 +91,8 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
 
     private fun setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams: CountryWithLeagueAndTeams) {
         val teamFragmentList = arrayListOf<Fragment>(
-            TeamsFragment().also { setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams) },
-            StandingsViewPagerFragment(countryWithLeagueAndTeams)
+            TeamsFragment(),
+            StandingsViewPagerFragment()
         )
 
         val teamViewPagerAdapter = ViewPagerAdapter(

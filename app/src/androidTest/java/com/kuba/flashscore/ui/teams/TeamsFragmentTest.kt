@@ -103,19 +103,20 @@ class TeamsFragmentTest {
             countryAndLeagueItem.asDomainModel()
         ).toBundle()
 
-//        val testViewModel = TeamsViewModel(
-//            FakeTeamRepositoryAndroidTest().also {
-//                it.insertTeams(teamItems)
-//            }
-//        )
+        val testViewModel = TeamsViewModel(
+            FakeTeamRepositoryAndroidTest().also {
+                it.insertTeams(teamItems)
+            }
+        )
         launchFragmentInHiltContainer<TeamsFragment>(
             fragmentFactory = fragmentFactory,
             fragmentArgs = bundle
         ) {
             navController.setGraph(R.navigation.nav_graph, bundle)
             Navigation.setViewNavController(requireView(), navController)
-            //viewModel = testViewModel
+            viewModel = testViewModel
             teamsAdapter.teams = teamItems.map { it.asDomainModel() }
+            teamsAdapter.countryWithLeagueAndTeams = countryWithLeagueAndTeamsEntity.asDomainModel()
         }
 
         onView(withId(R.id.recyclerViewTeams))

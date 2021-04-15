@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
@@ -14,15 +16,19 @@ import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueA
 import com.kuba.flashscore.other.Constants.AWAY_TAB
 import com.kuba.flashscore.other.Constants.GENERALLY_TAB
 import com.kuba.flashscore.other.Constants.HOME_TAB
+import com.kuba.flashscore.ui.teams.TeamsViewModel
 import com.kuba.flashscore.ui.teams.standings.away.StandingsAwayFragment
 import com.kuba.flashscore.ui.teams.standings.home.StandingsHomeFragment
 import com.kuba.flashscore.ui.teams.standings.overall.StandingsOverallFragment
 
-class StandingsViewPagerFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
+class StandingsViewPagerFragment :
     Fragment(R.layout.fragment_standings_view_pager) {
 
     private var _binding: FragmentStandingsViewPagerBinding? = null
     private val binding get() = _binding!!
+
+    lateinit var viewModel: TeamsViewModel
+    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +37,10 @@ class StandingsViewPagerFragment(private val countryWithLeagueAndTeams: CountryW
     ): View? {
         _binding = FragmentStandingsViewPagerBinding.inflate(inflater, container, false)
         val view = binding.root
-        setStandingsViewPageAdapterAndTabLayout()
+
+        viewModel = ViewModelProvider(requireActivity()).get(TeamsViewModel::class.java)
+
+        subscribeToObservers()
 
         return view
     }
@@ -41,7 +50,16 @@ class StandingsViewPagerFragment(private val countryWithLeagueAndTeams: CountryW
         _binding = null
     }
 
-    private fun setStandingsViewPageAdapterAndTabLayout() {
+    private fun subscribeToObservers() {
+        viewModel.teams.observe(viewLifecycleOwner, Observer { countryWithLeagueAndTeams ->
+            if (countryWithLeagueAndTeams != null) {
+                setStandingsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams)
+            }
+        })
+    }
+
+
+    private fun setStandingsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams: CountryWithLeagueAndTeams) {
 
         val standingsFragmentList = arrayListOf<Fragment>(
             StandingsOverallFragment(countryWithLeagueAndTeams),
