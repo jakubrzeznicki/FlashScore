@@ -71,7 +71,6 @@ class EventDetailsViewPagerFragmentTest {
     @Inject
     lateinit var fragmentFactory: TestFlashScoreFragmentFactory
 
-    //private lateinit var countryAndLeagueItems: CountryAndLeaguesEntity
     private lateinit var leagueItem: LeagueEntity
     private lateinit var teamItems: List<TeamEntity>
 
@@ -96,10 +95,6 @@ class EventDetailsViewPagerFragmentTest {
     fun setup() {
         hiltRule.inject()
         leagueItem = produceLeagueEntity(1, 1)
-//        countryAndLeagueItems = CountryAndLeaguesEntity(
-//            produceCountryEntity(1),
-//            listOf(leagueItem)
-//        )
 
         teamItems = listOf(
             produceTeamEntity(1, 1),
@@ -272,13 +267,9 @@ class EventDetailsViewPagerFragmentTest {
             Navigation.setViewNavController(requireView(), navController)
         }
 
-        onView(withContentDescription("Navigate up")).perform(click());
-        //onView(withId(android.R.id.home)).perform(click())
-        //verify(navController).popBackStack()
-    }
+        onView(withContentDescription("Navigate up")).perform(click())
 
-    private fun launchActivity(): ActivityScenario<MainActivity>? {
-        return launch(MainActivity::class.java)
+        verify(navController).popBackStack()
     }
 }
 

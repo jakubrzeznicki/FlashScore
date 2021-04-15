@@ -40,7 +40,7 @@ import com.kuba.flashscore.util.DataProducer.produceEventEntity
 import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
 import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
 import com.kuba.flashscore.util.DataProducer.produceTeamEntity
-import com.kuba.flashscore.util.MatcherUtils.withToolbarTitle
+import com.kuba.flashscore.util.MatcherUtils.withToolbarSubTitle
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -338,7 +338,7 @@ class EventListFragmentTest {
         onView(isAssignableFrom(DatePicker::class.java)).perform(setDate(2020, 10, 30))
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withId(R.id.toolbarEventList)).check(matches(allOf(withToolbarTitle("30.10.2020, Friday"))))
+        onView(withId(R.id.toolbarEventList)).check(matches(allOf(withToolbarSubTitle("30.10.2020, Friday"))))
     }
 }
 

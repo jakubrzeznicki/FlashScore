@@ -8,7 +8,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
@@ -16,36 +18,26 @@ import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
-import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.launchFragmentInHiltContainer
-import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.repositories.FakeCountryRepositoryAndroidTest
 import com.kuba.flashscore.repositories.FakeLeagueRepositoryAndroidTest
 import com.kuba.flashscore.ui.FakeConnectivityManager
 import com.kuba.flashscore.ui.TestFlashScoreFragmentFactory
-import com.kuba.flashscore.ui.league.LeagueFragment
-import com.kuba.flashscore.ui.league.LeagueFragmentArgs
-import com.kuba.flashscore.ui.league.LeagueFragmentDirections
-import com.kuba.flashscore.ui.league.LeagueViewModel
-import com.kuba.flashscore.util.DataProducer
 import com.kuba.flashscore.util.DataProducer.produceCountryEntity
 import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
+import com.kuba.flashscore.util.MatcherUtils
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
-import okhttp3.internal.wait
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -178,6 +170,51 @@ class LeagueFragmentTest {
         )
     }
 
+    @Test
+    fun clickBackButton_popBackStack() = runBlockingTest {
+        val navController = mock(NavController::class.java)
+
+        val bundle = LeagueFragmentArgs(
+            produceCountryEntity(1).asDomainModel()
+        ).toBundle()
+
+        launchFragmentInHiltContainer<LeagueFragment>(
+            fragmentFactory = fragmentFactory,
+            fragmentArgs = bundle
+        ) {
+            navController.setGraph(R.navigation.nav_graph, bundle)
+            Navigation.setViewNavController(requireView(), navController)
+        }
+
+        onView(ViewMatchers.withContentDescription("Navigate up")).perform(click())
+
+        verify(navController).popBackStack()
+    }
+
+    @Test
+    fun titleToolbarIsDisplayCorrectly() = runBlockingTest {
+        val navController = mock(NavController::class.java)
+
+        val bundle = LeagueFragmentArgs(
+            produceCountryEntity(1).asDomainModel()
+        ).toBundle()
+
+        launchFragmentInHiltContainer<LeagueFragment>(
+            fragmentFactory = fragmentFactory,
+            fragmentArgs = bundle
+        ) {
+            navController.setGraph(R.navigation.nav_graph, bundle)
+            Navigation.setViewNavController(requireView(), navController)
+        }
+
+        onView(withId(R.id.toolbarLeague)).check(
+            ViewAssertions.matches(
+                Matchers.allOf(
+                    MatcherUtils.withToolbarTitle("countryName1")
+                )
+            )
+        )
+    }
 }
 
 fun waitFor(delay: Long): ViewAction? {

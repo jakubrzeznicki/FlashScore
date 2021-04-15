@@ -6,7 +6,9 @@ import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
@@ -21,13 +23,17 @@ import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.repositories.FakeCountryRepositoryAndroidTest
 import com.kuba.flashscore.ui.FakeConnectivityManager
 import com.kuba.flashscore.ui.TestFlashScoreFragmentFactory
+import com.kuba.flashscore.ui.events.details.EventDetailsViewPagerFragment
+import com.kuba.flashscore.ui.events.details.EventDetailsViewPagerFragmentArgs
 import com.kuba.flashscore.util.DataProducer
+import com.kuba.flashscore.util.MatcherUtils
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.internal.wait
+import org.hamcrest.Matchers
 
 import org.junit.Before
 import org.junit.Rule
@@ -128,7 +134,6 @@ class CountryFragmentTest {
             Status.SUCCESS
         )
     }
-
 //
 //    @Test
 //    fun networkIsNotAvailable_showSnackBarWithNetworkErrorInformation() = runBlockingTest {

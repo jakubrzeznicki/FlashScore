@@ -25,7 +25,7 @@ class TeamsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             _teams.postValue(
                 repository.getTeamsWithLeagueAndCountryInformationFromLeagueFromDb(leagueId)
-                    .asDomainModel()
+                    ?.asDomainModel()
             )
         }
     }

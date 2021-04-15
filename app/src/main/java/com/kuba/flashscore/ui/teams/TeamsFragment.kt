@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.TeamsAdapter
@@ -14,13 +15,19 @@ import com.kuba.flashscore.databinding.FragmentTeamsBinding
 import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 
-class TeamsFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
+class TeamsFragment() :
     Fragment(R.layout.fragment_teams) {
 
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var teamsAdapter: TeamsAdapter
+    lateinit var teamsAdapter: TeamsAdapter
+
+    lateinit var viewModel: TeamsViewModel
+
+    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +35,9 @@ class TeamsFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndT
     ): View? {
         _binding = FragmentTeamsBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        viewModel = ViewModelProvider(requireActivity()).get(TeamsViewModel::class.java)
+
         setupRecyclerView()
         return view
     }
@@ -50,5 +60,9 @@ class TeamsFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndT
                     .build()
             )
         }
+    }
+
+    fun setCountryWithLeagueAndTeams(countryWithLeagueAndTeamsValue: CountryWithLeagueAndTeams) {
+        countryWithLeagueAndTeams = countryWithLeagueAndTeamsValue
     }
 }

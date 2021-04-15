@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -23,6 +24,7 @@ import com.kuba.flashscore.other.Constants.MATCHES_TAB
 import com.kuba.flashscore.other.Constants.RESULT_TAB
 import com.kuba.flashscore.other.Constants.TABLE_TAB
 import com.kuba.flashscore.other.Constants.TEAMS_TAB
+import com.kuba.flashscore.ui.league.LeagueViewModel
 import com.kuba.flashscore.ui.teams.standings.StandingsViewPagerFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -35,7 +37,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
     private val binding get() = _binding!!
 
     private val args: TeamsViewPagerFragmentArgs by navArgs()
-    private val viewModel: TeamsViewModel by viewModels()
+    lateinit var viewModel: TeamsViewModel
 
 
     override fun onCreateView(
@@ -57,6 +59,8 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
             subtitle = ""
         }
 
+        viewModel = ViewModelProvider(requireActivity()).get(TeamsViewModel::class.java)
+
         viewModel.getCountryWithLeagueAndTeams(countryAndLeague.leagues[0].leagueId)
         subscribeToObservers()
 
@@ -67,8 +71,10 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
     }
 
     private fun subscribeToObservers() {
-        viewModel.teams.observe(viewLifecycleOwner, Observer {
-            setTeamsViewPageAdapterAndTabLayout(it)
+        viewModel.teams.observe(viewLifecycleOwner, Observer { countryWithLeagueAndTeams ->
+            if (countryWithLeagueAndTeams != null) {
+                setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams)
+            }
         })
     }
 
@@ -85,7 +91,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
 
     private fun setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams: CountryWithLeagueAndTeams) {
         val teamFragmentList = arrayListOf<Fragment>(
-            TeamsFragment(countryWithLeagueAndTeams),
+            TeamsFragment().also { setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams) },
             StandingsViewPagerFragment(countryWithLeagueAndTeams)
         )
 
