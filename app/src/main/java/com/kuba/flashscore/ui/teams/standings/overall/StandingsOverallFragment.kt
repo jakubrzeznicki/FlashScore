@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class StandingsOverallFragment(private val countryWithLeagueAndTeams: CountryWithLeagueAndTeams) :
+class StandingsOverallFragment :
     Fragment(R.layout.fragment_standings_overall) {
 
     private var _binding: FragmentStandingsOverallBinding? = null
@@ -34,6 +34,12 @@ class StandingsOverallFragment(private val countryWithLeagueAndTeams: CountryWit
 
     private val viewModel: StandingsViewModel by viewModels()
     private lateinit var standingsAdapter: StandingsAdapter
+
+    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
+
+    fun setCountryWithLeagueAndTeams(value: CountryWithLeagueAndTeams) {
+        countryWithLeagueAndTeams = value
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

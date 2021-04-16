@@ -62,9 +62,21 @@ class StandingsViewPagerFragment :
     private fun setStandingsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams: CountryWithLeagueAndTeams) {
 
         val standingsFragmentList = arrayListOf<Fragment>(
-            StandingsOverallFragment(countryWithLeagueAndTeams),
-            StandingsHomeFragment(countryWithLeagueAndTeams),
-            StandingsAwayFragment(countryWithLeagueAndTeams)
+            StandingsOverallFragment().also {
+                it.setCountryWithLeagueAndTeams(
+                    countryWithLeagueAndTeams
+                )
+            },
+            StandingsHomeFragment().also {
+                it.setCountryWithLeagueAndTeams(
+                    countryWithLeagueAndTeams
+                )
+            },
+            StandingsAwayFragment().also {
+                it.setCountryWithLeagueAndTeams(
+                    countryWithLeagueAndTeams
+                )
+            }
         )
 
         val standingsViewPagerAdapter = ViewPagerAdapter(
