@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -17,6 +18,7 @@ import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
 import com.kuba.flashscore.other.Constants.OVERALL
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.teams.TeamsViewModel
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,14 +34,10 @@ class StandingsOverallFragment :
     private var _binding: FragmentStandingsOverallBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: StandingsViewModel by viewModels()
+    lateinit var viewModel: StandingsViewModel
     private lateinit var standingsAdapter: StandingsAdapter
 
     private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
-
-    fun setCountryWithLeagueAndTeams(value: CountryWithLeagueAndTeams) {
-        countryWithLeagueAndTeams = value
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +52,8 @@ class StandingsOverallFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(requireActivity()).get(StandingsViewModel::class.java)
+
         viewModel.getOverallStandingsFromSpecificLeague(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
         setupRecyclerView()
         subscribeToObservers()
@@ -63,6 +63,11 @@ class StandingsOverallFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    fun setCountryWithLeagueAndTeams(value: CountryWithLeagueAndTeams) {
+        countryWithLeagueAndTeams = value
     }
 
     private fun subscribeToObservers() {
@@ -106,7 +111,6 @@ class StandingsOverallFragment :
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel.refreshStandingsFromSpecificLeague(leagueId)
-            delay(1000)
             viewModel.getOverallStandingsFromSpecificLeague(leagueId)
         }
     }

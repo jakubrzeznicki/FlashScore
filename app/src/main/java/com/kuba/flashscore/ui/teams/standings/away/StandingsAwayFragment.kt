@@ -69,47 +69,11 @@ class StandingsAwayFragment :
     private fun subscribeToObservers() {
         viewModel.standings.observe(viewLifecycleOwner, Observer {
             Timber.d("STANDINGS gert form db")
-            if (it.isNullOrEmpty()) {
-                Timber.d("STANDINGS gert form db are null")
-                refreshStandings(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
-            } else {
-                Timber.d("STANDINGS gert form db are not null $it")
+            if (!it.isNullOrEmpty()) {
                 standingsAdapter.standings =
                     it.sortedBy { standing -> standing.leaguePosition.toInt() }
             }
         })
-        viewModel.standingsStatus.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        Snackbar.make(
-                            requireView(),
-                            "Successfully fetched data from network",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Status.ERROR -> {
-                        Snackbar.make(
-                            requireView(),
-                            result.message ?: "Default No Internet",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Status.LOADING -> {
-                    }
-                }
-            }
-        })
-    }
-
-    private fun refreshStandings(leagueId: String) {
-        var job: Job? = null
-        job?.cancel()
-        job = lifecycleScope.launch {
-            viewModel.refreshStandingsFromSpecificLeague(leagueId)
-            delay(1000)
-            viewModel.getAwayStandingsFromSpecificLeague(leagueId)
-        }
     }
 
     private fun setupRecyclerView() {
