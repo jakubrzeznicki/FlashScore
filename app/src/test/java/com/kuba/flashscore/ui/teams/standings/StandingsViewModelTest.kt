@@ -16,6 +16,7 @@ import com.kuba.flashscore.repositories.country.FakeCountryRepository
 import com.kuba.flashscore.repositories.league.FakeLeagueRepository
 import com.kuba.flashscore.repositories.standing.FakeStandingRepository
 import com.kuba.flashscore.ui.util.networking.FakeConnectivityManager
+import com.kuba.flashscore.util.DataProducer.produceStandingEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -48,53 +49,10 @@ class StandingsViewModelTest {
         connectivityManager = FakeConnectivityManager()
 
 
-        val standing1 = StandingEntity(
-            "leagueRound1",
-            "leagueD1",
-            "leagueGA1",
-            "leagueGF1",
-            "leagueL1",
-            "leaguePTS1",
-            "leaguePayed1",
-            "leaguePosition1",
-            "leagueW1",
-            "promotion1",
-            "teamId1",
-            "leagueId1",
-            StandingType.OVERALL
-        )
+        val standing1 = produceStandingEntity(1, 1, 1, StandingType.OVERALL)
+        val standing2 = produceStandingEntity(2, 1, 2, StandingType.AWAY)
+        val standing3 = produceStandingEntity(3, 1, 3, StandingType.HOME)
 
-        val standing2 = StandingEntity(
-            "leagueRound2",
-            "leagueD2",
-            "leagueGA2",
-            "leagueGF2",
-            "leagueL2",
-            "leaguePTS2",
-            "leaguePayed2",
-            "leaguePosition2",
-            "leagueW2",
-            "promotion2",
-            "teamId2",
-            "leagueId1",
-            StandingType.AWAY
-        )
-
-        val standing3 = StandingEntity(
-            "leagueRound3",
-            "leagueD3",
-            "leagueGA3",
-            "leagueGF3",
-            "leagueL3",
-            "leaguePTS3",
-            "leaguePayed3",
-            "leaguePosition3",
-            "leagueW3",
-            "promotion3",
-            "teamId3",
-            "leagueId1",
-            StandingType.HOME
-        )
         runBlockingTest {
             standingRepository.insertStandings(listOf(standing1, standing2, standing3))
         }

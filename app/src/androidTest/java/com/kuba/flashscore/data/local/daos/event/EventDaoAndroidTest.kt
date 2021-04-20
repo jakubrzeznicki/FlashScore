@@ -15,23 +15,20 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.domain.models.event.Statistic
 import com.kuba.flashscore.data.local.daos.*
 import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.data.local.models.entities.TeamEntity
 import com.kuba.flashscore.data.local.models.entities.event.*
-import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
-import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
-import com.kuba.flashscore.util.DataProducer.produceCardEntity
-import com.kuba.flashscore.util.DataProducer.produceCountryEntity
-import com.kuba.flashscore.util.DataProducer.produceEventEntity
-import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
-import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
-import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
-import com.kuba.flashscore.util.DataProducer.produceLineupEntity
-import com.kuba.flashscore.util.DataProducer.produceStatisticEntity
-import com.kuba.flashscore.util.DataProducer.produceSubstitutionEntity
-import com.kuba.flashscore.util.DataProducer.produceTeamEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCardEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceEventEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceEventInformationEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceGoalscorerEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLineupEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceStatisticEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceSubstitutionEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceTeamEntity
 
 
 @ExperimentalCoroutinesApi

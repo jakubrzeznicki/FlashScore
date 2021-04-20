@@ -19,6 +19,9 @@ import com.kuba.flashscore.data.network.responses.StandingResponse
 import com.kuba.flashscore.data.network.responses.TeamResponse
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.util.DataProducer.produceCoachEntity
+import com.kuba.flashscore.util.DataProducer.producePlayerEntity
+import com.kuba.flashscore.util.DataProducer.produceTeamEntity
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -61,29 +64,11 @@ class DefaultPlayerRepositoryTest {
     fun setup() = runBlockingTest {
         //mocking dao
         playerDao = mock()
-        playerFromDao = PlayerEntity(
-            "teamId2",
-            "playerAge1",
-            "playerCountry1",
-            "playerGoals1",
-            1L,
-            "playerMatchPlayed1",
-            "playerName1",
-            "playerNumber1",
-            "playerRedCard1",
-            "playerType1",
-            "playerYellowCard1"
-        )
+        playerFromDao = producePlayerEntity(1, 2)
 
-        teamFromDao = TeamEntity(
-            "leagueId1",
-            "teamBadge1",
-            "teamId1",
-            "teamName1",
-
-            )
-        playersFromDao = producePlayerEntities()
-        coachesFromDao = produceCoachEntities()
+        teamFromDao = produceTeamEntity(1, 1)
+        playersFromDao = listOf(producePlayerEntity(1, 2))
+        coachesFromDao = listOf(produceCoachEntity(1, 2))
 
         teamWithPlayersAndCoachFromDao = TeamWithPlayersAndCoachEntity(
             teamFromDao,
@@ -124,12 +109,11 @@ class DefaultPlayerRepositoryTest {
     }
 
     @Test
-    fun getPlayerInformationFromDatabaseAndPlayerExists_shouldNotCallToApiService() = runBlockingTest {
-        playerRepository.getPlayerInformationFromDb(1L)
-        verify(footballApiService, never()).getPlayer("playerName1")
-    }
-
-
+    fun getPlayerInformationFromDatabaseAndPlayerExists_shouldNotCallToApiService() =
+        runBlockingTest {
+            playerRepository.getPlayerInformationFromDb(1L)
+            verify(footballApiService, never()).getPlayer("playerName1")
+        }
 
 
     private fun producePlayerResponseSuccess(): Response<PlayerResponse> {
@@ -161,34 +145,5 @@ class DefaultPlayerRepositoryTest {
                     "  \"message\": \"What you were looking for isn't here.\"\n" + "}"
         val errorResponseBody = errorResponse.toResponseBody("application/json".toMediaTypeOrNull())
         return Response.error(400, errorResponseBody)
-    }
-
-    private fun producePlayerEntities(): List<PlayerEntity> {
-        return listOf(
-            PlayerEntity(
-                "teamId2",
-                "playerAge1",
-                "playerCountry1",
-                "playerGoals1",
-                1L,
-                "playerMatchPlayed1",
-                "playerName1",
-                "playerNumber1",
-                "playerRedCard1",
-                "playerType1",
-                "playerYellowCard1"
-            )
-        )
-    }
-
-    private fun produceCoachEntities(): List<CoachEntity> {
-        return listOf(
-            CoachEntity(
-                "teamId2",
-                "coachAge1",
-                "coachCountry1",
-                "coachName1"
-            )
-        )
     }
 }

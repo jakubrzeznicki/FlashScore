@@ -25,7 +25,6 @@ class TeamsFragment :
 
     lateinit var teamsAdapter: TeamsAdapter
     lateinit var viewModel: TeamsViewModel
-    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

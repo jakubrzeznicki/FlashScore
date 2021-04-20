@@ -2,9 +2,7 @@ package com.kuba.flashscore.data.local.daos.event
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
-import com.kuba.flashscore.data.local.daos.CountryDao
 import com.kuba.flashscore.data.local.database.FlashScoreDatabase
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,9 +14,8 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.local.models.entities.event.CardEntity
 import com.kuba.flashscore.data.local.models.entities.event.GoalscorerEntity
-import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceGoalscorerEntity
 
 
 @ExperimentalCoroutinesApi

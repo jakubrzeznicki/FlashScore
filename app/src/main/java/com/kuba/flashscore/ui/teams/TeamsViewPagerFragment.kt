@@ -73,7 +73,7 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
     private fun subscribeToObservers() {
         viewModel.teams.observe(viewLifecycleOwner, Observer { countryWithLeagueAndTeams ->
             if (countryWithLeagueAndTeams != null) {
-                setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams)
+                setTeamsViewPageAdapterAndTabLayout()
             }
         })
     }
@@ -89,8 +89,8 @@ class TeamsViewPagerFragment : Fragment(R.layout.fragment_teams_view_pager) {
         }
     }
 
-    private fun setTeamsViewPageAdapterAndTabLayout(countryWithLeagueAndTeams: CountryWithLeagueAndTeams) {
-        val teamFragmentList = arrayListOf<Fragment>(
+    private fun setTeamsViewPageAdapterAndTabLayout() {
+        val teamFragmentList = arrayListOf(
             TeamsFragment(),
             StandingsViewPagerFragment()
         )

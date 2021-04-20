@@ -66,11 +66,15 @@
         <argument
             android:name="countryAndLeague"
             app:argType="com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues" />
+        <action
+            android:id="@+id/action_teamsViewPagerFragment_to_standingsViewPagerFragment"
+            app:destination="@id/standingsViewPagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/standingsViewPagerFragment"
         android:name="com.kuba.flashscore.ui.teams.standings.StandingsViewPagerFragment"
-        android:label="StandingsViewPagerFragment" />
+        android:label="StandingsViewPagerFragment"
+        tools:layout="@layout/fragment_standings_view_pager"/>
     <fragment
         android:id="@+id/standingsAwayFragment"
         android:name="com.kuba.flashscore.ui.teams.standings.away.StandingsAwayFragment"

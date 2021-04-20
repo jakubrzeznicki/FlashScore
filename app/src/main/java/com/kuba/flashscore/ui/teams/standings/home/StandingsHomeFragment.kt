@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +19,7 @@ import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
 import com.kuba.flashscore.other.Constants.HOME
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.ui.teams.TeamsViewModel
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,15 +28,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@AndroidEntryPoint
-class StandingsHomeFragment :
+class StandingsHomeFragment(
+) :
     Fragment(R.layout.fragment_standings_home) {
 
     private var _binding: FragmentStandingsHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: StandingsViewModel by viewModels()
-    private lateinit var standingsAdapter: StandingsAdapter
+    lateinit var viewModel: StandingsViewModel
+    lateinit var standingsAdapter: StandingsAdapter
 
     private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
 
@@ -42,18 +44,10 @@ class StandingsHomeFragment :
         countryWithLeagueAndTeams = value
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentStandingsHomeBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        return view
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity()).get(StandingsViewModel::class.java)
 
         viewModel.getHomeStandingsFromSpecificLeague(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
         setupRecyclerView()
@@ -68,7 +62,6 @@ class StandingsHomeFragment :
 
     private fun subscribeToObservers() {
         viewModel.standings.observe(viewLifecycleOwner, Observer {
-            Timber.d("STANDINGS gert form db")
             if (!it.isNullOrEmpty()) {
                 standingsAdapter.standings =
                     it.sortedBy { standing -> standing.leaguePosition.toInt() }

@@ -13,6 +13,9 @@ import com.kuba.flashscore.repositories.country.FakeCountryRepository
 import com.kuba.flashscore.repositories.league.FakeLeagueRepository
 import com.kuba.flashscore.repositories.team.FakeTeamRepository
 import com.kuba.flashscore.ui.util.networking.FakeConnectivityManager
+import com.kuba.flashscore.util.DataProducer.produceCoachEntity
+import com.kuba.flashscore.util.DataProducer.producePlayerEntity
+import com.kuba.flashscore.util.DataProducer.produceTeamEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -41,22 +44,17 @@ class TeamsViewModelTest {
     fun setup() {
         teamsRepository = FakeTeamRepository()
 
-        val team1 =
-            TeamEntity("leagueId1", "teamBadge1", "teamId1", "teamName1")
-        val team2 =
-            TeamEntity("leagueId1", "teamBadge2", "teamId2", "teamName2")
-        val team3 =
-            TeamEntity("leagueId1", "teamBadge3", "teamId3", "teamName3")
+        val team1 = produceTeamEntity(1, 1)
+        val team2 = produceTeamEntity(2, 1)
+        val team3 = produceTeamEntity(3, 1)
 
         runBlockingTest {
             teamsRepository.apply {
                 insertTeams(listOf(team1, team2, team3))
-                insertPlayers(producePlayerEntities())
-                insertCoaches(produceCoachEntities())
+                insertPlayers(listOf(producePlayerEntity(1, 2)))
+                insertCoaches(listOf(produceCoachEntity(1, 2)))
             }
-
         }
-
         viewModel = TeamsViewModel(teamsRepository)
     }
 
@@ -82,36 +80,5 @@ class TeamsViewModelTest {
 
         assertThat(value.leagueWithTeams).isNotEmpty()
         assertThat(value.leagueWithTeams[0].teams).hasSize(3)
-    }
-
-
-
-    private fun producePlayerEntities(): List<PlayerEntity> {
-        return listOf(
-            PlayerEntity(
-                "teamId2",
-                "playerAge1",
-                "playerCountry1",
-                "playerGoals1",
-                1L,
-                "playerMatchPlayed1",
-                "playerName1",
-                "playerNumber1",
-                "playerRedCard1",
-                "playerType1",
-                "playerYellowCard1"
-            )
-        )
-    }
-
-    private fun produceCoachEntities(): List<CoachEntity> {
-        return listOf(
-            CoachEntity(
-                "teamId2",
-                "coachAge1",
-                "coachCountry1",
-                "coachName1"
-            )
-        )
     }
 }

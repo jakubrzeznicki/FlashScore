@@ -3,7 +3,7 @@ package com.kuba.flashscore.util
 import com.kuba.flashscore.data.local.models.entities.*
 import com.kuba.flashscore.data.local.models.entities.event.*
 
-object DataProducer {
+object DataProducerAndroid {
 
     fun produceCountryEntity(itemNumber: Int) =
         CountryEntity("countryId$itemNumber", "countryLogo$itemNumber", "countryName$itemNumber")

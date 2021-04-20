@@ -2,9 +2,7 @@ package com.kuba.flashscore.data.local.daos
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
-import com.kuba.flashscore.data.local.daos.CountryDao
 import com.kuba.flashscore.data.local.database.FlashScoreDatabase
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,6 +14,7 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
 
 
 @ExperimentalCoroutinesApi
@@ -46,7 +45,7 @@ class CountryDaoAndroidTest {
 
     @Test
     fun insertCountryItem_getAllCountryItems() = runBlockingTest {
-        val countryItem = CountryEntity("countryId", "countryLogo", "countryName", 100L)
+        val countryItem = produceCountryEntity(1)
         dao.insertCountries(listOf(countryItem))
 
         val allCountryItems = dao.getAllCountriesFromDb()

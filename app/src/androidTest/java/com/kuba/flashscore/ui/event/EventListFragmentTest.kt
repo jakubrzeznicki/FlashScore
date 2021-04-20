@@ -28,18 +28,20 @@ import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithEve
 import com.kuba.flashscore.data.local.models.entities.event.customs.LeagueWithEventsEntity
 import com.kuba.flashscore.launchFragmentInHiltContainer
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.repositories.*
+import com.kuba.flashscore.repositories.events.FakeEventRepositoryAndroidTest
+import com.kuba.flashscore.repositories.player.FakePlayerRepositoryAndroidTest
+import com.kuba.flashscore.repositories.team.FakeTeamRepositoryAndroidTest
 import com.kuba.flashscore.ui.FakeConnectivityManager
 import com.kuba.flashscore.ui.TestFlashScoreFragmentFactory
 import com.kuba.flashscore.ui.events.EventsListFragment
 import com.kuba.flashscore.ui.events.EventsListFragmentArgs
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
 import com.kuba.flashscore.ui.events.EventsViewModel
-import com.kuba.flashscore.util.DataProducer.produceCountryEntity
-import com.kuba.flashscore.util.DataProducer.produceEventEntity
-import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
-import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
-import com.kuba.flashscore.util.DataProducer.produceTeamEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceEventEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceEventInformationEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceTeamEntity
 import com.kuba.flashscore.util.MatcherUtils.withToolbarSubTitle
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -133,7 +135,8 @@ class EventListFragmentTest {
     fun clickEventItemFromDatabase_navigateToEventDetailFragment() = runBlockingTest {
         val navController = mock(NavController::class.java)
 
-        val testViewModel = EventsViewModel(FakeEventRepositoryAndroidTest().also {
+        val testViewModel = EventsViewModel(
+            FakeEventRepositoryAndroidTest().also {
             it.insertEvents(listOf(eventItem))
             it.insertEventInformation(eventInformationItems)
         }, FakeTeamRepositoryAndroidTest().also {
@@ -187,7 +190,8 @@ class EventListFragmentTest {
     fun clickEventItemFromNetwork_navigateToEventDetailFragment() = runBlockingTest {
         val navController = mock(NavController::class.java)
 
-        val testViewModel = EventsViewModel(FakeEventRepositoryAndroidTest().also {
+        val testViewModel = EventsViewModel(
+            FakeEventRepositoryAndroidTest().also {
             it.insertEvents(listOf(eventItem))
             it.insertEventInformation(eventInformationItems)
         }, FakeTeamRepositoryAndroidTest().also {

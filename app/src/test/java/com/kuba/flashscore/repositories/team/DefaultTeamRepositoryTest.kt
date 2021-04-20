@@ -18,6 +18,11 @@ import com.kuba.flashscore.data.network.responses.StandingResponse
 import com.kuba.flashscore.data.network.responses.TeamResponse
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.util.DataProducer.produceCoachEntity
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
+import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducer.producePlayerEntity
+import com.kuba.flashscore.util.DataProducer.produceTeamEntity
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -64,31 +69,13 @@ class DefaultTeamRepositoryTest {
         playerDao = mock()
         coachDao = mock()
         teamDao = mock()
-        teamsFromDao = TeamEntity(
-            "leagueId1",
-            "teamBadge1",
-            "teamId1",
-            "teamName1",
-
-            )
-        teamFromDao = TeamEntity(
-            "leagueId1",
-            "teamBadge2",
-            "teamId2",
-            "teamName2",
-
-            )
+        teamsFromDao = produceTeamEntity(1, 1)
+        teamFromDao = produceTeamEntity(2, 1)
         countryWithLeagueAndTeamsFromDao = CountryWithLeagueAndTeamsEntity(
-            CountryEntity("countryId1", "countryLogo1", "countryName1"),
+            produceCountryEntity(1),
             listOf(
                 LeagueWithTeamsEntity(
-                    LeagueEntity(
-                        "countryId1",
-                        "leagueId1",
-                        "leagueLogo1",
-                        "leagueName1",
-                        "leagueSeason1"
-                    ),
+                    produceLeagueEntity(1, 1),
                     listOf(
                         teamsFromDao
                     )
@@ -100,8 +87,8 @@ class DefaultTeamRepositoryTest {
             countryWithLeagueAndTeamsFromDao
         )
 
-        playersFromDao = producePlayerEntities()
-        coachesFromDao = produceCoachEntities()
+        playersFromDao = listOf(producePlayerEntity(1, 2))
+        coachesFromDao = listOf(produceCoachEntity(1, 2))
         teamWithPlayersAndCoachFromDao = TeamWithPlayersAndCoachEntity(
             teamFromDao,
             playersFromDao,
@@ -186,19 +173,20 @@ class DefaultTeamRepositoryTest {
     }
 
     @Test
-    fun apiServiceIsCallBeforeCallTeamDaoIfDatabaseIsEmptyAndDataAreInsertInCorrectWay() = runBlockingTest {
-        whenever(teamDao.getTeamsFromSpecificLeague("leagueId1")).thenReturn(null)
+    fun apiServiceIsCallBeforeCallTeamDaoIfDatabaseIsEmptyAndDataAreInsertInCorrectWay() =
+        runBlockingTest {
+            whenever(teamDao.getTeamsFromSpecificLeague("leagueId1")).thenReturn(null)
 
-        teamRepository.refreshTeamsFromSpecificLeague("leagueId1")
+            teamRepository.refreshTeamsFromSpecificLeague("leagueId1")
 
-        val orderVerifier: InOrder = inOrder(footballApiService, teamDao, playerDao, coachDao)
-        orderVerifier.verify(footballApiService).getTeams("leagueId1")
-        orderVerifier.verify(teamDao).insertTeams(any())
-        orderVerifier.verify(playerDao).insertPlayers(any())
-        orderVerifier.verify(coachDao).insertCoaches(any())
-        orderVerifier.verify(teamDao)
-            .getTeamsFromSpecificLeague("leagueId1")
-    }
+            val orderVerifier: InOrder = inOrder(footballApiService, teamDao, playerDao, coachDao)
+            orderVerifier.verify(footballApiService).getTeams("leagueId1")
+            orderVerifier.verify(teamDao).insertTeams(any())
+            orderVerifier.verify(playerDao).insertPlayers(any())
+            orderVerifier.verify(coachDao).insertCoaches(any())
+            orderVerifier.verify(teamDao)
+                .getTeamsFromSpecificLeague("leagueId1")
+        }
 
     @Test
     fun refreshTeamsFromNetwork_teamsShouldAlsoInsertToDatabase() = runBlockingTest {
@@ -207,9 +195,12 @@ class DefaultTeamRepositoryTest {
         verify(teamDao, times(1)).insertTeams(any())
         verify(playerDao, times(1)).insertPlayers(any())
         verify(coachDao, times(1)).insertCoaches(any())
-        whenever(teamDao.getTeamsFromSpecificLeague("leagueId1")).thenReturn(countryWithLeagueAndTeamsFromDao)
+        whenever(teamDao.getTeamsFromSpecificLeague("leagueId1")).thenReturn(
+            countryWithLeagueAndTeamsFromDao
+        )
 
-        val teams = teamRepository.getTeamsWithLeagueAndCountryInformationFromLeagueFromDb("leagueId1")
+        val teams =
+            teamRepository.getTeamsWithLeagueAndCountryInformationFromLeagueFromDb("leagueId1")
         assertThat(teams.leagueWithTeamEntities[0].teams).hasSize(1)
     }
 
@@ -247,16 +238,11 @@ class DefaultTeamRepositoryTest {
 
     @Test
     fun insertTeamsPlayersAndCoachesIntoDb_shouldReturnSuccess() = runBlockingTest {
-        val team = TeamEntity(
-            "leagueId1",
-            "teamBadge1",
-            "teamId1",
-            "teamName1"
-            )
+        val team = produceTeamEntity(1, 1)
 
         teamRepository.insertTeams(listOf(team))
-        teamRepository.insertPlayers(producePlayerEntities())
-        teamRepository.insertCoaches(produceCoachEntities())
+        teamRepository.insertPlayers(listOf(producePlayerEntity(1, 2)))
+        teamRepository.insertCoaches(listOf(produceCoachEntity(1, 2)))
 
         verify(teamDao, times(1)).insertTeams(any())
         verify(playerDao, times(1)).insertPlayers(any())
@@ -287,34 +273,6 @@ class DefaultTeamRepositoryTest {
         return Response.error(400, errorResponseBody)
     }
 
-    private fun producePlayerEntities(): List<PlayerEntity> {
-        return listOf(
-            PlayerEntity(
-                "teamId2",
-                "playerAge1",
-                "playerCountry1",
-                "playerGoals1",
-                1L,
-                "playerMatchPlayed1",
-                "playerName1",
-                "playerNumber1",
-                "playerRedCard1",
-                "playerType1",
-                "playerYellowCard1"
-            )
-        )
-    }
-
-    private fun produceCoachEntities(): List<CoachEntity> {
-        return listOf(
-            CoachEntity(
-                "teamId2",
-                "coachAge1",
-                "coachCountry1",
-                "coachName1"
-            )
-        )
-    }
 
     private fun producePlayerDtos(): List<PlayerDto> {
         return listOf(

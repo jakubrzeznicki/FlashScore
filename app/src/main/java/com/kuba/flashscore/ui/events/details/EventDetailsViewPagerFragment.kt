@@ -82,7 +82,6 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
 
         viewModel = ViewModelProvider(requireActivity()).get(EventsViewModel::class.java)
         getEventDetails(eventId)
-        //viewModel.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId)
 
         getHomeTeamWithPlayersAndCoach(
             countryWithLeagueWithEventsAndTeams.leagueWithEvents[0].eventsWithEventInformation.firstOrNull {
@@ -116,7 +115,14 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
     ) {
 
         val eventFragmentList = arrayListOf<Fragment>(
-            EventDetailsFragment(eventWithEventInformation, eventsWithDetails, homeTeam, awayTeam),
+            EventDetailsFragment().also {
+                it.setArgumentsVariables(
+                    eventWithEventInformation,
+                    eventsWithDetails,
+                    homeTeam,
+                    awayTeam
+                )
+            },
             EventStatisticsFragment(eventsWithDetails, homeTeam, awayTeam),
             EventTeamsFragment(eventsWithDetails, homeTeam, awayTeam),
             EventHead2HeadFragment(eventsWithDetails, homeTeam, awayTeam),
@@ -213,7 +219,6 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            Timber.d("EVENT DETAILL get evnt details")
             viewModel.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId)
         }
     }
@@ -222,7 +227,6 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            Timber.d("EVENT DETAILL get home team")
             viewModel.getPlayersAndCoachFromHomeTeam(teamId)
         }
     }
@@ -231,14 +235,12 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
         var job: Job? = null
         job?.cancel()
         job = lifecycleScope.launch {
-            Timber.d("EVENT DETAILL get away team")
             viewModel.getPlayersAndCoachFromAwayTeam(teamId)
         }
     }
 
     private fun subscribeToObservers(eventWithEventInformation: EventWithEventInformation) {
         viewModel.eventsWithDetailsWithHomeAndAwayTeams.observe(viewLifecycleOwner, Observer {
-            Timber.d("EVENT DETAILLL ${it.first.team.teamName}, ${it.second.players.size}")
             setEventViewPageAdapterAndTabLayout(
                 eventWithEventInformation,
                 it.third,

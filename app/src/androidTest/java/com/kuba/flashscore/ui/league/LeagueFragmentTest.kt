@@ -21,11 +21,11 @@ import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.launchFragmentInHiltContainer
 import com.kuba.flashscore.other.Status
-import com.kuba.flashscore.repositories.FakeLeagueRepositoryAndroidTest
+import com.kuba.flashscore.repositories.league.FakeLeagueRepositoryAndroidTest
 import com.kuba.flashscore.ui.FakeConnectivityManager
 import com.kuba.flashscore.ui.TestFlashScoreFragmentFactory
-import com.kuba.flashscore.util.DataProducer.produceCountryEntity
-import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
 import com.kuba.flashscore.util.MatcherUtils
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

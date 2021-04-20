@@ -114,9 +114,9 @@ class EventDetailAdapter(private val context: Context) :
 
     override fun getItemViewType(position: Int): Int {
         return if (incidents[position] is IncidentHeader) {
-            ITEM_TYPE_HEADER;
+            ITEM_TYPE_HEADER
         } else {
-            ITEM_TYPE_NORMAL;
+            ITEM_TYPE_NORMAL
         }
     }
 

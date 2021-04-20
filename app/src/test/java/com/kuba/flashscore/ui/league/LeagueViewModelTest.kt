@@ -13,6 +13,7 @@ import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.repositories.country.FakeCountryRepository
 import com.kuba.flashscore.repositories.league.FakeLeagueRepository
 import com.kuba.flashscore.ui.util.networking.FakeConnectivityManager
+import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -43,12 +44,9 @@ class LeagueViewModelTest {
         leagueRepository = FakeLeagueRepository()
         connectivityManager = FakeConnectivityManager()
 
-        val league1 =
-            LeagueEntity("countryId1", "leagueId1", "leagueLogo1", "leagueName1", "leagueSeason1")
-        val league2 =
-            LeagueEntity("countryId1", "leagueId2", "leagueLogo2", "leagueName2", "leagueSeason2")
-        val league3 =
-            LeagueEntity("countryId1", "leagueId3", "leagueLogo3", "leagueName3", "leagueSeason3")
+        val league1 = produceLeagueEntity(1, 1)
+        val league2 = produceLeagueEntity(2, 1)
+        val league3 = produceLeagueEntity(3, 1)
 
         runBlockingTest {
             leagueRepository.insertLeagues(listOf(league1, league2, league3))

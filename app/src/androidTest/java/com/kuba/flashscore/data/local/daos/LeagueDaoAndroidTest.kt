@@ -14,10 +14,8 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.local.daos.CountryDao
-import com.kuba.flashscore.data.local.daos.LeagueDao
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
-import com.kuba.flashscore.data.local.models.entities.LeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
 
 
 @ExperimentalCoroutinesApi
@@ -50,8 +48,7 @@ class LeagueDaoAndroidTest {
 
     @Test
     fun insertLeagueItem_getAllLeagueItems() = runBlockingTest {
-        val leagueItem =
-            LeagueEntity("countryId1", "leagueId1", "leagueLogo1", "leagueName1", "leagueSeason1")
+        val leagueItem = produceLeagueEntity(1, 1)
         leagueDao.insertLeagues(listOf(leagueItem))
 
         val allLeagueItems = leagueDao.getAllLeagues()
@@ -61,14 +58,12 @@ class LeagueDaoAndroidTest {
 
     @Test
     fun insertLeagueItem_getLeaguesFromSpecificCountry() = runBlockingTest {
-        val countryItem = CountryEntity("countryId1", "countryLogo1", "countryName1", 100L)
+        val countryItem = produceCountryEntity(1)
         countryDao.insertCountries(listOf(countryItem))
 
-        val leagueItem1 =
-            LeagueEntity("countryId1", "leagueId1", "leagueLogo1", "leagueName1", "leagueSeason1")
+        val leagueItem1 = produceLeagueEntity(1, 1)
 
-        val leagueItem2 =
-            LeagueEntity("countryId2", "leagueId2", "leagueLogo2", "leagueName2", "leagueSeason2")
+        val leagueItem2 = produceLeagueEntity(2, 2)
 
         leagueDao.insertLeagues(listOf(leagueItem1, leagueItem2))
 

@@ -14,8 +14,8 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.local.daos.*
 import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.util.DataProducerAndroid.produceStandingEntity
 
 
 @ExperimentalCoroutinesApi
@@ -42,53 +42,9 @@ class StandingDaoAndroidTest {
         hiltRule.inject()
         standingDao = database.standingDao()
 
-        standing1 = StandingEntity(
-            "leagueRound1",
-            "leagueD1",
-            "leagueGA1",
-            "leagueGF1",
-            "leagueL1",
-            "leaguePTS1",
-            "leaguePayed1",
-            "leaguePosition1",
-            "leagueW1",
-            "promotion1",
-            "teamId1",
-            "leagueId1",
-            StandingType.OVERALL
-        )
-
-        standing2 = StandingEntity(
-            "leagueRound2",
-            "leagueD2",
-            "leagueGA2",
-            "leagueGF2",
-            "leagueL2",
-            "leaguePTS2",
-            "leaguePayed2",
-            "leaguePosition2",
-            "leagueW2",
-            "promotion2",
-            "teamId1",
-            "leagueId1",
-            StandingType.HOME
-        )
-
-        standing3 = StandingEntity(
-            "leagueRound3",
-            "leagueD3",
-            "leagueGA3",
-            "leagueGF3",
-            "leagueL3",
-            "leaguePTS3",
-            "leaguePayed3",
-            "leaguePosition3",
-            "leagueW3",
-            "promotion3",
-            "teamId2",
-            "leagueId1",
-            StandingType.OVERALL
-        )
+        standing1 = produceStandingEntity(1, 1, 1, StandingType.OVERALL)
+        standing2 = produceStandingEntity(2, 1, 1, StandingType.HOME)
+        standing3 = produceStandingEntity(3, 1, 2, StandingType.OVERALL)
 
         runBlockingTest {
             standingDao.insertStandings(listOf(standing1, standing2, standing3))
@@ -112,7 +68,8 @@ class StandingDaoAndroidTest {
     @Test
     fun insertStandingItems_getSpecificStandingFromSpecificLeague() = runBlockingTest {
 
-        val standingItems = standingDao.getStandingsFromSpecificLeague("leagueId1", StandingType.OVERALL)
+        val standingItems =
+            standingDao.getStandingsFromSpecificLeague("leagueId1", StandingType.OVERALL)
 
         assertThat(standingItems).isNotEmpty()
         assertThat(standingItems).hasSize(2)

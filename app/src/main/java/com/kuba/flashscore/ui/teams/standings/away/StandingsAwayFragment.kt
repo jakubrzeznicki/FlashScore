@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -33,42 +34,34 @@ class StandingsAwayFragment :
     private var _binding: FragmentStandingsAwayBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: StandingsViewModel by viewModels()
-    private lateinit var standingsAdapter: StandingsAdapter
+    lateinit var standingsViewModel: StandingsViewModel
+    lateinit var standingsAdapter: StandingsAdapter
 
     private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
 
-    fun setCountryWithLeagueAndTeams(value: CountryWithLeagueAndTeams) {
-        countryWithLeagueAndTeams = value
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentStandingsAwayBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        return view
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getAwayStandingsFromSpecificLeague(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
+        standingsViewModel =
+            ViewModelProvider(requireActivity()).get(StandingsViewModel::class.java)
+
+        standingsViewModel.getAwayStandingsFromSpecificLeague(countryWithLeagueAndTeams.leagueWithTeams[0].league.leagueId)
         setupRecyclerView()
         subscribeToObservers()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    fun setCountryWithLeagueAndTeams(value: CountryWithLeagueAndTeams) {
+        countryWithLeagueAndTeams = value
+    }
+
     private fun subscribeToObservers() {
-        viewModel.standings.observe(viewLifecycleOwner, Observer {
-            Timber.d("STANDINGS gert form db")
+        standingsViewModel.standings.observe(viewLifecycleOwner, Observer {
             if (!it.isNullOrEmpty()) {
                 standingsAdapter.standings =
                     it.sortedBy { standing -> standing.leaguePosition.toInt() }

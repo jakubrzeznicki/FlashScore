@@ -21,6 +21,8 @@ import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.LeagueAdapter
 import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.databinding.FragmentLeagueBinding
+import com.kuba.flashscore.other.Constants.DEFAULT_ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.SUCCESS_MESSAGE
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.country.CountryViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -83,23 +85,19 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
 
     private fun subscribeToObservers() {
         viewModel.countriesWithLeagues.observe(viewLifecycleOwner, Observer {
-            Timber.d("LEAGUEE observe get leagues")
             if (it?.leagues.isNullOrEmpty()) {
-                Timber.d("LEAGUE gert form db are null")
                 refreshCountryWithLeagues(country)
             } else {
-                Timber.d("LEAGUE gert form db are not null ${it.leagues}")
                 leagueAdapter.league = it.leagues
             }
         })
         viewModel.countryWithLeaguesStatus.observe(viewLifecycleOwner, Observer {
-            Timber.d("LEAGUEE observe refresh leagues")
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         Snackbar.make(
                             requireView(),
-                            "Successfully fetched data from network",
+                            SUCCESS_MESSAGE,
                             Snackbar.LENGTH_LONG
                         ).show()
                         viewModel.getCountryWithLeagues(country.countryId)
@@ -107,7 +105,7 @@ class LeagueFragment : Fragment(R.layout.fragment_league) {
                     Status.ERROR -> {
                         Snackbar.make(
                             requireView(),
-                            result.message ?: "Default No Internet",
+                            result.message ?: DEFAULT_ERROR_MESSAGE,
                             Snackbar.LENGTH_LONG
                         ).show()
                     }

@@ -19,7 +19,6 @@ import com.kuba.flashscore.data.local.models.entities.event.EventEntity
 import com.kuba.flashscore.other.Constants.MATCH_STATUS_FINISHED
 import com.kuba.flashscore.other.Constants.MATCH_STATUS_ZERO
 import com.kuba.flashscore.ui.events.EventsListFragmentDirections
-import timber.log.Timber
 
 class EventAdapter :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
@@ -66,13 +65,10 @@ class EventAdapter :
                 countryWithLeagueWithEventsAndTeams.leagueWithTeams[0].teams.filter { team ->
                     team.teamKey == event?.eventInformation?.get(0)?.teamId
                 }
-            Timber.d("EVENT DETAIL ADAPET ${homeTeam}, ${countryWithLeagueWithEventsAndTeams.leagueWithTeams[0].teams.size},  ${event?.eventInformation?.get(0)?.teamId} ")
             val awayTeam =
                 countryWithLeagueWithEventsAndTeams.leagueWithTeams[0].teams.filter { team ->
                     team.teamKey == event?.eventInformation?.get(1)?.teamId
                 }
-            Timber.d("EVENT DETAIL ADAPET ${awayTeam}, ${countryWithLeagueWithEventsAndTeams.leagueWithTeams[0].teams.size},  ${event?.eventInformation?.get(1)?.teamId} ")
-
             Glide.with(holder.itemView).load(homeTeam[0].teamBadge).into(imageViewFirstTeamLogo)
             Glide.with(holder.itemView).load(awayTeam[0].teamBadge).into(imageViewSecondTeamLogo)
             textViewFirstTeamName.text = homeTeam[0].teamName

@@ -26,6 +26,18 @@ import com.kuba.flashscore.data.network.responses.StandingResponse
 import com.kuba.flashscore.data.network.responses.TeamResponse
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.util.DataProducer.produceCardEntity
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
+import com.kuba.flashscore.util.DataProducer.produceCountryWithLeagueWithEventsAndTeamsEntity
+import com.kuba.flashscore.util.DataProducer.produceEventEntity
+import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
+import com.kuba.flashscore.util.DataProducer.produceEventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
+import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
+import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducer.produceLineupEntity
+import com.kuba.flashscore.util.DataProducer.produceStatisticEntity
+import com.kuba.flashscore.util.DataProducer.produceSubstitutionEntity
+import com.kuba.flashscore.util.DataProducer.produceTeamEntity
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -84,14 +96,14 @@ class DefaultEventRepositoryTest {
         substitutionDao = mock()
         eventsDao = mock()
 
-        eventFromDao = produceEventEntity()
-        eventInformationHomeTeamFromDao = produceEventInformationHomeEntity()
-        eventInformationAwayTeamFromDao = produceEventInformationAwayEntity()
-        cardsFromDao = produceCardEntity()
-        goalscorerFromDao = produceGoalscorerEntity()
-        statisticFromDao = produceStatisticEntity()
-        substitutionFromDao = produceSubstitutionEntity()
-        lineupFromDao = produceLineupEntity()
+        eventFromDao = produceEventEntity(1, 1)
+        eventInformationHomeTeamFromDao = produceEventInformationEntity(1, 1, 1, true)
+        eventInformationAwayTeamFromDao = produceEventInformationEntity(2, 1, 2, true)
+        cardsFromDao = produceCardEntity(1, 1, true)
+        goalscorerFromDao = produceGoalscorerEntity(1, 1, true)
+        statisticFromDao = produceStatisticEntity(1, 1)
+        substitutionFromDao = produceSubstitutionEntity(1, 1, true)
+        lineupFromDao = produceLineupEntity(1, 1, true)
         countryWithLeagueWithEventsAndTeamsFromDao =
             produceCountryWithLeagueWithEventsAndTeamsEntity()
         eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsFromDao =
@@ -327,7 +339,7 @@ class DefaultEventRepositoryTest {
                 eventRepository.getEventsFromSpecificLeaguesFromDb("leagueId1", "2021-03-24")
 
             verify(eventsDao, times(1)).getEventsFromSpecificLeague("leagueId1", "2021-03-24")
-            verify(footballApiService, times(1)).getEvents("2021-03-24", "2021-03-24","leagueId1")
+            verify(footballApiService, times(1)).getEvents("2021-03-24", "2021-03-24", "leagueId1")
             assertThat(eventsFromDatabase).isNull()
         }
 
@@ -455,156 +467,4 @@ class DefaultEventRepositoryTest {
 
     }
 
-    private fun produceEventEntity(): EventEntity {
-        return EventEntity(
-            "leagueId1",
-            "matchDate1",
-            "matchId1",
-            "matchLive1",
-            "matchReferee1",
-            "matchRound1",
-            "matchStadium1",
-            "matchStatus1",
-            "matchTime1"
-        )
-    }
-
-    fun produceEventInformationHomeEntity(): EventInformationEntity {
-        return EventInformationEntity(
-            "matchId1",
-            "extraScore1",
-            "fullTimeScore1",
-            "halfTimeScore1",
-            "teamId1",
-            "teamPenaltyScore1",
-            "teamScore1",
-            "teamSystem1",
-            true
-        )
-    }
-
-
-    fun produceEventInformationAwayEntity(): EventInformationEntity {
-        return EventInformationEntity(
-            "matchId1",
-            "extraScore2",
-            "fullTimeScore2",
-            "halfTimeScore2",
-            "teamId2",
-            "teamPenaltyScore2",
-            "teamScore2",
-            "teamSystem2",
-            false
-        )
-    }
-
-    fun produceCardEntity(): CardEntity {
-        return CardEntity(
-            "matchId1",
-            "fault1",
-            "card1",
-            true,
-            "info1",
-            "time1"
-        )
-    }
-
-    fun produceGoalscorerEntity(): GoalscorerEntity {
-        return GoalscorerEntity(
-            "matchId1",
-            "assistId1",
-            "scorerId1",
-            true,
-            "info1",
-            "score1",
-            "time1"
-        )
-    }
-
-    fun produceStatisticEntity(): StatisticEntity {
-        return StatisticEntity(
-            "matchId1",
-            "away1",
-            "home1",
-            "type1"
-        )
-    }
-
-    fun produceSubstitutionEntity(): SubstitutionsEntity {
-        return SubstitutionsEntity(
-            "matchId1",
-            "substitutions1",
-            "time1",
-            true
-        )
-    }
-
-    fun produceLineupEntity(): LineupEntity {
-        return LineupEntity(
-            "matchId1",
-            "lineupNumber1",
-            "lineupPosition1",
-            true,
-            true,
-            false,
-            "playerKey1"
-        )
-    }
-
-    fun produceCountryWithLeagueWithEventsAndTeamsEntity(): CountryWithLeagueWithEventsAndTeamsEntity {
-        return CountryWithLeagueWithEventsAndTeamsEntity(
-            CountryEntity("countryId1", "countryLogo1", "countryName1"),
-            listOf(
-                LeagueWithTeamsEntity(
-                    LeagueEntity(
-                        "countryId1",
-                        "leagueId1",
-                        "leagueLogo1",
-                        "leagueName1",
-                        "leagueSeason1"
-                    ),
-                    listOf(
-                        TeamEntity(
-                            "leagueId1",
-                            "teamBadge1",
-                            "teamId1",
-                            "teamName1",
-
-                            )
-                    )
-                )
-            ),
-            listOf(
-                LeagueWithEventsEntity(
-                    LeagueEntity(
-                        "countryId1",
-                        "leagueId1",
-                        "leagueLogo1",
-                        "leagueName1",
-                        "leagueSeason1"
-                    ),
-                    listOf(
-                        EventWithEventInformationEntity(
-                            produceEventEntity(),
-                            listOf(
-                                produceEventInformationHomeEntity(),
-                                produceEventInformationAwayEntity()
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    }
-
-    fun produceEventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity(): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity {
-        return EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity(
-            produceEventEntity(),
-            listOf(produceCardEntity()),
-            listOf(produceGoalscorerEntity()),
-            listOf(produceLineupEntity()),
-            listOf(produceStatisticEntity()),
-            listOf(produceSubstitutionEntity())
-        )
-    }
 }

@@ -11,6 +11,7 @@ import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.repositories.country.FakeCountryRepository
 import com.kuba.flashscore.ui.util.networking.FakeConnectivityManager
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -40,9 +41,9 @@ class CountryViewModelTest {
     fun setup() {
         countryRepository = FakeCountryRepository()
         connectivityManager = FakeConnectivityManager()
-        val country1 = CountryEntity("countryId1", "countryLogo1", "countryName1")
-        val country2 = CountryEntity("countryId2", "countryLogo2", "countryName2")
-        val country3 = CountryEntity("countryId3", "countryLogo3", "countryName3")
+        val country1 = produceCountryEntity(1)
+        val country2 = produceCountryEntity(2)
+        val country3 = produceCountryEntity(3)
         runBlockingTest {
             countryRepository.insertCountries(listOf(country1, country2, country3))
         }

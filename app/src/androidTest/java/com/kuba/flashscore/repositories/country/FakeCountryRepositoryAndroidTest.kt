@@ -1,9 +1,8 @@
-package com.kuba.flashscore.repositories
+package com.kuba.flashscore.repositories.country
 
 import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.country.CountryRepository
 
 class FakeCountryRepositoryAndroidTest : CountryRepository {
 

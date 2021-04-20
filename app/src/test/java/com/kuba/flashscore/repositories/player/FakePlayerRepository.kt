@@ -7,17 +7,14 @@ import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesE
 import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
 import com.kuba.flashscore.data.network.responses.PlayerResponse
 import com.kuba.flashscore.other.Resource
+import com.kuba.flashscore.util.DataProducer.produceCoachEntity
+import com.kuba.flashscore.util.DataProducer.producePlayerEntity
+import com.kuba.flashscore.util.DataProducer.produceTeamEntity
 
 class FakePlayerRepository : PlayerRepository {
 
     private val playerItems = mutableListOf<PlayerEntity>()
-    private val teamItem = TeamEntity(
-        "leagueId1",
-        "teamBadge1",
-        "teamId1",
-        "teamName1",
-
-        )
+    private val teamItem = produceTeamEntity(1, 1)
     private val playersItems = producePlayerEntities()
     private val coachesItems = produceCoachEntities()
 
@@ -39,20 +36,7 @@ class FakePlayerRepository : PlayerRepository {
     }
 
     override suspend fun getPlayerInformationFromDb(playerId: Long): PlayerEntity {
-        return PlayerEntity(
-            "teamId2",
-            "playerAge1",
-            "playerCountry1",
-            "playerGoals1",
-            1L,
-            "playerMatchPlayed1",
-            "playerName1",
-            "playerNumber1",
-            "playerRedCard1",
-            "playerType1",
-            "playerYellowCard1"
-        )
-
+        return producePlayerEntity(1, 2)
     }
 
     override suspend fun getPlayersFromSpecificTeamFromDb(teamId: String): TeamWithPlayersAndCoachEntity {
@@ -61,31 +45,10 @@ class FakePlayerRepository : PlayerRepository {
 
 
     private fun producePlayerEntities(): List<PlayerEntity> {
-        return listOf(
-            PlayerEntity(
-                "teamId2",
-                "playerAge1",
-                "playerCountry1",
-                "playerGoals1",
-                1L,
-                "playerMatchPlayed1",
-                "playerName1",
-                "playerNumber1",
-                "playerRedCard1",
-                "playerType1",
-                "playerYellowCard1"
-            )
-        )
+        return listOf(producePlayerEntity(1, 2))
     }
 
     private fun produceCoachEntities(): List<CoachEntity> {
-        return listOf(
-            CoachEntity(
-                "teamId2",
-                "coachAge1",
-                "coachCountry1",
-                "coachName1"
-            )
-        )
+        return listOf(produceCoachEntity(1, 2))
     }
 }

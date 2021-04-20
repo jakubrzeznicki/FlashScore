@@ -6,12 +6,13 @@ import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.other.Resource
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
 
 class FakeLeagueRepository : LeagueRepository {
 
     private val leagueItems = mutableListOf<LeagueEntity>()
     private val countryAndLeagueItems = CountryAndLeaguesEntity(
-        CountryEntity("countryId1", "countryLogo1", "countryName1"),
+        produceCountryEntity(1),
         leagueItems
     )
 

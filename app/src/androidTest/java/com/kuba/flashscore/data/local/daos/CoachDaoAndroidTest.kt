@@ -2,9 +2,7 @@ package com.kuba.flashscore.data.local.daos
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
-import com.kuba.flashscore.data.local.daos.CountryDao
 import com.kuba.flashscore.data.local.database.FlashScoreDatabase
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,8 +14,8 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.local.daos.CoachDao
 import com.kuba.flashscore.data.local.models.entities.CoachEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCoachEntity
 
 
 @ExperimentalCoroutinesApi
@@ -45,26 +43,10 @@ class CoachDaoAndroidTest {
         hiltRule.inject()
         dao = database.coachDao()
 
-        coachItem1 = CoachEntity(
-            "teamId1",
-            "coachAge1",
-            "coachCountry1",
-            "coachName1"
-        )
+        coachItem1 = produceCoachEntity(1, 1)
+        coachItem2 = produceCoachEntity(2, 2)
+        coachItem3 = produceCoachEntity(3, 3)
 
-        coachItem2 = CoachEntity(
-            "teamId2",
-            "coachAge2",
-            "coachCountry2",
-            "coachName2"
-        )
-
-        coachItem3 = CoachEntity(
-            "teamId3",
-            "coachAge3",
-            "coachCountry3",
-            "coachName3"
-        )
         runBlockingTest {
             dao.insertCoaches(listOf(coachItem1, coachItem2, coachItem3))
         }

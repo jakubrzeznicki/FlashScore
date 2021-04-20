@@ -18,6 +18,8 @@ import com.kuba.flashscore.data.network.responses.CountryResponse
 import com.kuba.flashscore.data.network.responses.StandingResponse
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.util.DataProducer.produceStandingEntity
+import com.kuba.flashscore.util.DataProducer.produceStatisticEntity
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -54,21 +56,7 @@ class DefaultStandingRepositoryTest {
     fun setup() = runBlockingTest {
         //mocking dao
         standingDao = mock()
-        standingsFromDao = StandingEntity(
-            "leagueRound1",
-            "leagueD1",
-            "leagueGA1",
-            "leagueGF1",
-            "leagueL1",
-            "leaguePTS1",
-            "leaguePayed1",
-            "leaguePosition1",
-            "leagueW1",
-            "promotion1",
-            "teamId1",
-            "leagueId1",
-            StandingType.OVERALL
-        )
+        standingsFromDao = produceStandingEntity(1, 1, 1, StandingType.OVERALL)
         whenever(standingDao.getAllStandingsFromSpecificLeague("leagueId1")).thenReturn(
             listOf(
                 standingsFromDao
@@ -167,7 +155,11 @@ class DefaultStandingRepositoryTest {
         whenever(standingDao.getAllStandingsFromSpecificLeague("leagueId1")).thenReturn(null)
         standingRepository.refreshStandingsFromSpecificLeague("leagueId1")
         verify(standingDao, times(3)).insertStandings(any())
-        whenever(standingDao.getAllStandingsFromSpecificLeague("leagueId1")).thenReturn(listOf(standingsFromDao))
+        whenever(standingDao.getAllStandingsFromSpecificLeague("leagueId1")).thenReturn(
+            listOf(
+                standingsFromDao
+            )
+        )
 
         val standings = standingRepository.getAllStandingsFromSpecificLeagueFromDb("leagueId1")
         assertThat(standings).hasSize(1)
@@ -207,52 +199,10 @@ class DefaultStandingRepositoryTest {
 
     @Test
     fun insertStandingsIntoDb_shouldReturnSuccess() = runBlockingTest {
-        StandingEntity(
-            "leagueRound1",
-            "leagueD1",
-            "leagueGA1",
-            "leagueGF1",
-            "leagueL1",
-            "leaguePTS1",
-            "leaguePayed1",
-            "leaguePosition1",
-            "leagueW1",
-            "promotion1",
-            "teamId1",
-            "leagueId1",
-            StandingType.OVERALL
-        )
+        produceStandingEntity(1, 1, 1, StandingType.OVERALL)
         val standingList = listOf<StandingEntity>(
-            StandingEntity(
-                "leagueRound3",
-                "leagueD3",
-                "leagueGA3",
-                "leagueGF3",
-                "leagueL3",
-                "leaguePTS3",
-                "leaguePayed3",
-                "leaguePosition3",
-                "leagueW3",
-                "promotion3",
-                "teamId3",
-                "leagueId3",
-                StandingType.OVERALL
-            ),
-            StandingEntity(
-                "leagueRound4",
-                "leagueD4",
-                "leagueGA4",
-                "leagueGF4",
-                "leagueL4",
-                "leaguePTS4",
-                "leaguePayed4",
-                "leaguePosition4",
-                "leagueW4",
-                "promotion4",
-                "teamId4",
-                "leagueId4",
-                StandingType.OVERALL
-            )
+            produceStandingEntity(3, 3, 3, StandingType.OVERALL),
+            produceStandingEntity(4, 4, 4, StandingType.OVERALL)
         )
 
         standingRepository.insertStandings(standingList)

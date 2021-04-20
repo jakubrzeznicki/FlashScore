@@ -1,12 +1,10 @@
-package com.kuba.flashscore.repositories
+package com.kuba.flashscore.repositories.league
 
 import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
 import com.kuba.flashscore.data.local.models.entities.LeagueEntity
 import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.league.LeagueRepository
-import com.kuba.flashscore.util.DataProducer.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
 
 class FakeLeagueRepositoryAndroidTest : LeagueRepository {
 

@@ -11,6 +11,7 @@ import com.kuba.flashscore.data.network.models.CountryDto
 import com.kuba.flashscore.data.network.responses.CountryResponse
 import com.kuba.flashscore.other.Constants.ERROR_MESSAGE
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -43,12 +44,11 @@ class DefaultCountryRepositoryTest {
     lateinit var countryFromApi: Response<CountryResponse>
     lateinit var countryFromDao: CountryEntity
 
-    // private val country1 = CountryEntity("countryId1", "countryLogo1", "countryName1")
     @Before
     fun setup() = runBlockingTest {
         //mocking dao
         countryDao = mock()
-        countryFromDao = CountryEntity("countryId1", "countryLogo1", "countryName1")
+        countryFromDao = produceCountryEntity(1)
         whenever(countryDao.getAllCountriesFromDb()).thenReturn(listOf(countryFromDao))
 
         //mocking api
@@ -143,9 +143,9 @@ class DefaultCountryRepositoryTest {
     @Test
     fun insertCountriesIntoDb_shouldReturnSuccess() = runBlockingTest {
         val countriesList = listOf<CountryEntity>(
-            CountryEntity("countryId1", "countryLogo1", "countryName1"),
-            CountryEntity("countryId2", "countryLogo2", "countryName2"),
-            CountryEntity("countryId3", "countryLogo3", "countryName3")
+            produceCountryEntity(1),
+            produceCountryEntity(2),
+            produceCountryEntity(3)
         )
 
         countryRepository.insertCountries(countriesList)

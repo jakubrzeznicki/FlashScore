@@ -20,7 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
-//@ExperimentalSerializationApi
 class ApiFootballServiceTest {
 
     lateinit var mockWebServer: MockWebServer

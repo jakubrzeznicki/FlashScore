@@ -41,7 +41,6 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
 
         playerAdapter = PlayersAdapter(team)
         getTeamWithPlayersAndCoaach(team.teamKey)
-        Timber.d("PLAYERS ${team.teamName}")
         subscribeToObservers()
         setupRecyclerView()
         return binding.root
@@ -60,7 +59,6 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
 
     private fun subscribeToObservers() {
         viewModel.team.observe(viewLifecycleOwner, Observer {
-            Timber.d("PLAYERS observe ${it}")
             playerAdapter.players = it.players
         })
 

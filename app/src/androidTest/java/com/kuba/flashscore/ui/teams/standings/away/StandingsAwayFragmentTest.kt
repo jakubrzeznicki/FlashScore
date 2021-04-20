@@ -1,4 +1,4 @@
-package com.kuba.flashscore.ui.teams.standings.overall
+package com.kuba.flashscore.ui.teams.standings.away
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -44,7 +44,7 @@ import javax.inject.Inject
 @MediumTest
 @HiltAndroidTest
 @ExperimentalCoroutinesApi
-class StandingsOverallFragmentTest {
+class StandingsAwayFragmentTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -61,7 +61,7 @@ class StandingsOverallFragmentTest {
     private lateinit var countryWithLeagueAndTeamsEntity: CountryWithLeagueAndTeamsEntity
     private lateinit var leagueWithTeamsItems: List<LeagueWithTeamsEntity>
 
-    private lateinit var overallStandingsItems: List<StandingEntity>
+    private lateinit var awayStandingsItems: List<StandingEntity>
 
     lateinit var instrumentationContext: Context
 
@@ -92,10 +92,10 @@ class StandingsOverallFragmentTest {
             leagueWithTeamsItems
         )
 
-        overallStandingsItems = listOf(
-            produceStandingEntity(1, 1, 1, StandingType.OVERALL),
-            produceStandingEntity(2, 1, 2, StandingType.OVERALL),
-            produceStandingEntity(3, 1, 3, StandingType.HOME),
+        awayStandingsItems = listOf(
+            produceStandingEntity(1, 1, 1, StandingType.AWAY),
+            produceStandingEntity(2, 1, 2, StandingType.AWAY),
+            produceStandingEntity(3, 1, 3, StandingType.AWAY),
             produceStandingEntity(4, 1, 4, StandingType.AWAY)
         )
         instrumentationContext = InstrumentationRegistry.getInstrumentation().context
@@ -107,20 +107,20 @@ class StandingsOverallFragmentTest {
 
         val testStandingViewModel = StandingsViewModel(
             FakeStandingsRepositoryAndroidTest().also {
-                it.insertStandings(overallStandingsItems)
+                it.insertStandings(awayStandingsItems)
             }, FakeConnectivityManager().also {
                 it.isNetworkAvailable.postValue(true)
             }
         )
 
-        launchFragmentInHiltContainer<StandingsOverallFragment>(
+        launchFragmentInHiltContainer<StandingsAwayFragment>(
             fragmentFactory = fragmentFactory
         ) {
             Navigation.setViewNavController(requireView(), navController)
 
             this.setCountryWithLeagueAndTeams(countryWithLeagueAndTeamsEntity.asDomainModel())
             this.standingsViewModel = testStandingViewModel
-            this.standingsAdapter.standings = overallStandingsItems.map { it.asDomainModel() }
+            this.standingsAdapter.standings = awayStandingsItems.map { it.asDomainModel() }
 
         }
 
@@ -134,7 +134,7 @@ class StandingsOverallFragmentTest {
 
         verify(navController).navigate(
             TeamsViewPagerFragmentDirections.actionTeamsViewPagerFragmentToClubViewPagerFragment(
-                overallStandingsItems[0].teamId,
+                awayStandingsItems[0].teamId,
                 countryWithLeagueAndTeamsEntity.asDomainModel()
             )
         )

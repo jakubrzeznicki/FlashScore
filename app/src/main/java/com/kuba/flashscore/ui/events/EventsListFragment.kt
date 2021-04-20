@@ -27,6 +27,8 @@ import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesE
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_MONTH_YEAR
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_DAY_OF_WEEK
 import com.kuba.flashscore.other.Constants.DATE_FORMAT_YEAR_MONTH_DAY
+import com.kuba.flashscore.other.Constants.DEFAULT_ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.SUCCESS_MESSAGE
 import com.kuba.flashscore.other.DateUtils
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.league.LeagueViewModel
@@ -119,16 +121,12 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private fun subscribeToObservers() {
         viewModel.countryWithLeagueWithTeamsAndEvents.observe(
             viewLifecycleOwner, Observer {
-                Timber.d("EVENTS observe get events")
                 if (it == null) {
-                    Timber.d("EVENTS gert form db are null")
                    // if (!wasRefresh) {
-                        Timber.d("EVENTS gert form db are null WAS REFRESH")
                         refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
                   //  }
                     setupRecyclerView()
                 } else {
-                    Timber.d("EVENTS gert form db are not null ${it.leagueWithEvents[0].eventsWithEventInformation.size}")
                     eventsAdapter.countryWithLeagueWithEventsAndTeams = it
                     eventsAdapter.events =
                         it.leagueWithEvents[0].eventsWithEventInformation.filter { event ->
@@ -144,7 +142,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                         Status.SUCCESS -> {
                             Snackbar.make(
                                 requireView(),
-                                result.message ?: "Default No Internet",
+                                result.message ?: SUCCESS_MESSAGE,
                                 Snackbar.LENGTH_LONG
                             ).show()
                             viewModel.getCountryWithLeagueWithEventsAndTeams(countryAndLeague.leagues[0].leagueId, fromToDate)
@@ -152,7 +150,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                         Status.ERROR -> {
                             Snackbar.make(
                                 requireView(),
-                                result.message ?: "Default No Internet",
+                                result.message ?: DEFAULT_ERROR_MESSAGE,
                                 Snackbar.LENGTH_LONG
                             ).show()
                         }
@@ -253,7 +251,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         val datePickerDialog = DatePickerDialog(
             context,
             R.style.DialogTheme,
-            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            { _, year, month, dayOfMonth ->
                 val date = DateUtils.parseDate(
                     "$dayOfMonth.${month + 1}.$year",
                     DATE_FORMAT_DAY_MONTH_YEAR

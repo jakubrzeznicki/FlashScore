@@ -20,7 +20,6 @@ data class TeamWithPlayersAndCoachEntity(
     val coaches: List<CoachEntity> = emptyList()
 ) {
     fun asDomainModel(): TeamWithPlayersAndCoach {
-        Timber.d("PLAYERS in convert ${players.size}")
         return TeamWithPlayersAndCoach(
             team.asDomainModel(),
             players.map { it.asDomainModel() },

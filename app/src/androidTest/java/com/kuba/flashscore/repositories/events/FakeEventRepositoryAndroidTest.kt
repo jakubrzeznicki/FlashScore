@@ -1,11 +1,6 @@
-package com.kuba.flashscore.repositories
+package com.kuba.flashscore.repositories.events
 
-import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
 import com.kuba.flashscore.data.domain.models.event.Event
-import com.kuba.flashscore.data.local.models.entities.CountryEntity
-import com.kuba.flashscore.data.local.models.entities.LeagueEntity
-import com.kuba.flashscore.data.local.models.entities.TeamEntity
-import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.data.local.models.entities.customs.LeagueWithTeamsEntity
 import com.kuba.flashscore.data.local.models.entities.event.*
 import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
@@ -14,12 +9,10 @@ import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithEve
 import com.kuba.flashscore.data.local.models.entities.event.customs.LeagueWithEventsEntity
 import com.kuba.flashscore.other.Resource
 import com.kuba.flashscore.repositories.event.EventRepository
-import com.kuba.flashscore.repositories.league.LeagueRepository
-import com.kuba.flashscore.util.DataProducer.produceCountryEntity
-import com.kuba.flashscore.util.DataProducer.produceEventEntity
-import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
-import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
-import com.kuba.flashscore.util.DataProducer.produceTeamEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceEventEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceTeamEntity
 
 class FakeEventRepositoryAndroidTest : EventRepository {
 

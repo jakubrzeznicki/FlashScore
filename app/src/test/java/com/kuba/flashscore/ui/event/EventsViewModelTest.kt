@@ -24,6 +24,13 @@ import com.kuba.flashscore.repositories.player.FakePlayerRepository
 import com.kuba.flashscore.repositories.team.FakeTeamRepository
 import com.kuba.flashscore.ui.events.EventsViewModel
 import com.kuba.flashscore.ui.util.networking.FakeConnectivityManager
+import com.kuba.flashscore.util.DataProducer.produceCardEntity
+import com.kuba.flashscore.util.DataProducer.produceEventEntity
+import com.kuba.flashscore.util.DataProducer.produceEventInformationEntity
+import com.kuba.flashscore.util.DataProducer.produceGoalscorerEntity
+import com.kuba.flashscore.util.DataProducer.produceLineupEntity
+import com.kuba.flashscore.util.DataProducer.produceStatisticEntity
+import com.kuba.flashscore.util.DataProducer.produceSubstitutionEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -60,54 +67,27 @@ class EventsViewModelTest {
         playerRepository = FakePlayerRepository()
         connectivityManager = FakeConnectivityManager()
 
-        val event1 =
-            EventEntity(
-                "leagueId1",
-                "matchDate1",
-                "matchId1",
-                "matchLive1",
-                "matchReferee1",
-                "matchRound1",
-                "matchStadium1",
-                "matchStatus1",
-                "matchTime1"
-            )
-
-        val event2 =
-            EventEntity(
-                "leagueId1",
-                "matchDate2",
-                "matchId2",
-                "matchLive2",
-                "matchReferee2",
-                "matchRound2",
-                "matchStadium2",
-                "matchStatus2",
-                "matchTime2"
-            )
-
-
-        val event3 =
-            EventEntity(
-                "leagueId3",
-                "matchDate3",
-                "matchId3",
-                "matchLive3",
-                "matchReferee3",
-                "matchRound3",
-                "matchStadium3",
-                "matchStatus3",
-                "matchTime3"
-            )
+        val event1 = produceEventEntity(1, 1)
+        val event2 = produceEventEntity(2, 1)
+        val event3 = produceEventEntity(3, 3)
 
 
         runBlockingTest {
-            eventRepository.insertCards(listOf(produceCardEntity()))
-            eventRepository.insertEventInformation(listOf(produceEventInformationAwayEntity()))
-            eventRepository.insertGoalscorers(listOf(produceGoalscorerEntity()))
-            eventRepository.insertLineups(listOf(produceLineupEntity()))
-            eventRepository.insertStatistics(listOf(produceStatisticEntity()))
-            eventRepository.insertSubstitutions(listOf(produceSubstitutionEntity()))
+            eventRepository.insertCards(listOf(produceCardEntity(1, 1, true)))
+            eventRepository.insertEventInformation(
+                listOf(
+                    produceEventInformationEntity(
+                        1,
+                        1,
+                        1,
+                        true
+                    )
+                )
+            )
+            eventRepository.insertGoalscorers(listOf(produceGoalscorerEntity(1, 1, true)))
+            eventRepository.insertLineups(listOf(produceLineupEntity(1, 1, true)))
+            eventRepository.insertStatistics(listOf(produceStatisticEntity(1, 1)))
+            eventRepository.insertSubstitutions(listOf(produceSubstitutionEntity(1, 1, true)))
             eventRepository.insertEvents(listOf(event1, event2, event3))
         }
         viewModel =
@@ -189,157 +169,4 @@ class EventsViewModelTest {
 //        assertThat(value.peekContent().status).isEqualTo(Status.ERROR)
 //        assertThat(value.peekContent().message).isEqualTo(Constants.ERROR_MESSAGE)
 //    }
-
-    private fun produceEventEntity(): EventEntity {
-        return EventEntity(
-            "leagueId1",
-            "matchDate1",
-            "matchId1",
-            "matchLive1",
-            "matchReferee1",
-            "matchRound1",
-            "matchStadium1",
-            "matchStatus1",
-            "matchTime1"
-        )
-    }
-
-    fun produceEventInformationHomeEntity(): EventInformationEntity {
-        return EventInformationEntity(
-            "matchId1",
-            "extraScore1",
-            "fullTimeScore1",
-            "halfTimeScore1",
-            "teamId1",
-            "teamPenaltyScore1",
-            "teamScore1",
-            "teamSystem1",
-            true
-        )
-    }
-
-
-    fun produceEventInformationAwayEntity(): EventInformationEntity {
-        return EventInformationEntity(
-            "matchId1",
-            "extraScore2",
-            "fullTimeScore2",
-            "halfTimeScore2",
-            "teamId2",
-            "teamPenaltyScore2",
-            "teamScore2",
-            "teamSystem2",
-            false
-        )
-    }
-
-    fun produceCardEntity(): CardEntity {
-        return CardEntity(
-            "matchId1",
-            "fault1",
-            "card1",
-            true,
-            "info1",
-            "time1"
-        )
-    }
-
-    fun produceGoalscorerEntity(): GoalscorerEntity {
-        return GoalscorerEntity(
-            "matchId1",
-            "assistId1",
-            "scorerId1",
-            true,
-            "info1",
-            "score1",
-            "time1"
-        )
-    }
-
-    fun produceStatisticEntity(): StatisticEntity {
-        return StatisticEntity(
-            "matchId1",
-            "away1",
-            "home1",
-            "type1"
-        )
-    }
-
-    fun produceSubstitutionEntity(): SubstitutionsEntity {
-        return SubstitutionsEntity(
-            "matchId1",
-            "substitutions1",
-            "time1",
-            true
-        )
-    }
-
-    fun produceLineupEntity(): LineupEntity {
-        return LineupEntity(
-            "matchId1",
-            "lineupNumber1",
-            "lineupPosition1",
-            true,
-            true,
-            false,
-            "playerKey1"
-        )
-    }
-
-    fun produceCountryWithLeagueWithEventsAndTeamsEntity(): CountryWithLeagueWithEventsAndTeamsEntity {
-        return CountryWithLeagueWithEventsAndTeamsEntity(
-            CountryEntity("countryId1", "countryLogo1", "countryName1"),
-            listOf(
-                LeagueWithTeamsEntity(
-                    LeagueEntity(
-                        "countryId1",
-                        "leagueId1",
-                        "leagueLogo1",
-                        "leagueName1",
-                        "leagueSeason1"
-                    ),
-                    listOf(
-                        TeamEntity(
-                            "leagueId1",
-                            "teamBadge1",
-                            "teamId1",
-                            "teamName1",
-
-                            )
-                    )
-                )
-            ),
-            listOf(
-                LeagueWithEventsEntity(
-                    LeagueEntity(
-                        "countryId1",
-                        "leagueId1",
-                        "leagueLogo1",
-                        "leagueName1",
-                        "leagueSeason1"
-                    ),
-                    listOf(
-                        EventWithEventInformationEntity(
-                            produceEventEntity(),
-                            listOf(
-                                produceEventInformationHomeEntity(),
-                                produceEventInformationAwayEntity()
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    }
-
-    fun produceEventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity(): EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity {
-        return EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity(
-            produceEventEntity(),
-            listOf(produceCardEntity()),
-            listOf(produceGoalscorerEntity()),
-            listOf(produceLineupEntity()),
-            listOf(produceStatisticEntity()),
-            listOf(produceSubstitutionEntity())
-        )
-    }
 }

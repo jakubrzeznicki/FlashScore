@@ -3,9 +3,7 @@ package com.kuba.flashscore.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.kuba.flashscore.adapters.CountryAdapter
-import com.kuba.flashscore.repositories.FakeCountryRepositoryAndroidTest
 import com.kuba.flashscore.ui.country.CountryFragment
-import com.kuba.flashscore.ui.country.CountryViewModel
 import javax.inject.Inject
 
 class TestFlashScoreFragmentFactory @Inject constructor(

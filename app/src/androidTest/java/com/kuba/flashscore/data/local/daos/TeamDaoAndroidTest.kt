@@ -14,8 +14,12 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.local.daos.*
 import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.util.DataProducerAndroid.produceCoachEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.producePlayerEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceTeamEntity
 
 
 @ExperimentalCoroutinesApi
@@ -49,29 +53,10 @@ class TeamDaoAndroidTest {
         coachDao = database.coachDao()
         teamDao = database.teamDao()
 
-        val countryItem = CountryEntity("countryId1", "countryLogo1", "countryName1", 100L)
-        val leagueItem =
-            LeagueEntity("countryId1", "leagueId1", "leagueLogo1", "leagueName1", "leagueSeason1")
-
-        playerItem = PlayerEntity(
-            "teamId1",
-            "playerAge1",
-            "playerCountry1",
-            "playerGoals1",
-            1L,
-            "playerMatchPlayed1",
-            "playerName1",
-            "playerNumber1",
-            "playerRedCard1",
-            "playerType1",
-            "playerYellowCard1"
-        )
-        coachItem = CoachEntity(
-            "teamId1",
-            "coachAge1",
-            "coachCountry1",
-            "coachName1"
-        )
+        val countryItem = produceCountryEntity(1)
+        val leagueItem = produceLeagueEntity(1, 1)
+        playerItem = producePlayerEntity(1, 1)
+        coachItem = produceCoachEntity(1, 1)
 
         runBlockingTest {
             countryDao.insertCountries(listOf(countryItem))
@@ -88,18 +73,8 @@ class TeamDaoAndroidTest {
 
     @Test
     fun insertTeamItems_getTeamsFromSpecificLeague() = runBlockingTest {
-        val team1 = TeamEntity(
-            "leagueId1",
-            "teamBadge1",
-            "teamId1",
-            "teamName1"
-        )
-        val team2 = TeamEntity(
-            "leagueId1",
-            "teamBadge2",
-            "teamId2",
-            "teamName2"
-        )
+        val team1 = produceTeamEntity(1, 1)
+        val team2 = produceTeamEntity(2, 1)
 
         teamDao.insertTeams(listOf(team1, team2))
 
@@ -112,13 +87,7 @@ class TeamDaoAndroidTest {
 
     @Test
     fun insertTeamItem_getTeamByTeamId() = runBlockingTest {
-        val team = TeamEntity(
-            "leagueId1",
-            "teamBadge1",
-            "teamId1",
-            "teamName1"
-        )
-
+        val team = produceTeamEntity(1, 1)
         teamDao.insertTeam(team)
 
         val teamItem = teamDao.getTeamByTeamId("teamId1")

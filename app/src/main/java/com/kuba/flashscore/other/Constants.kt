@@ -9,6 +9,9 @@ object Constants {
     const val ERROR_INTERNET_CONNECTION_MESSAGE =
         "Couldn't reach the server. Check your internet connection"
 
+    const val SUCCESS_MESSAGE = "Successfully fetched data from network"
+    const val DEFAULT_ERROR_MESSAGE = "Default No Internet"
+
     const val COUNTRIES = "Countries"
     const val TEAM_TAB = "team"
     const val CURRENT_SEASON_TAB = "current season"

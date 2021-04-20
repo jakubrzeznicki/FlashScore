@@ -28,8 +28,8 @@ class StandingsViewModel @ViewModelInject constructor(
     suspend fun refreshStandingsFromSpecificLeague(leagueId: String) {
         _standingsStatus.value = Event(Resource.loading(null))
         viewModelScope.launch {
-            connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
-                if (isNetworkAvailable) {
+            connectivityManager.isNetworkAvailable.value.let { isNetworkAvailable ->
+                if (isNetworkAvailable == true) {
                     val response = standingRepository.refreshStandingsFromSpecificLeague(leagueId)
                     _standingsStatus.value = Event(response)
                 } else {

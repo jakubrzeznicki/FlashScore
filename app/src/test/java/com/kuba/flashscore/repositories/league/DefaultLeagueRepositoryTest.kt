@@ -13,6 +13,8 @@ import com.kuba.flashscore.data.network.models.LeagueDto
 import com.kuba.flashscore.data.network.responses.LeagueResponse
 import com.kuba.flashscore.other.Constants
 import com.kuba.flashscore.other.Status
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
+import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -44,27 +46,12 @@ class DefaultLeagueRepositoryTest {
     @Before
     fun setup() = runBlockingTest {
         leagueDao = mock()
-        allLeagueFromDao = LeagueEntity(
-            "countryId1",
-            "leagueId1",
-            "leagueLogo1",
-            "leagueName1",
-            "leagueSeason1"
-        )
+        allLeagueFromDao = produceLeagueEntity(1, 1)
 
         whenever(leagueDao.getAllLeagues()).thenReturn(listOf(allLeagueFromDao))
 
-        country = CountryEntity("countryId3", "countryLogo3", "countryName3")
-        leagues =
-            listOf(
-                LeagueEntity(
-                    "countryId3",
-                    "leagueId3",
-                    "leagueLogo3",
-                    "leagueName3",
-                    "leagueSeason3"
-                )
-            )
+        country = produceCountryEntity(3)
+        leagues = listOf(produceLeagueEntity(3, 3))
         leaguesFromSpecificCountryFromDao = CountryAndLeaguesEntity(
             country,
             leagues
@@ -151,7 +138,9 @@ class DefaultLeagueRepositoryTest {
 
         verify(leagueDao, times(1)).insertLeagues(any())
 
-        whenever(leagueDao.getLeaguesFromSpecificCountry("countryId2")).thenReturn(leaguesFromSpecificCountryFromDao)
+        whenever(leagueDao.getLeaguesFromSpecificCountry("countryId2")).thenReturn(
+            leaguesFromSpecificCountryFromDao
+        )
 
         val leagues = leagueRepository.getLeagueFromSpecificCountryFromDb("countryId2")
         assertThat(leagues.leagues).hasSize(1)

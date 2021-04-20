@@ -18,6 +18,8 @@ import com.kuba.flashscore.adapters.CountryAdapter
 import com.kuba.flashscore.data.domain.models.Country
 import com.kuba.flashscore.databinding.FragmentCountryBinding
 import com.kuba.flashscore.other.Constants.COUNTRIES
+import com.kuba.flashscore.other.Constants.DEFAULT_ERROR_MESSAGE
+import com.kuba.flashscore.other.Constants.SUCCESS_MESSAGE
 import com.kuba.flashscore.other.Status
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,23 +75,19 @@ class CountryFragment @Inject constructor(
 
     private fun subscribeToObservers() {
         viewModel.countries.observe(viewLifecycleOwner, Observer {
-            Timber.d("COUNTRYY gert form db")
             if (it.isNullOrEmpty()) {
-                Timber.d("COUNTRYY gert form db are null")
                 refreshCountries()
             } else {
-                Timber.d("COUNTRYY gert form db are not null $it")
                 countryAdapter.country = it
             }
         })
         viewModel.countriesStatus.observe(viewLifecycleOwner, Observer {
-            Timber.d("COUNTRYY gert form network")
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         Snackbar.make(
                             requireView(),
-                            "Successfully fetched data from network",
+                            SUCCESS_MESSAGE,
                             Snackbar.LENGTH_LONG
                         ).show()
                         viewModel?.getCountries()
@@ -97,7 +95,7 @@ class CountryFragment @Inject constructor(
                     Status.ERROR -> {
                         Snackbar.make(
                             requireView(),
-                            result.message ?: "Default No Internet",
+                            result.message ?: DEFAULT_ERROR_MESSAGE,
                             Snackbar.LENGTH_LONG
                         ).show()
                     }

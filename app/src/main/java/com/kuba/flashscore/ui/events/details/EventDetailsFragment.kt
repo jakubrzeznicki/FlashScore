@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.EventDetailAdapter
+import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.data.domain.models.customs.TeamWithPlayersAndCoach
 import com.kuba.flashscore.data.domain.models.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.data.domain.models.event.customs.EventWithEventInformation
@@ -28,32 +29,24 @@ import com.kuba.flashscore.other.Constants.SUBSTITUTION_DIVIDER
 
 
 class EventDetailsFragment(
-    private val eventWithEventInformation: EventWithEventInformation,
-    private val eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions,
-    private val homeTeam: TeamWithPlayersAndCoach,
-    private val awayTeam: TeamWithPlayersAndCoach
+
 ) :
     Fragment(R.layout.fragment_event_details) {
 
     private var _binding: FragmentEventDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var eventDetailAdapter: EventDetailAdapter
+    lateinit var eventDetailAdapter: EventDetailAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentEventDetailsBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        setInformationAboutRefereeAndStadium()
-
-        return view
-    }
+    private lateinit var eventWithEventInformation: EventWithEventInformation
+    private lateinit var eventDetails: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
+    private lateinit var homeTeam: TeamWithPlayersAndCoach
+    private lateinit var awayTeam: TeamWithPlayersAndCoach
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setInformationAboutRefereeAndStadium()
 
         if (eventDetails.event.matchStatus == MATCH_STATUS_FINISHED) {
             binding.constraintLayoutEventDetailsInformationAboutMatch.visibility = View.VISIBLE
@@ -68,6 +61,17 @@ class EventDetailsFragment(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun setArgumentsVariables(
+        eventWithEventInformationValue: EventWithEventInformation,
+        eventDetailsValue: EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions,
+        homeTeamValue: TeamWithPlayersAndCoach, awayTeamValue: TeamWithPlayersAndCoach
+    ) {
+        eventWithEventInformation = eventWithEventInformationValue
+        eventDetails = eventDetailsValue
+        homeTeam = homeTeamValue
+        awayTeam = awayTeamValue
     }
 
     @SuppressLint("SetTextI18n")

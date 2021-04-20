@@ -7,16 +7,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kuba.flashscore.R
 import com.kuba.flashscore.adapters.ViewPagerAdapter
+import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
 import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsViewPagerBinding
 import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
 import com.kuba.flashscore.other.Constants.AWAY_TAB
 import com.kuba.flashscore.other.Constants.GENERALLY_TAB
 import com.kuba.flashscore.other.Constants.HOME_TAB
+import com.kuba.flashscore.ui.league.LeagueFragmentDirections
 import com.kuba.flashscore.ui.teams.TeamsViewModel
+import com.kuba.flashscore.ui.teams.TeamsViewPagerFragmentDirections
 import com.kuba.flashscore.ui.teams.standings.away.StandingsAwayFragment
 import com.kuba.flashscore.ui.teams.standings.home.StandingsHomeFragment
 import com.kuba.flashscore.ui.teams.standings.overall.StandingsOverallFragment
@@ -28,7 +33,7 @@ class StandingsViewPagerFragment :
     private val binding get() = _binding!!
 
     lateinit var viewModel: TeamsViewModel
-    private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
+    lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
 
     override fun onCreateView(
         inflater: LayoutInflater,

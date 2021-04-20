@@ -1,18 +1,14 @@
-package com.kuba.flashscore.repositories
+package com.kuba.flashscore.repositories.team
 
-import com.kuba.flashscore.data.domain.models.customs.CountryAndLeagues
 import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.data.local.models.entities.*
-import com.kuba.flashscore.data.local.models.entities.customs.CountryAndLeaguesEntity
 import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueAndTeamsEntity
 import com.kuba.flashscore.data.local.models.entities.customs.LeagueWithTeamsEntity
 import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
 import com.kuba.flashscore.other.Resource
-import com.kuba.flashscore.repositories.league.LeagueRepository
-import com.kuba.flashscore.repositories.team.TeamRepository
-import com.kuba.flashscore.util.DataProducer.produceCountryEntity
-import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
-import com.kuba.flashscore.util.DataProducer.produceTeamEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceCountryEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceTeamEntity
 
 class FakeTeamRepositoryAndroidTest : TeamRepository {
     private val teamItems = mutableListOf<TeamEntity>()

@@ -14,8 +14,10 @@ import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
 import com.google.common.truth.Truth.assertThat
-import com.kuba.flashscore.data.local.daos.*
 import com.kuba.flashscore.data.local.models.entities.*
+import com.kuba.flashscore.util.DataProducerAndroid.produceCoachEntity
+import com.kuba.flashscore.util.DataProducerAndroid.producePlayerEntity
+import com.kuba.flashscore.util.DataProducerAndroid.produceTeamEntity
 
 
 @ExperimentalCoroutinesApi
@@ -47,47 +49,11 @@ class PlayerDaoAndroidTest {
         coachDao = database.coachDao()
         teamDao = database.teamDao()
 
-        playerItem1 = PlayerEntity(
-            "teamId1",
-            "playerAge1",
-            "playerCountry1",
-            "playerGoals1",
-            1L,
-            "playerMatchPlayed1",
-            "playerName1",
-            "playerNumber1",
-            "playerRedCard1",
-            "playerType1",
-            "playerYellowCard1"
-        )
+        playerItem1 = producePlayerEntity(1, 1)
+        playerItem2 = producePlayerEntity(2, 1)
+        val coachItem = produceCoachEntity(1, 1)
+        val teamItem = produceTeamEntity(1, 1)
 
-        playerItem2 = PlayerEntity(
-            "teamId1",
-            "playerAge2",
-            "playerCountry2",
-            "playerGoals2",
-            2L,
-            "playerMatchPlayed2",
-            "playerName2",
-            "playerNumber2",
-            "playerRedCard2",
-            "playerType2",
-            "playerYellowCard2"
-        )
-
-        val coachItem = CoachEntity(
-            "teamId1",
-            "coachAge1",
-            "coachCountry1",
-            "coachName1"
-        )
-
-        val teamItem = TeamEntity(
-            "leagueId1",
-            "teamBadge1",
-            "teamId1",
-            "teamName1"
-        )
         runBlockingTest {
             playerDao.insertPlayers(listOf(playerItem1, playerItem2))
             coachDao.insertCoaches(listOf(coachItem))

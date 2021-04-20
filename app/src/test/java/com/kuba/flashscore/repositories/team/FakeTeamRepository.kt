@@ -9,36 +9,28 @@ import com.kuba.flashscore.data.local.models.entities.customs.CountryWithLeagueA
 import com.kuba.flashscore.data.local.models.entities.customs.LeagueWithTeamsEntity
 import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
 import com.kuba.flashscore.other.Resource
+import com.kuba.flashscore.util.DataProducer.produceCountryEntity
+import com.kuba.flashscore.util.DataProducer.produceLeagueEntity
+import com.kuba.flashscore.util.DataProducer.produceTeamEntity
 
 class FakeTeamRepository : TeamRepository {
 
     private val teamItems = mutableListOf<TeamEntity>()
     private val coachItems = mutableListOf<CoachEntity>()
     private val playerItems = mutableListOf<PlayerEntity>()
-    private val countryWithLeagueAndTeamsEntity  = CountryWithLeagueAndTeamsEntity(
-        CountryEntity("countryId1", "countryLogo1", "countryName1"),
+    private val countryWithLeagueAndTeamsEntity = CountryWithLeagueAndTeamsEntity(
+        produceCountryEntity(1),
         listOf(
             LeagueWithTeamsEntity(
-                LeagueEntity(
-                    "countryId1",
-                    "leagueId1",
-                    "leagueLogo1",
-                    "leagueName1",
-                    "leagueSeason1"
-                ),
+                produceLeagueEntity(1, 1),
                 teamItems
             )
         )
     )
 
 
-    private val teamWithPlayersAndCoachEntity  = TeamWithPlayersAndCoachEntity(
-        TeamEntity(
-            "leagueId1",
-            "teamBadge2",
-            "teamId2",
-            "teamName2"
-        ),
+    private val teamWithPlayersAndCoachEntity = TeamWithPlayersAndCoachEntity(
+        produceTeamEntity(2, 1),
         playerItems,
         coachItems
     )
@@ -76,33 +68,4 @@ class FakeTeamRepository : TeamRepository {
     override suspend fun getTeamWithPlayersAndCoachFromDb(teamId: String): TeamWithPlayersAndCoachEntity {
         return teamWithPlayersAndCoachEntity
     }
-
-//    private fun producePlayerEntities(): List<PlayerEntity> {
-//        return listOf(
-//            PlayerEntity(
-//                "teamId2",
-//                "playerAge1",
-//                "playerCountry1",
-//                "playerGoals1",
-//                1L,
-//                "playerMatchPlayed1",
-//                "playerName1",
-//                "playerNumber1",
-//                "playerRedCard1",
-//                "playerType1",
-//                "playerYellowCard1"
-//            )
-//        )
-//    }
-//
-//    private fun produceCoachEntities(): List<CoachEntity> {
-//        return listOf(
-//            CoachEntity(
-//                "teamId2",
-//                "coachAge1",
-//                "coachCountry1",
-//                "coachName1"
-//            )
-//        )
-//    }
 }

@@ -21,7 +21,6 @@ class DefaultCountryRepository @Inject constructor(
     override suspend fun refreshCountries(): Resource<List<Country>> {
         return try {
             val response = apiFootballService.getCountries()
-            Timber.d("COUNTRY in repository isSuccessful? ${response.isSuccessful}")
             if (response.isSuccessful) {
                 response.body().let { countryResponse ->
                     insertCountries(
