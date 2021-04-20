@@ -17,6 +17,7 @@ import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.data.domain.models.Standing
 import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsAwayBinding
+import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
 import com.kuba.flashscore.other.Constants.AWAY
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.standings.StandingsViewModel
@@ -38,6 +39,16 @@ class StandingsAwayFragment :
     lateinit var standingsAdapter: StandingsAdapter
 
     private lateinit var countryWithLeagueAndTeams: CountryWithLeagueAndTeams
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentStandingsAwayBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        return view
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

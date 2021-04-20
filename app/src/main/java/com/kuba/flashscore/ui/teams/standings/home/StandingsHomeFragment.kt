@@ -17,6 +17,7 @@ import com.kuba.flashscore.adapters.StandingsAdapter
 import com.kuba.flashscore.data.domain.models.Standing
 import com.kuba.flashscore.data.domain.models.customs.CountryWithLeagueAndTeams
 import com.kuba.flashscore.databinding.FragmentStandingsHomeBinding
+import com.kuba.flashscore.databinding.FragmentStandingsOverallBinding
 import com.kuba.flashscore.other.Constants.HOME
 import com.kuba.flashscore.other.Status
 import com.kuba.flashscore.ui.teams.TeamsViewModel
@@ -42,6 +43,16 @@ class StandingsHomeFragment(
 
     fun setCountryWithLeagueAndTeams(value: CountryWithLeagueAndTeams) {
         countryWithLeagueAndTeams = value
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentStandingsHomeBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

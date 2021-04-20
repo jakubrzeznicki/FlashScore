@@ -43,10 +43,20 @@ class EventDetailsFragment(
     private lateinit var homeTeam: TeamWithPlayersAndCoach
     private lateinit var awayTeam: TeamWithPlayersAndCoach
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentEventDetailsBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         setInformationAboutRefereeAndStadium()
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         if (eventDetails.event.matchStatus == MATCH_STATUS_FINISHED) {
             binding.constraintLayoutEventDetailsInformationAboutMatch.visibility = View.VISIBLE
