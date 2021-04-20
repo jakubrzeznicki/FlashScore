@@ -41,8 +41,8 @@ class DefaultTeamRepository @Inject constructor(
                         ?.let { insertTeams(it) }
 
                     teamResponse?.toList()?.forEach { teamDtoItem ->
-                        insertPlayers(teamDtoItem.players.map { it.asLocalModel(leagueId) })
-                        insertCoaches(teamDtoItem.coaches.map { it.asLocalModel(leagueId) })
+                        insertPlayers(teamDtoItem.players.map { it.asLocalModel(teamDtoItem.teamKey) })
+                        insertCoaches(teamDtoItem.coaches.map { it.asLocalModel(teamDtoItem.teamKey) })
                     }
                     Resource.success(teamDao.getTeamsFromSpecificLeague(leagueId).asDomainModel())
                 }

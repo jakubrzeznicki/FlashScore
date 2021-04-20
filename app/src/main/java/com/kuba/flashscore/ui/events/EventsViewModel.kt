@@ -115,9 +115,9 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getPlayersAndCoachFromHomeTeam(teamId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             homeTeamWithPlayersAndCoach.postValue(
-                teamRepository.getTeamWithPlayersAndCoachFromDb(
+                playerRepository.getPlayersFromSpecificTeamFromDb(
                     teamId
                 )?.asDomainModel()
             )
@@ -125,12 +125,11 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getPlayersAndCoachFromAwayTeam(teamId: String) {
-        viewModelScope.launch {
-            val date = playerRepository.getPlayersFromSpecificTeamFromDb(
-                teamId
-            ).asDomainModel()
+        viewModelScope.launch(Dispatchers.IO) {
             awayTeamWithPlayersAndCoach.postValue(
-                date
+                playerRepository.getPlayersFromSpecificTeamFromDb(
+                    teamId
+                )?.asDomainModel()
             )
         }
     }
