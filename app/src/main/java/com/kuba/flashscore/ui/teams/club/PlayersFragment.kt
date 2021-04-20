@@ -39,18 +39,17 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
     ): View? {
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
 
-        playerAdapter = PlayersAdapter(team)
-        getTeamWithPlayersAndCoaach(team.teamKey)
-        subscribeToObservers()
-        setupRecyclerView()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //viewModel.getTeamWithPlayersAndCoach(team.teamKey)
-
+        Timber.d("KAMA TEAM $team")
+        getTeamWithPlayersAndCoaach(team.teamKey)
+        subscribeToObservers()
+        setupRecyclerView()
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -59,6 +58,7 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
 
     private fun subscribeToObservers() {
         viewModel.team.observe(viewLifecycleOwner, Observer {
+            Timber.d("KAMA TEAM $it")
             playerAdapter.players = it.players
         })
 
@@ -75,6 +75,7 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
 
     private fun setupRecyclerView() {
         binding.recyclerViewTeams.apply {
+            playerAdapter = PlayersAdapter(team)
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

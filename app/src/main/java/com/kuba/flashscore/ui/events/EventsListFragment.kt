@@ -52,7 +52,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private val args: EventsListFragmentArgs by navArgs()
 
     lateinit var eventsAdapter: EventAdapter
-    private var wasRefresh = false
+
     private lateinit var countryAndLeague: CountryAndLeagues
     private lateinit var fromToDate: String
 
@@ -121,15 +121,9 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private fun subscribeToObservers() {
         viewModel.countryWithLeagueWithTeamsAndEvents.observe(
             viewLifecycleOwner, Observer {
-                Timber.d("EVENTS observe get events")
                 if (it == null) {
-                    Timber.d("EVENTS gert form db are null $wasRefresh")
-                    //if (!wasRefresh) {
-                        refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
-                    //}
-                    setupRecyclerView()
+                    refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
                 } else {
-                    Timber.d("EVENTS gert form db are not null ${it.leagueWithEvents[0].eventsWithEventInformation.size}")
                     eventsAdapter.countryWithLeagueWithEventsAndTeams = it
                     eventsAdapter.events =
                         it.leagueWithEvents[0].eventsWithEventInformation.filter { event ->
@@ -148,7 +142,12 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                                 result.message ?: SUCCESS_MESSAGE,
                                 Snackbar.LENGTH_LONG
                             ).show()
-                            viewModel.getCountryWithLeagueWithEventsAndTeams(countryAndLeague.leagues[0].leagueId, fromToDate)
+
+                            viewModel.getCountryWithLeagueWithEventsAndTeams(
+                                countryAndLeague.leagues[0].leagueId,
+                                fromToDate
+                            )
+                            setupRecyclerView()
                         }
                         Status.ERROR -> {
                             Snackbar.make(
@@ -177,8 +176,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel.refreshEvents(leagueId, fromTo)
-           // wasRefresh = true
-            //delay(1000)
         }
     }
 
@@ -263,12 +260,11 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 setTitleAndSubtitle(countryAndLeague, date)
                 fromToDate = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
 
-                refreshEvents(
-                    leagueId = countryAndLeague.leagues[0].leagueId,
+                viewModel.getCountryWithLeagueWithEventsAndTeams(
+                    countryAndLeague.leagues[0].leagueId,
                     DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
                 )
                 viewModel.switchDate(date = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY))
-                //wasRefresh = false
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),

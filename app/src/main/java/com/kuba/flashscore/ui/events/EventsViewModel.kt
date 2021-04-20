@@ -70,7 +70,6 @@ class EventsViewModel @ViewModelInject constructor(
                         teamRepository.refreshTeamsFromSpecificLeague(leagueId)
 
                     if (eventResponse.status == Status.SUCCESS && teamsResponse.status == Status.SUCCESS) {
-                        Timber.d("EVENTS in view model kama success")
                         _countryWithLeagueWithTeamsAndEventsStatus.postValue(
                             Event(eventResponse)
                         )
@@ -85,8 +84,6 @@ class EventsViewModel @ViewModelInject constructor(
                         )
                     }
                 } else {
-                    Timber.d("EVENTS in view model network is not available")
-
                     Event(Resource.error(ERROR_MESSAGE, null))
                 }
             }
@@ -106,12 +103,11 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val data =
                 eventRepository.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
                     eventId
                 ).asDomainModel()
-            Timber.d("EVENT DETAILS IN VIEW MODEL ${data.event.matchRound}")
             eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(
                 data
             )
@@ -119,23 +115,20 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getPlayersAndCoachFromHomeTeam(teamId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val date = playerRepository.getPlayersFromSpecificTeamFromDb(
-                teamId
-            ).asDomainModel()
-            Timber.d("EVENT DETAILS team home IN VIEW MODEL ${date.team.teamName}")
+        viewModelScope.launch {
             homeTeamWithPlayersAndCoach.postValue(
-                date
+                teamRepository.getTeamWithPlayersAndCoachFromDb(
+                    teamId
+                )?.asDomainModel()
             )
         }
     }
 
     fun getPlayersAndCoachFromAwayTeam(teamId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val date = playerRepository.getPlayersFromSpecificTeamFromDb(
                 teamId
             ).asDomainModel()
-            Timber.d("EVENT DETAILS team away IN VIEW MODEL ${date.team.teamName}")
             awayTeamWithPlayersAndCoach.postValue(
                 date
             )
