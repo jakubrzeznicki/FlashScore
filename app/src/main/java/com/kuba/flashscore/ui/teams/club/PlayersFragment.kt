@@ -42,16 +42,9 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
         playerAdapter = PlayersAdapter(team)
         getTeamWithPlayersAndCoaach(team.teamKey)
         subscribeToObservers()
-        setupRecyclerView()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        //viewModel.getTeamWithPlayersAndCoach(team.teamKey)
-
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -69,6 +62,7 @@ class PlayersFragment(private val team: Team) : Fragment(R.layout.fragment_playe
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel.getTeamWithPlayersAndCoach(teamId)
+            setupRecyclerView()
         }
 
     }

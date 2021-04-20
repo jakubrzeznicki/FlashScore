@@ -26,6 +26,7 @@ import com.kuba.flashscore.other.Constants.INCIDENT_HEADER_OVERTIME
 import com.kuba.flashscore.other.Constants.MATCH_STATUS_FINISHED
 import com.kuba.flashscore.other.Constants.RESULT_NULL_TO_NULL
 import com.kuba.flashscore.other.Constants.SUBSTITUTION_DIVIDER
+import timber.log.Timber
 
 
 class EventDetailsFragment(
@@ -154,11 +155,11 @@ class EventDetailsFragment(
         val goalscorersList = mutableListOf<IncidentItem>()
         goalscorersList.addAll(eventDetails.goalscorers.map { goal ->
             IncidentItem(
-                if (goal.whichTeam) homeTeam.players.firstOrNull { it.playerKey.toString() == goal.scorerId }?.playerName
-                    ?: "" else awayTeam.players.firstOrNull { it.playerKey.toString() == goal.scorerId }?.playerName
+                if (goal.whichTeam) awayTeam.players.firstOrNull { it.playerKey.toString() == goal.scorerId }?.playerName
+                    ?: "" else homeTeam.players.firstOrNull { it.playerKey.toString() == goal.scorerId }?.playerName
                     ?: "",
-                if (goal.whichTeam) homeTeam.players.firstOrNull { it.playerKey.toString() == goal.assistId }?.playerName
-                    ?: "" else awayTeam.players.firstOrNull { it.playerKey.toString() == goal.assistId }?.playerName
+                if (goal.whichTeam) awayTeam.players.firstOrNull { it.playerKey.toString() == goal.assistId }?.playerName
+                    ?: "" else homeTeam.players.firstOrNull { it.playerKey.toString() == goal.assistId }?.playerName
                     ?: "",
                 goal.time,
                 INCIDENTTYPE.GOAL,

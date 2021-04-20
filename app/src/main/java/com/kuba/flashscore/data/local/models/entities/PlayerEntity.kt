@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "player_table")
 data class PlayerEntity(
     @ColumnInfo(name = "player_team_id")
-    val teamId: String?,
+    val teamId: String,
     @ColumnInfo(name = "player_age")
     val playerAge: String,
     @ColumnInfo(name ="player_country")

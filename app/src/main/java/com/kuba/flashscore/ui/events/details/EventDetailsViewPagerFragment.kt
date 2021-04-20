@@ -23,9 +23,6 @@ import com.kuba.flashscore.data.domain.models.event.customs.CountryWithLeagueWit
 import com.kuba.flashscore.data.domain.models.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions
 import com.kuba.flashscore.data.domain.models.event.customs.EventWithEventInformation
 import com.kuba.flashscore.databinding.FragmentEventDetailsViewPagerBinding
-import com.kuba.flashscore.data.local.models.entities.customs.TeamWithPlayersAndCoachEntity
-import com.kuba.flashscore.data.local.models.entities.event.customs.CountryWithLeagueWithEventsAndTeamsEntity
-import com.kuba.flashscore.data.local.models.entities.event.customs.EventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutionsEntity
 import com.kuba.flashscore.other.Constants.EVENT_DERAILS_TAB
 import com.kuba.flashscore.other.Constants.EVENT_HEAD_2_HEAD_TAB
 import com.kuba.flashscore.other.Constants.EVENT_STATISTICS_TAB
@@ -188,13 +185,13 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
             val teamHomeItem =
                 event.leagueWithTeams[0].teams.firstOrNull {
                     it.teamKey == eventItem?.eventInformation?.get(
-                        0
+                        1
                     )?.teamId
                 }
             val teamAwayItem =
                 event.leagueWithTeams[0].teams.firstOrNull {
                     it.teamKey == eventItem?.eventInformation?.get(
-                        1
+                       0
                     )?.teamId
                 }
 
@@ -209,8 +206,8 @@ class EventDetailsViewPagerFragment : Fragment(R.layout.fragment_event_details_v
                 "${eventItem?.event?.matchDate}  ${eventItem?.event?.matchTime}"
 
             if (eventItem?.eventInformation?.get(0)?.teamScore?.isNotEmpty()!!) {
-                textViewFirstScore.text = eventItem.eventInformation[0].teamScore
-                textViewSecondScore.text = eventItem.eventInformation[1].teamScore
+                textViewFirstScore.text = eventItem.eventInformation[1].teamScore
+                textViewSecondScore.text = eventItem.eventInformation[0].teamScore
             }
         }
     }
