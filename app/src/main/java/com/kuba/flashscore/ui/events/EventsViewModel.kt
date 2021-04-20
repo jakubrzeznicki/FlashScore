@@ -60,16 +60,17 @@ class EventsViewModel @ViewModelInject constructor(
 
 
     suspend fun refreshEvents(leagueId: String, date: String) {
-        //_countryWithLeagueWithTeamsAndEventsStatus.value = Event(Resource.loading(null))
+        _countryWithLeagueWithTeamsAndEventsStatus.value = Event(Resource.loading(null))
         viewModelScope.launch {
-            connectivityManager.isNetworkAvailable.value.let { isNetworkAvailable ->
-                if (isNetworkAvailable == true) {
+            connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
+                if (isNetworkAvailable) {
                     val eventResponse =
                         eventRepository.refreshEventsFromSpecificLeagues(leagueId, date)
                     val teamsResponse =
                         teamRepository.refreshTeamsFromSpecificLeague(leagueId)
 
                     if (eventResponse.status == Status.SUCCESS && teamsResponse.status == Status.SUCCESS) {
+                        Timber.d("EVENTS in view model kama success")
                         _countryWithLeagueWithTeamsAndEventsStatus.postValue(
                             Event(eventResponse)
                         )
@@ -84,6 +85,8 @@ class EventsViewModel @ViewModelInject constructor(
                         )
                     }
                 } else {
+                    Timber.d("EVENTS in view model network is not available")
+
                     Event(Resource.error(ERROR_MESSAGE, null))
                 }
             }
@@ -92,7 +95,7 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getCountryWithLeagueWithEventsAndTeams(leagueId: String, date: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _countryWithLeagueWithTeamsAndEvents.postValue(
                 eventRepository.getCountryWithLeagueWithTeamsAndEvents(
                     leagueId,
@@ -103,11 +106,12 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(eventId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data =
                 eventRepository.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
                     eventId
-                )?.asDomainModel()
+                ).asDomainModel()
+            Timber.d("EVENT DETAILS IN VIEW MODEL ${data.event.matchRound}")
             eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(
                 data
             )
@@ -115,10 +119,11 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getPlayersAndCoachFromHomeTeam(teamId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val date = playerRepository.getPlayersFromSpecificTeamFromDb(
                 teamId
-            )?.asDomainModel()
+            ).asDomainModel()
+            Timber.d("EVENT DETAILS team home IN VIEW MODEL ${date.team.teamName}")
             homeTeamWithPlayersAndCoach.postValue(
                 date
             )
@@ -126,10 +131,11 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getPlayersAndCoachFromAwayTeam(teamId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val date = playerRepository.getPlayersFromSpecificTeamFromDb(
                 teamId
-            )?.asDomainModel()
+            ).asDomainModel()
+            Timber.d("EVENT DETAILS team away IN VIEW MODEL ${date.team.teamName}")
             awayTeamWithPlayersAndCoach.postValue(
                 date
             )

@@ -121,12 +121,15 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private fun subscribeToObservers() {
         viewModel.countryWithLeagueWithTeamsAndEvents.observe(
             viewLifecycleOwner, Observer {
+                Timber.d("EVENTS observe get events")
                 if (it == null) {
-                   // if (!wasRefresh) {
+                    Timber.d("EVENTS gert form db are null $wasRefresh")
+                    //if (!wasRefresh) {
                         refreshEvents(countryAndLeague.leagues[0].leagueId, fromToDate)
-                  //  }
+                    //}
                     setupRecyclerView()
                 } else {
+                    Timber.d("EVENTS gert form db are not null ${it.leagueWithEvents[0].eventsWithEventInformation.size}")
                     eventsAdapter.countryWithLeagueWithEventsAndTeams = it
                     eventsAdapter.events =
                         it.leagueWithEvents[0].eventsWithEventInformation.filter { event ->
@@ -174,7 +177,8 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         job?.cancel()
         job = lifecycleScope.launch {
             viewModel.refreshEvents(leagueId, fromTo)
-            wasRefresh = true
+           // wasRefresh = true
+            //delay(1000)
         }
     }
 
@@ -264,6 +268,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                     DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY)
                 )
                 viewModel.switchDate(date = DateUtils.formatDate(date, DATE_FORMAT_YEAR_MONTH_DAY))
+                //wasRefresh = false
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
