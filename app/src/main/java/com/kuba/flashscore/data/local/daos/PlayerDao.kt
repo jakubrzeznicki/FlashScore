@@ -19,6 +19,6 @@ interface PlayerDao {
     suspend fun getPlayersByPlayerId(playerId: Long): PlayerEntity
 
     @Transaction
-    @Query("SELECT * FROM team_table WHERE team_id = :teamId ")
+    @Query("SELECT * FROM team_table WHERE team_id = :teamId")
     suspend fun getPlayersFromSpecificTeam(teamId: String): TeamWithPlayersAndCoachEntity
 }

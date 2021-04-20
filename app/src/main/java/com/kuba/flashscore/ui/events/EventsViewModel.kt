@@ -60,10 +60,10 @@ class EventsViewModel @ViewModelInject constructor(
 
 
     suspend fun refreshEvents(leagueId: String, date: String) {
-        //_countryWithLeagueWithTeamsAndEventsStatus.value = Event(Resource.loading(null))
+        _countryWithLeagueWithTeamsAndEventsStatus.value = Event(Resource.loading(null))
         viewModelScope.launch {
-            connectivityManager.isNetworkAvailable.value.let { isNetworkAvailable ->
-                if (isNetworkAvailable == true) {
+            connectivityManager.isNetworkAvailable.value!!.let { isNetworkAvailable ->
+                if (isNetworkAvailable) {
                     val eventResponse =
                         eventRepository.refreshEventsFromSpecificLeagues(leagueId, date)
                     val teamsResponse =
@@ -92,7 +92,7 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getCountryWithLeagueWithEventsAndTeams(leagueId: String, date: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _countryWithLeagueWithTeamsAndEvents.postValue(
                 eventRepository.getCountryWithLeagueWithTeamsAndEvents(
                     leagueId,
@@ -107,7 +107,7 @@ class EventsViewModel @ViewModelInject constructor(
             val data =
                 eventRepository.getEventWithCardsAndGoalscorersAndLineupsAndStatisticsAndSubstitutions(
                     eventId
-                )?.asDomainModel()
+                ).asDomainModel()
             eventWithCardsAndGoalscorersAndLineupsAndStatisticsAnSubstitutions.postValue(
                 data
             )
@@ -115,23 +115,21 @@ class EventsViewModel @ViewModelInject constructor(
     }
 
     fun getPlayersAndCoachFromHomeTeam(teamId: String) {
-        viewModelScope.launch {
-            val date = playerRepository.getPlayersFromSpecificTeamFromDb(
-                teamId
-            )?.asDomainModel()
+        viewModelScope.launch(Dispatchers.IO) {
             homeTeamWithPlayersAndCoach.postValue(
-                date
+                playerRepository.getPlayersFromSpecificTeamFromDb(
+                    teamId
+                )?.asDomainModel()
             )
         }
     }
 
     fun getPlayersAndCoachFromAwayTeam(teamId: String) {
-        viewModelScope.launch {
-            val date = playerRepository.getPlayersFromSpecificTeamFromDb(
-                teamId
-            )?.asDomainModel()
+        viewModelScope.launch(Dispatchers.IO) {
             awayTeamWithPlayersAndCoach.postValue(
-                date
+                playerRepository.getPlayersFromSpecificTeamFromDb(
+                    teamId
+                )?.asDomainModel()
             )
         }
     }
