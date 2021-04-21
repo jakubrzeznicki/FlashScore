@@ -11,7 +11,9 @@
 
 
 ### Informacje
-Aplikacja mobilna na system Android,  napisana w języku Kotlin z wykorzystaniem wzorca MVVM. Aplikacja do śledzenia wyników meczów piłki nożnej pobierająca dane z zewnetrznego api.
+Aplikacja mobilna na system Android,  napisana w języku Kotlin z wykorzystaniem wzorca MVVM. Aplikacja do śledzenia wyników meczów piłki nożnej pobierająca dane z zewnętrznego api.
+
+Projekt cały czas w rozbudowie.
 
 ### Zrzuty ekranu
 
