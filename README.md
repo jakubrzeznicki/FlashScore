@@ -11,19 +11,13 @@
 
 
 ### Informacje
-Aplikacja mobilna na system Android,  napisana w języku Kotlin z wykorzystaniem wzorca MVVM. Aplikacja do śledzenia wyników meczów piłki nożnej.
+Aplikacja mobilna na system Android,  napisana w języku Kotlin z wykorzystaniem wzorca MVVM. Aplikacja do śledzenia wyników meczów piłki nożnej pobierająca dane z zewnetrznego api.
 
 ### Zrzuty ekranu
 
-![Countries](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/1.png "Countries")
-![Leagues](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/2 (2).png "Leagues")
-![EventsList](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/3.png "Events List")
-![Event](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/4.png "Event")
-![Teams](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/5.png "Teams")
-![Standings](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/6.png "Standings")
-![EventDetails](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/7.png "Event Details")
-![Players](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/8.png "Players")
-![PlayerInfo](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/9.png "Player Information")
+![CountriesLeaguesEventsList](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/1.png "Countries Leagues Events List")
+![CommingEventDetailsTeamsStandings](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/2.png "Comming Event Details Teams Standings")
+![EventDetailsPlayersPlayerInfo](https://github.com/jakubrzeznicki/FlashScore/blob/master/screenshots/3.png "Event Details Players Player Information")
 
 
 ### Funkcjonalności
@@ -39,16 +33,15 @@ Lista funkcjonalności (stan na 20.04.2021)
 ### Struktura
 Projekt zawiera testy jednostkowe oraz testy instrumentalne
 Ogólna struktura projektu:
-1. **adapters**: Zawiera adaptery zapewniające wyświetlanie i działanie widoków, które są w Recyclerview.
-2. **data/local**: Zawiera modele danych (encje) , DAO - Obiekty dostępu do danych, oraz klasę bazy danych.
-3. **data/domain**: zawiera modele domenowe.
-4. **data/network**: zawiera modele danych (Dto), responses oraz interfejs api football service.
-5. **di**: Zawiera obiekty dependency injection dla całej aplikacji oraz servisu.
-6. **other**: Zawiera pozostałe klasy/obiekty m.in stałe, konwertory.
-7. **repositories**: Zawiera klasy oraz interfejsy repozytorium.
-8. **service**: Zawiera klase TrackingService, obsługującą śledzenie użytkownika, uaktualnianie czasu oraz dystansu.
-9. **ui**: Zawiera aktywnośc, fragmenty oraz view modele.
-10. **ui/util**: Zawiera klase fragment factory, oraz całą obsługę sprawdzania połączenia internetowego.
+1. **adapters**: Adaptery potrzebne do recycleview.
+2. **data/local**: Modele danych (encje) , DAO - Obiekty dostępu do danych, oraz klasę bazy danych.
+3. **data/domain**: Modele domenowe.
+4. **data/network**: Modele danych (Dto), responses oraz interfejs api football service.
+5. **di**: obiekt dependency injection dla całej aplikacji oraz servisu.
+6. **other**: Pozostałe klasy/obiekty m.in stałe, konwertory.
+7. **repositories**: klasy oraz interfejsy repozytorium.
+8 **ui**: activity, fragmenty oraz view models.
+9 **ui/util**: klasa fragment factory, oraz cała obsługa sprawdzania połączenia internetowego.
 
 
 
@@ -65,13 +58,15 @@ Ogólna struktura projektu:
 - [Dagger Hilt](https://developer.android.com/training/dependency-injection/hilt-android)- version 2.28-alpha
 - [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)- version 1.4.2
 - [Retrofit]()
-- [Gson]()
+- [Gson](https://github.com/google/gson)- version 2.8.5
 - [Glide](https://github.com/bumptech/glide)- version 4.11.0
 
 
-- Testowanie
-    - [Espresso]()
-    - [JUnit]()
-    - [Mockito]()
-    - [mockk]()
-    - [okhttp]
+- Test
+    - [Espresso](https://developer.android.com/training/testing/espresso)
+    - [JUnit](https://junit.org/junit4/)- version 4.13
+    - [Mockito](https://site.mockito.org/)
+    - [Robolectric](http://robolectric.org/)
+    - [Truth](https://github.com/google/truth)- version 1.0.1
+    - [Mockito-kotlin](https://github.com/mockito/mockito-kotlin)- version 2.2.0
+    - [okhttp](https://github.com/square/okhttp) - version 4.9.1
